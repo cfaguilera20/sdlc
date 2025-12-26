@@ -1,0 +1,161 @@
+{
+  "ticket_id": "MIG-77",
+  "migration_type": "service_extraction",
+  "source_of_truth": "monolith_db (phase 0), new_service_db (phase 2+)",
+  "data_domains": [
+    {
+      "domain": "Orders",
+      "tables_or_entities": [
+        "orders",
+        "order_items"
+      ],
+      "volume": "~5M rows",
+      "sensitivity": "pii"
+    },
+    {
+      "domain": "Users",
+      "tables_or_entities": [
+        "users"
+      ],
+      "volume": "~500k rows",
+      "sensitivity": "pii"
+    }
+  ],
+  "strategy": [
+    "Expand/contract: add new service writes behind a feature flag.",
+    "Backfill existing orders into new service in tenant-scoped batches with checkpoints.",
+    "Dual-write for 1-2 weeks and compare checksums + sampled diffs.",
+    "Flip reads per-tenant, monitor, then remove dual-write."
+  ],
+  "phases": [
+    {
+      "name": "Phase 0 \u2014 Prep",
+      "steps": [
+        "Define contracts",
+        "Add read-only API to new service",
+        "Add audit logging"
+      ],
+      "exit_criteria": [
+        "Contracts approved",
+        "Dashboards created"
+      ]
+    },
+    {
+      "name": "Phase 1 \u2014 Backfill",
+      "steps": [
+        "Create backfill job with checkpoints",
+        "Run tenant-by-tenant backfill",
+        "Validate counts/checksums"
+      ],
+      "exit_criteria": [
+        "<0.1% diff on sampled records",
+        "All tenants backfilled"
+      ]
+    },
+    {
+      "name": "Phase 2 \u2014 Dual-write",
+      "steps": [
+        "Enable dual-write behind flag",
+        "Compare writes & reconcile"
+      ],
+      "exit_criteria": [
+        "No drift for 7 days",
+        "Error rate < 0.1%"
+      ]
+    },
+    {
+      "name": "Phase 3 \u2014 Cutover",
+      "steps": [
+        "Flip reads per-tenant",
+        "Disable monolith writes for migrated tenants"
+      ],
+      "exit_criteria": [
+        "p95 stable",
+        "No reconciliation backlog"
+      ]
+    },
+    {
+      "name": "Phase 4 \u2014 Contract",
+      "steps": [
+        "Remove monolith paths",
+        "Drop legacy columns (later)"
+      ],
+      "exit_criteria": [
+        "Legacy code removed",
+        "Post-migration audit complete"
+      ]
+    }
+  ],
+  "cutover": {
+    "approach": "tenant-by-tenant flag flip",
+    "downtime_expectation": "no downtime expected; safe rollback via flags",
+    "steps": [
+      "Enable read-from-new-service for 1 tenant",
+      "Monitor 24h",
+      "Ramp to 10%, 50%, 100%"
+    ]
+  },
+  "rollback": {
+    "conditions": [
+      "Error rate spikes",
+      "Data drift detected"
+    ],
+    "steps": [
+      "Flip reads back to monolith",
+      "Disable dual-write",
+      "Preserve new service data for forensics"
+    ],
+    "data_reconciliation": [
+      "Re-run backfill for affected tenants",
+      "Compare checksums and fix drift"
+    ]
+  },
+  "validation": {
+    "checks": [
+      "Row counts by tenant",
+      "Checksums by day/tenant",
+      "Invariant checks (uniques, FKs)"
+    ],
+    "metrics": [
+      "backfill_progress",
+      "drift_rate",
+      "cutover_errors"
+    ],
+    "sampling": [
+      "1% random sample per tenant/day",
+      "Top 100 highest value orders"
+    ]
+  },
+  "risks": [
+    "Long-running backfill causing DB load",
+    "Cross-tenant leakage if queries miss tenant_id",
+    "Partial cutover without reconciliation"
+  ],
+  "implementation_plan": [
+    {
+      "task": "Add checkpointed backfill job",
+      "owner_role": "backend",
+      "files_touched": [
+        "app/jobs/backfill_orders_job.rb",
+        "app/services/backfill/checkpointer.rb",
+        "spec/jobs/backfill_orders_job_spec.rb"
+      ]
+    },
+    {
+      "task": "Add feature flags for dual-write/read flip",
+      "owner_role": "backend",
+      "files_touched": [
+        "config/initializers/feature_flags.rb",
+        "app/services/orders/write_router.rb"
+      ]
+    },
+    {
+      "task": "Add dashboards/alerts",
+      "owner_role": "ops",
+      "files_touched": [
+        "ops/dashboards/orders_migration.json",
+        "ops/alerts/orders_migration.yml"
+      ]
+    }
+  ]
+}

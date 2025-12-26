@@ -1,0 +1,102 @@
+{
+  "stack": "laravel",
+  "commit_type": "ops",
+  "phases": [
+    {
+      "name": "Context",
+      "agents": [
+        {
+          "id": "01_ticket_reader",
+          "input": "<paste Jira/Linear ticket text here>",
+          "expects": "TicketContext",
+          "notes": "If you don't have a ticket, paste the problem statement + constraints + ACs."
+        }
+      ]
+    },
+    {
+      "name": "Spec",
+      "agents": [
+        {
+          "id": "03b_architect_laravel",
+          "input": "<TicketContext JSON + (optional) single story summary>",
+          "expects": "DeveloperReadySpec",
+          "notes": "This is the single source of truth for implementation + files to touch."
+        }
+      ]
+    },
+    {
+      "name": "Security & Privacy",
+      "agents": [
+        {
+          "id": "05_security_privacy",
+          "input": "<Spec JSON>",
+          "expects": "DeveloperReadySpec",
+          "notes": "Recommended for auth, PII, payments, webhooks, multi-tenant, file uploads."
+        }
+      ]
+    },
+    {
+      "name": "Performance & Observability",
+      "agents": [
+        {
+          "id": "06_perf_observability",
+          "input": "<Spec JSON>",
+          "expects": "DeveloperReadySpec",
+          "notes": "Recommended for list endpoints, search, reports, high throughput, hot paths."
+        }
+      ]
+    },
+    {
+      "name": "QA",
+      "agents": [
+        {
+          "id": "04_qa_designer",
+          "input": "<Final Spec JSON>",
+          "expects": "TestSuite",
+          "notes": "Traceability matrix: AC \u2192 tests."
+        }
+      ]
+    },
+    {
+      "name": "Implement",
+      "agents": [
+        {
+          "id": "07b_implementer_laravel",
+          "input": "<Final Spec JSON + relevant repo snippets>",
+          "expects": "DeveloperReadySpec",
+          "notes": "Produces file-by-file edit plan; you apply edits in Cursor."
+        }
+      ]
+    },
+    {
+      "name": "Review",
+      "agents": [
+        {
+          "id": "08_code_reviewer",
+          "input": "<Final Spec JSON + diff/changed files + test output>",
+          "expects": "TestSuite",
+          "notes": "Merge gate with punch list."
+        }
+      ]
+    },
+    {
+      "name": "Release/Ops",
+      "agents": [
+        {
+          "id": "09_release_ops",
+          "input": "<Final Spec JSON + env/deploy notes>",
+          "expects": "DeveloperReadySpec",
+          "notes": "Rollout + monitoring + rollback checklist."
+        }
+      ]
+    }
+  ],
+  "stop_conditions": [
+    "If acceptance criteria for critical paths are missing, ask the ticket author.",
+    "If a breaking change is required, produce a migration/rollout plan and get approval."
+  ],
+  "notes": [
+    "Tip: When the change is tiny (style/test/docs), you can skip Backlog and sometimes even Spec; go straight to Implementer + Reviewer.",
+    "Always paste outputs between agents as JSON (no extra commentary) to keep them deterministic."
+  ]
+}

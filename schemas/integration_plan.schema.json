@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "IntegrationPlan",
+  "type": "object",
+  "required": [
+    "ticket_id",
+    "stack",
+    "integration_inventory",
+    "proposed_changes",
+    "contracts",
+    "risks",
+    "implementation_plan"
+  ],
+  "properties": {
+    "ticket_id": {
+      "type": "string"
+    },
+    "stack": {
+      "type": "string",
+      "enum": [
+        "rails",
+        "laravel",
+        "generic"
+      ]
+    },
+    "integration_inventory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "service",
+          "direction",
+          "touchpoints"
+        ],
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "inbound",
+              "outbound",
+              "bidirectional"
+            ]
+          },
+          "touchpoints": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "auth": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "proposed_changes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "type",
+          "details"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "http",
+              "event",
+              "queue",
+              "db",
+              "file",
+              "webhook",
+              "sso",
+              "other"
+            ]
+          },
+          "details": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "implementation_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "task",
+          "files_touched"
+        ],
+        "properties": {
+          "task": {
+            "type": "string"
+          },
+          "files_touched": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

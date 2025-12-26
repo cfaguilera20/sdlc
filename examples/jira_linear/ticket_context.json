@@ -1,0 +1,55 @@
+{
+  "ticket": {
+    "id": "PROJ-123",
+    "title": "Fix student SSO email mismatch",
+    "description": "Students sign in with <student_id>@dpsprivate.com but Entra returns <student_id>@daltonk12.onmicrosoft.com. Need consistent linking so existing users authenticate.",
+    "source": "jira",
+    "priority": "P1"
+  },
+  "domain_context": {
+    "actors": [
+      "student",
+      "identity_provider",
+      "fusionauth",
+      "thrillshare"
+    ],
+    "systems": [
+      "Entra ID",
+      "FusionAuth",
+      "Thrillshare"
+    ],
+    "data_keys": [
+      "email",
+      "student_id",
+      "tenant/district_id"
+    ],
+    "current_behavior": "User lookup is by email; mismatch causes unlinked accounts."
+  },
+  "assumptions": [
+    "We can access student_id as a claim from IdP (or map it).",
+    "FusionAuth has a user linking mechanism or can store multiple emails/identities per user."
+  ],
+  "risks": [
+    "Account takeover if linking is based on untrusted claims.",
+    "Cross-tenant user linking if tenant scoping is missed."
+  ],
+  "acceptance_criteria": [
+    "If IdP returns onmicrosoft.com email, system links to existing user with dpsprivate.com email using verified student_id within same tenant.",
+    "If no match is found, onboarding flow is followed without overwriting existing users.",
+    "All link actions are audited with tenant_id, subject, issuer, and timestamp."
+  ],
+  "non_functionals": [
+    "Linking endpoint p95 < 300ms at 100 rps.",
+    "No PII leakage in logs; emails masked where possible."
+  ],
+  "glossary": [
+    {
+      "term": "tenant",
+      "definition": "District/client boundary for auth and data access."
+    },
+    {
+      "term": "linking",
+      "definition": "Associating IdP identity to an existing internal user record."
+    }
+  ]
+}

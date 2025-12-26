@@ -1,0 +1,15 @@
+[Jira] PROJ-123 — Fix student SSO email mismatch
+
+Problem:
+Students sign in with <student_id>@dpsprivate.com but Entra returns <student_id>@daltonk12.onmicrosoft.com.
+We need consistent linking so existing Thrillshare/FusionAuth users can authenticate.
+
+Constraints:
+- Do not change existing email in Thrillshare
+- Must support both domains during transition
+- Must avoid account takeover
+
+Acceptance:
+- Student can login regardless of which email Entra returns
+- Existing accounts are linked to correct user
+- Audit trail for link events

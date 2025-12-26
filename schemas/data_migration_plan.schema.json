@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DataMigrationPlan",
+  "type": "object",
+  "required": [
+    "ticket_id",
+    "migration_type",
+    "source_of_truth",
+    "data_domains",
+    "strategy",
+    "phases",
+    "cutover",
+    "rollback",
+    "validation",
+    "risks",
+    "implementation_plan"
+  ],
+  "properties": {
+    "ticket_id": {
+      "type": "string"
+    },
+    "migration_type": {
+      "type": "string",
+      "enum": [
+        "service_extraction",
+        "service_migration",
+        "database_migration",
+        "schema_change",
+        "backfill",
+        "dual_write",
+        "cdc",
+        "other"
+      ]
+    },
+    "source_of_truth": {
+      "type": "string"
+    },
+    "data_domains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "domain",
+          "tables_or_entities",
+          "volume",
+          "sensitivity"
+        ],
+        "properties": {
+          "domain": {
+            "type": "string"
+          },
+          "tables_or_entities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "volume": {
+            "type": "string"
+          },
+          "sensitivity": {
+            "type": "string",
+            "enum": [
+              "public",
+              "internal",
+              "confidential",
+              "pii",
+              "phi",
+              "unknown"
+            ]
+          }
+        }
+      }
+    },
+    "strategy": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "steps",
+          "exit_criteria"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "exit_criteria": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "cutover": {
+      "type": "object",
+      "required": [
+        "approach",
+        "downtime_expectation",
+        "steps"
+      ],
+      "properties": {
+        "approach": {
+          "type": "string"
+        },
+        "downtime_expectation": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "required": [
+        "conditions",
+        "steps",
+        "data_reconciliation"
+      ],
+      "properties": {
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data_reconciliation": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": [
+        "checks",
+        "metrics",
+        "sampling"
+      ],
+      "properties": {
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sampling": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "implementation_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "task",
+          "owner_role",
+          "files_touched"
+        ],
+        "properties": {
+          "task": {
+            "type": "string"
+          },
+          "owner_role": {
+            "type": "string"
+          },
+          "files_touched": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

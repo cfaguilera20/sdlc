@@ -1,0 +1,71 @@
+{
+  "ticket_id": "PROJ-123",
+  "stack": "rails",
+  "integration_inventory": [
+    {
+      "service": "Microsoft Entra ID",
+      "direction": "inbound",
+      "touchpoints": [
+        "SAML/OIDC callback"
+      ],
+      "auth": "SAML/OIDC",
+      "data": [
+        "email",
+        "student_id",
+        "issuer"
+      ]
+    },
+    {
+      "service": "FusionAuth",
+      "direction": "bidirectional",
+      "touchpoints": [
+        "user lookup/linking API"
+      ],
+      "auth": "internal admin key",
+      "data": [
+        "tenant_id",
+        "user_id",
+        "identities"
+      ]
+    }
+  ],
+  "proposed_changes": [
+    "Add identity-linking adapter that matches by verified student_id within tenant.",
+    "Add audit event for link actions (event or DB log table)."
+  ],
+  "contracts": [
+    {
+      "name": "link_identity",
+      "type": "http",
+      "details": {
+        "method": "POST",
+        "path": "/internal/identities/link",
+        "request": {
+          "tenant_id": "...",
+          "issuer": "...",
+          "subject": "...",
+          "student_id": "..."
+        },
+        "responses": {
+          "200": "linked",
+          "409": "conflict",
+          "422": "invalid"
+        }
+      }
+    }
+  ],
+  "risks": [
+    "Account takeover if student_id claim is not verified/issuer-bound.",
+    "Cross-tenant linking if tenant_id not enforced."
+  ],
+  "implementation_plan": [
+    {
+      "task": "Add identity linking service + audit log",
+      "files_touched": [
+        "app/services/auth/identity_linker.rb",
+        "db/migrate/xxxx_create_identity_link_audits.rb",
+        "spec/requests/identity_linking_spec.rb"
+      ]
+    }
+  ]
+}

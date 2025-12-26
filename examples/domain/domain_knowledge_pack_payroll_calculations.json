@@ -1,0 +1,26 @@
+{
+  "domain": "Payroll MX - Calculations",
+  "business_rules": [
+    "Todas las f\u00f3rmulas son determin\u00edsticas dado (inputs + tablas vigentes + vigencia del empleado).",
+    "Rounding: redondeo bancario a 2 decimales en percepciones/deducciones; validar con negocio."
+  ],
+  "calculations_or_formulas": [
+    "ISR: c\u00e1lculo por tablas vigentes (mensual/periodo), prorrateo por periodo de pago.",
+    "Cuotas IMSS: base * factor por ramo, sujeto a topes."
+  ],
+  "invariants": [
+    "Neto = Percepciones - Deducciones - Retenciones (salvo ajustes).",
+    "Nunca generar neto negativo sin regla expl\u00edcita."
+  ],
+  "edge_cases": [
+    "Prorrateo por alta/baja a mitad de periodo.",
+    "Incapacidades y ausencias con diferentes tratamientos."
+  ],
+  "open_questions": [
+    "\u00bfC\u00f3mo se versiona y prueba el sistema de f\u00f3rmulas actual 'excel-like'?"
+  ],
+  "assumptions": [
+    "El motor soporta 'effective dating' para reglas/tablas y para cambios de empleado."
+  ],
+  "confidence": "medium"
+}

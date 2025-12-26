@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TicketContext",
+  "type": "object",
+  "required": [
+    "ticket",
+    "domain_context",
+    "assumptions",
+    "risks",
+    "acceptance_criteria",
+    "non_functionals",
+    "glossary"
+  ],
+  "properties": {
+    "ticket": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "description",
+        "source",
+        "priority"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "jira",
+            "linear",
+            "other"
+          ]
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "P0",
+            "P1",
+            "P2",
+            "P3",
+            "P4",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "domain_context": {
+      "type": "object"
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "non_functionals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "glossary": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "term",
+          "definition"
+        ],
+        "properties": {
+          "term": {
+            "type": "string"
+          },
+          "definition": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+[AUTH-183] Students fail login due to email claim mismatch
+- Expected: <student_id>@dpsprivate.com
+- Returned from IdP: <student_id>@daltonk12.onmicrosoft.com
+- Need consistent linking between FusionAuth + app user records.
+- Multi-tenant, avoid cross-tenant linking.

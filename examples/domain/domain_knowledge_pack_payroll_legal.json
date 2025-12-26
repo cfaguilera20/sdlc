@@ -1,0 +1,28 @@
+{
+  "domain": "Payroll MX - Legal/Compliance",
+  "glossary": [
+    {
+      "term": "SBC",
+      "definition": "Salario Base de Cotizaci\u00f3n para IMSS."
+    }
+  ],
+  "business_rules": [
+    "Aplicar topes IMSS vigentes por periodo (seg\u00fan UMA) y respetar fechas efectivas.",
+    "Registrar incidencias y faltas conforme a reglas de integraci\u00f3n al SBC."
+  ],
+  "edge_cases": [
+    "Cambios retroactivos de salario que afectan cuotas de periodos anteriores.",
+    "Empleado con m\u00faltiples patrones (si aplica) o reingresos."
+  ],
+  "compliance_requirements": [
+    "IMSS: cuotas obrero patronales por ramo (seg\u00fan tablas vigentes).",
+    "INFONAVIT: descuento y amortizaci\u00f3n seg\u00fan tipo de cr\u00e9dito."
+  ],
+  "open_questions": [
+    "\u00bfLa empresa maneja asimilados vs n\u00f3mina fiscal en el mismo motor?"
+  ],
+  "assumptions": [
+    "Las tablas y factores se cargan por vigencia (effective dating) y se auditan."
+  ],
+  "confidence": "medium"
+}

@@ -1,0 +1,59 @@
+{
+  "stack": "rails",
+  "phases": [
+    {
+      "name": "Context",
+      "agents": [
+        {
+          "id": "01_ticket_reader",
+          "input": "<paste ticket here>",
+          "expects": "TicketContext"
+        }
+      ]
+    },
+    {
+      "name": "Integrations (optional)",
+      "agents": [
+        {
+          "id": "02a_integration_planner",
+          "input": "<TicketContext JSON>",
+          "expects": "IntegrationPlan"
+        }
+      ]
+    },
+    {
+      "name": "Backlog",
+      "agents": [
+        {
+          "id": "02_product_analyst",
+          "input": "<TicketContext JSON>",
+          "expects": "Backlog"
+        }
+      ]
+    },
+    {
+      "name": "Spec",
+      "agents": [
+        {
+          "id": "03a_architect_rails",
+          "input": "<Story JSON + TicketContext JSON>",
+          "expects": "DeveloperReadySpec"
+        }
+      ]
+    },
+    {
+      "name": "QA",
+      "agents": [
+        {
+          "id": "04_qa_designer",
+          "input": "<Spec JSON>",
+          "expects": "TestSuite"
+        }
+      ]
+    }
+  ],
+  "stop_conditions": [
+    "If required external dependencies are unknown, confirm with stakeholder.",
+    "If breaking changes are required, produce a rollout plan and get approval."
+  ]
+}

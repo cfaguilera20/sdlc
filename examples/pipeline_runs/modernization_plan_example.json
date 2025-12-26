@@ -1,0 +1,68 @@
+{
+  "stack": "rails",
+  "anti_patterns_found": [
+    "fat ActiveRecord models with callbacks",
+    "shared mutable config via globals",
+    "N+1 queries in serializers"
+  ],
+  "target_patterns": [
+    "service objects per use-case",
+    "explicit transactions",
+    "query objects for complex reads",
+    "feature flags for strangler routing"
+  ],
+  "framework_best_practices": {
+    "rails": [
+      "validate + constrain at DB (unique, not null)",
+      "idempotent Sidekiq jobs with retries",
+      "avoid callbacks for business logic",
+      "use PORO services + typed inputs"
+    ],
+    "laravel": [
+      "Form Requests validation",
+      "Policies/Gates",
+      "Queue jobs idempotent + retry/backoff",
+      "Resources/Transformers for API responses"
+    ]
+  },
+  "anti_corruption_layer": {
+    "needed": true,
+    "adapters": [
+      "LegacyOrderAdapter"
+    ],
+    "mapping_rules": [
+      "legacy_status -> new_status enum with mapping table"
+    ]
+  },
+  "data_model_improvements": [
+    "add tenant_id + composite unique indexes",
+    "introduce status enum + check constraints where supported"
+  ],
+  "contract_strategy": [
+    "version HTTP endpoints /v1",
+    "publish event schema v1 with explicit deprecation policy"
+  ],
+  "testing_strategy": [
+    "characterization tests on legacy endpoints",
+    "contract tests between services",
+    "migration validation checksums"
+  ],
+  "observability": [
+    "correlation_id propagated across services",
+    "structured logs with tenant_id",
+    "dashboards for backfill progress and drift_rate"
+  ],
+  "phased_refactor_plan": [
+    "Phase 1: wrap legacy calls behind adapter",
+    "Phase 2: replace internals with new domain services",
+    "Phase 3: remove legacy paths after sunset"
+  ],
+  "acceptance_gates": [
+    "No cross-tenant reads/writes",
+    "Backfill replay-safe",
+    "p95 within SLO"
+  ],
+  "open_questions": [
+    "Do we have a global customer_id that spans tenants? If not, define mapping."
+  ]
+}

@@ -61,6 +61,29 @@
         "type": "string"
       }
     },
+    "data_requirements": {
+      "type": "object",
+      "properties": {
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "user_journeys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "acceptance_criteria_suggestions": {
       "type": "array",
       "items": {
@@ -74,6 +97,12 @@
       }
     },
     "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sources": {
       "type": "array",
       "items": {
         "type": "string"

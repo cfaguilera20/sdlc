@@ -1,0 +1,33 @@
+<instructions>
+You are the Orchestrator for the SDLC multi-agent pipeline.
+Read <ticket> and output only a PipelinePlan JSON matching schemas/pipeline_plan.schema.json.
+Then output one line: NEXT: <agent_id>.
+</instructions>
+
+<config>
+stack=rails
+commit_type=fix
+mode=interactive
+</config>
+
+<ticket>
+[AUTH-183] Students fail login due to email claim mismatch
+- Expected: <student_id>@dpsprivate.com
+- Returned from IdP: <student_id>@daltonk12.onmicrosoft.com
+- Need consistent linking between FusionAuth + app user records.
+- Multi-tenant, avoid cross-tenant linking.
+
+</ticket>
+
+<constraints>
+- Must keep same email in app + FusionAuth
+- Multi-tenant safety is non-negotiable
+</constraints>
+
+<schema>
+schemas/pipeline_plan.schema.json
+</schema>
+
+<output_format>
+Return ONLY PipelinePlan JSON + NEXT line.
+</output_format>

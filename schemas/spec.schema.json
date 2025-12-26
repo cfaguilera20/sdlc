@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DeveloperReadySpec",
+  "type": "object",
+  "required": [
+    "story_id",
+    "stack",
+    "domain_model",
+    "api_contracts",
+    "data_contracts",
+    "flows",
+    "edge_cases",
+    "non_functionals",
+    "risks",
+    "implementation_plan"
+  ],
+  "properties": {
+    "story_id": {
+      "type": "string"
+    },
+    "stack": {
+      "type": "string",
+      "enum": [
+        "rails",
+        "laravel",
+        "generic"
+      ]
+    },
+    "domain_model": {
+      "type": "object"
+    },
+    "api_contracts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "data_contracts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "flows": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "edge_cases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "non_functionals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "implementation_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "task",
+          "owner_role",
+          "files_touched"
+        ],
+        "properties": {
+          "task": {
+            "type": "string"
+          },
+          "owner_role": {
+            "type": "string"
+          },
+          "files_touched": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
