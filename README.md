@@ -344,8 +344,17 @@ Generated: 2025-12-26
 Added:
 - `schemas/domain_knowledge_pack.schema.json`
 - `templates/domain_expert_payroll_split.md`
+- `templates/domain_expert_recruitment.md`
 
 Agent 02 (Product Analyst) now explicitly accepts one or multiple `DomainKnowledgePack` inputs and must weave rules/edge cases into backlog acceptance criteria.
+
+### Template Auto-Saving
+When a Domain Expert Agent produces a `DomainKnowledgePack`, it automatically saves:
+1. **JSON example** to `sdlc/examples/domain/domain_knowledge_pack_<domain_slug>.json`
+2. **Template guide** to `sdlc/templates/domain_expert_<domain_slug>.md`
+
+Domain slug is extracted from the `domain` field (lowercase, spaces/special chars → underscores).  
+This makes domain knowledge reusable for future tickets in the same domain.
 
 Generated: 2025-12-26
 

@@ -204,3 +204,10 @@ If you can’t obtain domain input, you must:
   - Expert B: calculation engine & formulas
 
 When multiple packs are produced, instruct Agent 02 (Product Analyst) to consume them as `DomainKnowledgePacks[]` and merge them (keeping conflicts as open questions).
+
+### Saving Domain Expert outputs as templates
+Domain Expert Agents automatically save their outputs as reusable templates:
+- JSON example: `sdlc/examples/domain/domain_knowledge_pack_<domain_slug>.json`
+- Template guide: `sdlc/templates/domain_expert_<domain_slug>.md`
+
+See `templates/domain_expert_agent_prompt.md` for detailed saving instructions. This ensures domain knowledge is reusable for future tickets in the same domain.
