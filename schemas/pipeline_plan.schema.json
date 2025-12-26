@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PipelinePlan",
+  "type": "object",
+  "required": [
+    "stack",
+    "commit_type",
+    "mode",
+    "phases"
+  ],
+  "properties": {
+    "stack": {
+      "type": "string",
+      "enum": [
+        "rails",
+        "laravel",
+        "generic"
+      ]
+    },
+    "commit_type": {
+      "type": "string",
+      "enum": [
+        "feat",
+        "fix",
+        "refactor",
+        "perf",
+        "style",
+        "test",
+        "docs",
+        "build",
+        "ops",
+        "chore"
+      ]
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "interactive",
+        "one_message"
+      ]
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "agents"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "agents": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "expects"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "input": {
+                  "type": "string"
+                },
+                "expects": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
