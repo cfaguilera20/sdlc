@@ -1,0 +1,110 @@
+{
+  "domain": "Surveys - Evaluations & Results",
+  "glossary": [
+    {
+      "term": "Survey Evaluation",
+      "definition": "An instance of a survey distributed to participants for completion"
+    },
+    {
+      "term": "Participant",
+      "definition": "An employee or person who is invited to complete a survey"
+    },
+    {
+      "term": "Survey Result",
+      "definition": "The collected responses and calculated scores from completed surveys"
+    },
+    {
+      "term": "Result Aggregation",
+      "definition": "The process of combining individual responses into summary statistics and insights"
+    }
+  ],
+  "business_rules": [
+    "Survey evaluations must be associated with valid survey template",
+    "Participants must be enrolled before receiving survey invitation",
+    "Survey completion requires all mandatory questions to be answered",
+    "Results are collected and stored upon survey submission",
+    "Participant anonymity must be maintained for anonymous surveys",
+    "Result aggregation requires minimum response threshold for validity",
+    "Survey evaluations can be scheduled for future distribution",
+    "Completion reminders are sent based on configuration",
+    "Results are calculated automatically or manually based on survey type",
+    "Survey history is maintained for each participant"
+  ],
+  "calculations_or_formulas": [
+    "Response rate = (completed_evaluations / distributed_evaluations) * 100",
+    "Average score = sum of all participant scores / number of participants",
+    "Result validity = (responses / minimum_required) * 100",
+    "Completion time = submission_timestamp - start_timestamp"
+  ],
+  "invariants": [
+    "Survey evaluation must be associated with valid survey",
+    "Participant must be valid and enrolled",
+    "Survey completion requires all mandatory questions answered",
+    "Result data must be valid and complete",
+    "Participant anonymity must be preserved for anonymous surveys"
+  ],
+  "edge_cases": [
+    "Participant doesn't complete survey - system sends reminders, tracks completion status, may close after deadline",
+    "Survey results are incomplete - system flags incomplete data, may require completion or exclude from aggregation",
+    "Participant submits survey multiple times - system handles based on policy (first? last? average?)",
+    "Result aggregation fails - system logs error, uses fallback calculation or manual processing",
+    "Survey anonymity is compromised - system detects violation, prevents access, logs security incident",
+    "Minimum response threshold is not met - system flags insufficient data, may require additional participants",
+    "Survey evaluation is cancelled - system handles enrolled participants, maintains history, may reschedule",
+    "Result interpretation requires manual review - system flags for review, assigns to reviewer, tracks review status"
+  ],
+  "compliance_requirements": [
+    "Survey results must be protected and access-controlled",
+    "Participant anonymity must be maintained for anonymous surveys",
+    "Result data must be retained for compliance and audit purposes",
+    "NOM-035 survey results must be reported to regulatory authorities",
+    "Survey data must comply with privacy regulations (GDPR, etc.)"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Survey evaluation creation",
+      "Participant enrollment lists",
+      "Survey responses and answers",
+      "Completion status",
+      "Result calculation rules"
+    ],
+    "outputs": [
+      "Survey evaluation records",
+      "Participant enrollment status",
+      "Collected responses",
+      "Aggregated results and scores",
+      "Survey reports and analytics"
+    ]
+  },
+  "user_journeys": [
+    "HR creates survey evaluation - selects survey template and participants, evaluation is scheduled",
+    "System distributes survey - sends invitations to participants, tracks distribution status",
+    "Participant receives survey invitation - opens survey, answers questions, submits responses",
+    "System collects results - stores responses, calculates scores, aggregates data",
+    "HR views survey results - sees aggregated data, individual responses (if not anonymous), generates reports"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given survey evaluation creation, when template and participants are selected, then evaluation is created and scheduled",
+    "Given survey distribution, when participants are enrolled, then invitations are sent and distribution is tracked",
+    "Given survey completion, when participant submits responses, then completion is recorded and results are calculated",
+    "Given result aggregation, when minimum threshold is met, then results are aggregated and reports are generated",
+    "Given anonymous survey, when participant completes, then anonymity is maintained and results are aggregated without identification"
+  ],
+  "open_questions": [
+    "What is the minimum response threshold for result validity?",
+    "How are incomplete surveys handled? (excluded? included with missing data?)",
+    "What is the survey completion deadline? (fixed? flexible? reminders?)",
+    "How are survey results interpreted? (automatic? manual? hybrid?)",
+    "What is the process for NOM-035 result reporting? (frequency? format? authority?)",
+    "How are survey reminders configured? (frequency? method? escalation?)"
+  ],
+  "assumptions": [
+    "Survey evaluations are distributed to enrolled participants",
+    "Results are collected upon survey submission",
+    "Participant anonymity is maintained for anonymous surveys",
+    "Result aggregation requires minimum response threshold",
+    "Survey history is maintained for each participant"
+  ],
+  "confidence": "medium"
+}
+

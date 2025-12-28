@@ -1,0 +1,124 @@
+{
+  "domain": "Rails MVP Scaffold - MVP Foundation",
+  "glossary": [
+    {
+      "term": "MVP",
+      "definition": "Minimum Viable Product - simplest version of product with core features"
+    },
+    {
+      "term": "Boilerplate",
+      "definition": "Standard code and configuration that can be reused across projects"
+    },
+    {
+      "term": "Gemfile",
+      "definition": "Ruby file specifying gem dependencies for the project"
+    },
+    {
+      "term": "Environment",
+      "definition": "Runtime configuration (development, test, staging, production)"
+    },
+    {
+      "term": "Asset Pipeline",
+      "definition": "Rails system for compiling and serving CSS, JavaScript, and images"
+    }
+  ],
+  "business_rules": [
+    "Project must be initialized with Rails 7+ and Ruby 3.0+",
+    "Essential gems must be included in Gemfile (Devise, Active Admin, etc.)",
+    "Environment configurations must be separate for dev, test, staging, production",
+    "Database must be PostgreSQL for production, SQLite acceptable for dev",
+    "Code quality tools (RuboCop) must be configured from start",
+    "Testing framework (RSpec) must be set up with basic configuration",
+    "Git repository must be initialized with .gitignore for Rails",
+    "README must include setup instructions and project overview",
+    "Docker support should be included for consistent development environment",
+    "CI/CD basics should be configured (GitHub Actions, etc.)"
+  ],
+  "calculations_or_formulas": [
+    "Rails version = latest stable 7.x version",
+    "Ruby version = 3.0+ (specified in .ruby-version)",
+    "Gem versions = latest compatible versions from RubyGems",
+    "Environment config = config/environments/<env>.rb"
+  ],
+  "invariants": [
+    "Rails application must follow Rails conventions",
+    "Gemfile.lock must be committed to version control",
+    "Environment variables must not be committed (use .env.example)",
+    "Database credentials must not be in version control",
+    "Secret keys must be managed via Rails credentials or environment variables"
+  ],
+  "edge_cases": [
+    "Developer on different OS - Docker ensures consistent environment",
+    "Missing environment variables - .env.example provides template, setup script validates",
+    "Gem version conflicts - Gemfile.lock ensures consistent versions across team",
+    "Database connection fails - clear error message with setup instructions",
+    "Asset compilation fails - fallback to development mode, clear error messages",
+    "CI/CD pipeline fails - clear error messages, local testing instructions",
+    "Deployment to new environment - environment-specific configs must be documented",
+    "Team member joins - README and setup script enable quick onboarding"
+  ],
+  "compliance_requirements": [
+    "Sensitive data must not be committed to version control",
+    "Dependencies must be regularly updated for security patches",
+    "Code must follow security best practices from start",
+    "Environment configurations must be properly secured",
+    "Database backups must be configured for production",
+    "Error tracking and logging must be set up (Sentry, etc.)"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Rails version requirement",
+      "Ruby version requirement",
+      "Gem dependencies and versions",
+      "Environment configuration values",
+      "Database configuration",
+      "Deployment target information"
+    ],
+    "outputs": [
+      "Initialized Rails application",
+      "Configured Gemfile and Gemfile.lock",
+      "Environment configuration files",
+      "Database configuration",
+      "Basic project structure",
+      "Setup documentation"
+    ]
+  },
+  "user_journeys": [
+    "Developer clones repository - runs setup script, installs dependencies, sets up database, project is ready",
+    "Developer runs application - starts Rails server, accesses application, sees welcome page or dashboard",
+    "Developer adds new feature - creates model, generates migration, runs tests, feature works",
+    "Developer deploys to staging - pushes code, CI/CD runs, deployment succeeds, application is live",
+    "New team member joins - follows README, runs setup, project is ready in minutes",
+    "Production deployment - runs migrations, restarts application, zero downtime if configured"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given project initialization, when rails new is run, then application is created with standard structure",
+    "Given gem installation, when bundle install is run, then all dependencies are installed and Gemfile.lock is updated",
+    "Given database setup, when db:create and db:migrate are run, then database is created and schema is applied",
+    "Given application start, when rails server is started, then application is accessible and responds to requests",
+    "Given code quality check, when RuboCop is run, then code style violations are reported"
+  ],
+  "open_questions": [
+    "What Rails version should be used? (latest 7.x or specific version?)",
+    "What Ruby version is required? (3.0, 3.1, 3.2?)",
+    "What testing framework should be used? (RSpec, Minitest?)",
+    "Should Docker be included? (for development consistency?)",
+    "What CI/CD platform should be used? (GitHub Actions, GitLab CI, CircleCI?)",
+    "Should asset pipeline use Sprockets or importmap/esbuild?",
+    "What deployment target is planned? (Heroku, AWS, Railway, etc.)",
+    "Should error tracking be set up from start? (Sentry, Rollbar?)",
+    "What code quality tools should be included? (RuboCop, Brakeman, etc.)"
+  ],
+  "assumptions": [
+    "Rails 7+ will be used with modern defaults",
+    "Ruby 3.0+ will be used",
+    "PostgreSQL will be used for production",
+    "Git will be used for version control",
+    "Standard Rails project structure will be followed",
+    "Environment variables will be managed via dotenv or Rails credentials",
+    "Basic testing setup will be included",
+    "Code quality tools will be configured from start"
+  ],
+  "confidence": "high"
+}
+

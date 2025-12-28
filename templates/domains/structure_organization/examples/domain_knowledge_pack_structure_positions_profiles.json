@@ -1,0 +1,110 @@
+{
+  "domain": "Structure & Organization - Positions & Profiles",
+  "glossary": [
+    {
+      "term": "Position",
+      "definition": "A specific job role or function within the organization"
+    },
+    {
+      "term": "Job Profile",
+      "definition": "A template defining the requirements, responsibilities, and qualifications for a position"
+    },
+    {
+      "term": "Position Assignment",
+      "definition": "The association of an employee with a specific position"
+    },
+    {
+      "term": "Position Hierarchy",
+      "definition": "The reporting and career progression relationships between positions"
+    }
+  ],
+  "business_rules": [
+    "Positions must be associated with organizational units",
+    "Job profiles define the standard requirements for positions",
+    "Employees can be assigned to positions based on profile match",
+    "Position assignments require effective dates",
+    "Position changes require approval and documentation",
+    "Job profiles can be versioned for updates",
+    "Positions can have reporting relationships to other positions",
+    "Position assignments affect employee access and permissions",
+    "Position history must be maintained for each employee",
+    "Positions can be vacant or filled"
+  ],
+  "calculations_or_formulas": [
+    "Position fill rate = (filled_positions / total_positions) * 100",
+    "Profile match score = (matched_requirements / total_requirements) * 100",
+    "Average time in position = average of (end_date - start_date) for completed assignments",
+    "Position turnover rate = (position_changes / total_positions) * 100"
+  ],
+  "invariants": [
+    "Position must be associated with valid organizational unit",
+    "Position assignment must have valid employee and position",
+    "Position assignment dates must be valid (start <= end if end exists)",
+    "Employee cannot have overlapping position assignments",
+    "Job profile must have at least one requirement defined"
+  ],
+  "edge_cases": [
+    "Employee is assigned to multiple positions - system allows or prevents based on policy",
+    "Position is eliminated - system handles current assignments, may require reassignment or termination",
+    "Job profile is updated - system versions profile, maintains assignments to previous version or migrates",
+    "Position assignment dates overlap - system prevents overlap or handles transition period",
+    "Employee transfers between positions - system creates new assignment, ends old assignment, maintains history",
+    "Position reporting relationship creates cycle - system prevents cycle, flags error",
+    "Position is vacant for extended period - system flags vacancy, may trigger recruitment",
+    "Job profile requirements change - system updates profile, may require reassessment of current employees"
+  ],
+  "compliance_requirements": [
+    "Position assignments must be documented and approved",
+    "Job profile requirements must comply with labor regulations",
+    "Position history must be retained for audit purposes",
+    "Position changes must be communicated to affected employees",
+    "Job profile updates must maintain version history"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Position definition (title, description, unit)",
+      "Job profile requirements and qualifications",
+      "Employee position assignment",
+      "Position reporting relationships",
+      "Effective dates for assignments"
+    ],
+    "outputs": [
+      "Position record with assignments",
+      "Job profile with requirements",
+      "Position assignment history",
+      "Reporting relationship chains",
+      "Position analytics and reports"
+    ]
+  },
+  "user_journeys": [
+    "HR creates position - defines title, unit, and profile, position is available for assignment",
+    "HR creates job profile - defines requirements and qualifications, profile is available for positions",
+    "HR assigns employee to position - creates assignment with effective date, employee is notified",
+    "Employee transfers to new position - old assignment ends, new assignment begins, history is maintained",
+    "HR updates job profile - new version is created, positions using profile are notified"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given position creation, when title and unit are provided, then position is created and available for assignment",
+    "Given position assignment, when employee and position are valid, then assignment is created and employee is notified",
+    "Given position transfer, when new assignment is created, then old assignment ends and history is maintained",
+    "Given job profile update, when requirements are modified, then profile is versioned and positions are notified",
+    "Given position elimination, when position is deleted, then current assignments are handled (reassignment or termination)"
+  ],
+  "open_questions": [
+    "What are the specific position types? (full-time? part-time? contractor?)",
+    "How are job profile requirements validated? (automatic? manual review?)",
+    "What is the process for position transfers? (approval required? automatic?)",
+    "How are position reporting relationships defined? (direct manager? matrix reporting?)",
+    "What happens when position is eliminated? (reassign employees? terminate?)",
+    "How are job profile versions managed? (maintain all? migrate assignments?)"
+  ],
+  "assumptions": [
+    "Positions are associated with organizational units",
+    "Job profiles define standard requirements for positions",
+    "Position assignments have effective dates",
+    "Position history is maintained for each employee",
+    "Job profiles can be versioned for updates"
+  ],
+  "confidence": "medium"
+}
+

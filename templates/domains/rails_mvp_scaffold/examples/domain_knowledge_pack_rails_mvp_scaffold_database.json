@@ -1,0 +1,122 @@
+{
+  "domain": "Rails MVP Scaffold - Database & Migrations",
+  "glossary": [
+    {
+      "term": "Migration",
+      "definition": "Ruby class that modifies database schema in a version-controlled way"
+    },
+    {
+      "term": "Schema",
+      "definition": "Current state of the database structure (tables, columns, indexes, etc.)"
+    },
+    {
+      "term": "Seed Data",
+      "definition": "Initial data loaded into database for development, testing, or production setup"
+    },
+    {
+      "term": "Foreign Key",
+      "definition": "Database constraint ensuring referential integrity between tables"
+    },
+    {
+      "term": "Index",
+      "definition": "Database structure that improves query performance on specific columns"
+    }
+  ],
+  "business_rules": [
+    "All migrations must be reversible (up and down methods)",
+    "Migrations must not modify existing production data without data migration",
+    "Foreign keys must be defined for all associations",
+    "Indexes must be added for frequently queried columns (foreign keys, search fields)",
+    "Seed data must be idempotent (can be run multiple times safely)",
+    "Database constraints must enforce data integrity at database level",
+    "Migrations must be tested in development before production deployment",
+    "Schema changes must be backward compatible during zero-downtime deployments",
+    "Default values must be set for required columns in new migrations",
+    "Nullable columns should be avoided unless explicitly needed"
+  ],
+  "calculations_or_formulas": [
+    "Migration timestamp = YYYYMMDDHHMMSS format",
+    "Index name = index_table_name_on_column_name",
+    "Foreign key name = fk_rails_<random_hash>",
+    "Seed data execution = rails db:seed (idempotent)"
+  ],
+  "invariants": [
+    "Migration files must be sequential and never modified after committed",
+    "Schema.rb must reflect current database state",
+    "Foreign keys must reference existing tables and columns",
+    "Index names must be unique within database",
+    "Column names must follow Rails conventions (snake_case)"
+  ],
+  "edge_cases": [
+    "Migration fails mid-execution - rollback must be possible, data must remain consistent",
+    "Adding NOT NULL column to existing table with data - must provide default value or data migration",
+    "Renaming column with existing data - requires two-step migration (add new, migrate data, remove old)",
+    "Changing column type with data loss risk - must validate data compatibility or provide conversion",
+    "Dropping table with foreign key references - must drop foreign keys first, then table",
+    "Adding index to large table - use CONCURRENTLY option in PostgreSQL to avoid locking",
+    "Seed data conflicts with existing data - use find_or_create_by or upsert to handle conflicts",
+    "Migration order matters - must ensure dependencies are created before dependent migrations"
+  ],
+  "compliance_requirements": [
+    "Database backups must be taken before major migrations",
+    "Sensitive data must not be included in seed files (use environment variables)",
+    "Database credentials must be stored securely (not in version control)",
+    "Data retention policies must be enforced at database level where possible",
+    "Audit trails must be maintained for critical data changes",
+    "Database access must be logged and monitored"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Model definitions and associations",
+      "Column types and constraints",
+      "Index requirements",
+      "Foreign key relationships",
+      "Default values and validations",
+      "Seed data definitions"
+    ],
+    "outputs": [
+      "Migration files",
+      "Updated schema.rb",
+      "Database structure",
+      "Seed data in database",
+      "Indexes and constraints"
+    ]
+  },
+  "user_journeys": [
+    "Developer creates new model - generates migration, runs migration, model is ready",
+    "Developer adds column to existing model - creates migration, runs migration, column is available",
+    "Developer seeds database - runs db:seed, initial data is loaded, can be run multiple times safely",
+    "Developer rolls back migration - runs db:rollback, previous schema state is restored",
+    "Developer resets database - runs db:reset, database is dropped, recreated, migrated, and seeded",
+    "Production deployment - migrations run automatically, schema is updated, zero downtime if possible"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given new model creation, when migration is generated and run, then table is created with correct columns and indexes",
+    "Given column addition, when migration adds column with default value, then existing records get default value",
+    "Given foreign key addition, when migration adds foreign key constraint, then referential integrity is enforced",
+    "Given seed data execution, when db:seed is run, then initial data is loaded and can be run multiple times without duplicates",
+    "Given migration rollback, when db:rollback is executed, then previous schema state is restored and data remains consistent"
+  ],
+  "open_questions": [
+    "What database will be used? (PostgreSQL, MySQL, SQLite for development?)",
+    "What is the migration strategy for production? (zero-downtime, maintenance window?)",
+    "What seed data is needed? (admin users, default settings, lookup data?)",
+    "Should database-level constraints be used or rely on model validations?",
+    "What indexing strategy should be used? (index all foreign keys? selective indexing?)",
+    "Should database views or materialized views be used?",
+    "What is the backup and restore strategy?",
+    "Should database migrations be run automatically in CI/CD or require manual approval?"
+  ],
+  "assumptions": [
+    "PostgreSQL will be used as the primary database",
+    "Rails migrations will be used for schema management",
+    "Foreign keys will be added using add_foreign_key helper",
+    "Indexes will be added for foreign keys and frequently queried columns",
+    "Seed data will be stored in db/seeds.rb",
+    "Database credentials will be managed via Rails credentials or environment variables",
+    "Schema.rb will be committed to version control",
+    "Migrations will follow Rails conventions and best practices"
+  ],
+  "confidence": "high"
+}
+

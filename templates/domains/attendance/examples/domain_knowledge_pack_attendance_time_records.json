@@ -1,0 +1,111 @@
+{
+  "domain": "Attendance - Time Records & Registrations",
+  "glossary": [
+    {
+      "term": "Time Record",
+      "definition": "A timestamped entry recording an employee's check-in, check-out, or break event"
+    },
+    {
+      "term": "Record Type",
+      "definition": "Category of time record (check-in, check-out, break start, break end, etc.)"
+    },
+    {
+      "term": "Mobile Registration",
+      "definition": "Time record created via mobile app, may be pending until validated"
+    },
+    {
+      "term": "Pending Record",
+      "definition": "Time record that requires validation or approval before being finalized"
+    }
+  ],
+  "business_rules": [
+    "Time records must have valid timestamp (cannot be in the future)",
+    "Check-in must occur before check-out for the same day",
+    "Break records must have matching start and end times",
+    "Mobile registrations are marked as pending until validated by supervisor or system",
+    "Duplicate records (same employee, same timestamp, same type) are rejected",
+    "Time records must be associated with valid employee and device (if applicable)",
+    "Record corrections require supervisor approval and are logged",
+    "Time records are validated against employee's assigned schedule",
+    "Records outside scheduled hours are flagged for review",
+    "Time records must respect timezone of the location/device"
+  ],
+  "calculations_or_formulas": [
+    "Worked hours = check_out_time - check_in_time - break_duration",
+    "Overtime hours = worked_hours - scheduled_hours (if worked_hours > scheduled_hours)",
+    "Late arrival = check_in_time - scheduled_start_time (if check_in_time > scheduled_start_time)",
+    "Early departure = scheduled_end_time - check_out_time (if check_out_time < scheduled_end_time)"
+  ],
+  "invariants": [
+    "Time record timestamp must be valid and not null",
+    "Employee ID must exist and be active",
+    "Record type must be a valid type",
+    "Check-in and check-out must be on the same calendar day",
+    "Pending records cannot be used in payroll calculations until validated"
+  ],
+  "edge_cases": [
+    "Employee forgets to check-in - system allows manual entry with supervisor approval",
+    "Employee checks in but forgets to check-out - system flags missing check-out, allows manual entry",
+    "Mobile registration fails due to network - record is queued and synced when connection restored",
+    "Duplicate record attempt - system detects and rejects duplicate, logs attempt",
+    "Record timestamp is in the future - system rejects or flags for review",
+    "Employee checks in from wrong location - system validates against assigned device/location",
+    "Multiple check-ins without check-out - system flags and requires resolution",
+    "Record correction changes payroll calculations - system recalculates affected periods"
+  ],
+  "compliance_requirements": [
+    "All time records must be immutable once validated (audit requirement)",
+    "Record corrections must be logged with user, timestamp, and reason",
+    "Time records must be retained for legal compliance (typically 7 years)",
+    "Mobile registrations must include GPS coordinates for location verification (if enabled)",
+    "Time records must comply with labor law requirements (minimum rest periods, maximum work hours)"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Employee ID",
+      "Record timestamp",
+      "Record type",
+      "Device ID (if applicable)",
+      "Location/GPS coordinates (if mobile)",
+      "Correction reason (if correcting existing record)"
+    ],
+    "outputs": [
+      "Time record with validation status",
+      "Pending record queue entry",
+      "Validation alerts/notifications",
+      "Worked hours calculation",
+      "Incident flags (late, early, missing records)"
+    ]
+  },
+  "user_journeys": [
+    "Employee checks in via time clock device - record is created immediately, validated against schedule",
+    "Employee checks in via mobile app - record is created as pending, validated by system or supervisor",
+    "Supervisor corrects employee time record - correction is logged, record is updated, payroll is recalculated",
+    "System processes pending mobile records - validates against schedule, approves or flags for review",
+    "Employee forgets to check-out - system flags missing record, supervisor adds manual check-out"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given employee check-in, when timestamp is valid and employee is active, then time record is created and validated against schedule",
+    "Given mobile registration, when record is created, then it is marked as pending and queued for validation",
+    "Given record correction, when supervisor provides reason, then record is updated, correction is logged, and affected payroll is recalculated",
+    "Given duplicate record attempt, when same employee/timestamp/type exists, then record is rejected and attempt is logged",
+    "Given missing check-out, when employee has check-in but no check-out for the day, then system flags incident and allows manual entry"
+  ],
+  "open_questions": [
+    "What is the validation workflow for pending mobile records? (automatic vs. supervisor approval?)",
+    "How are time records validated against schedules? (exact match required? tolerance window?)",
+    "What happens when employee checks in from unassigned device? (reject? flag? allow?)",
+    "How are timezone differences handled? (device timezone? location timezone? employee timezone?)",
+    "What is the process for correcting records that affect already-processed payroll?",
+    "Are there different record types beyond check-in/check-out/break? (lunch? training? meeting?)"
+  ],
+  "assumptions": [
+    "Time records are stored with UTC timestamps and converted to local time for display",
+    "Mobile registrations include GPS coordinates for location verification",
+    "Record validation is performed against employee's assigned schedule",
+    "Pending records are processed in batch or real-time depending on configuration",
+    "Record corrections require appropriate permissions (supervisor or admin)"
+  ],
+  "confidence": "medium"
+}
+

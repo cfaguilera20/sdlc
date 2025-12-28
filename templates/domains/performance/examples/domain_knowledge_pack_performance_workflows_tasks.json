@@ -1,0 +1,111 @@
+{
+  "domain": "Performance - Workflows & Tasks",
+  "glossary": [
+    {
+      "term": "Workflow",
+      "definition": "A defined sequence of tasks and phases for performance management processes"
+    },
+    {
+      "term": "Task",
+      "definition": "A specific action or step within a workflow that must be completed"
+    },
+    {
+      "term": "Phase",
+      "definition": "A stage in a workflow containing one or more tasks"
+    },
+    {
+      "term": "Recurrence",
+      "definition": "Pattern for repeating workflows (e.g., annual, quarterly)"
+    }
+  ],
+  "business_rules": [
+    "Workflows must have defined phases and tasks",
+    "Tasks must be completed in sequence within a phase",
+    "Phases must be completed in order before workflow can advance",
+    "Tasks can have dependencies on other tasks",
+    "Workflow completion requires all phases and tasks to be finished",
+    "Tasks can be assigned to specific participants or roles",
+    "Workflow automation can trigger notifications and phase transitions",
+    "Workflow recurrence creates new instances based on schedule",
+    "Workflow status must be tracked and visible to participants",
+    "Workflow can be paused, resumed, or cancelled with proper authorization"
+  ],
+  "calculations_or_formulas": [
+    "Workflow completion rate = (completed_tasks / total_tasks) * 100",
+    "Phase completion time = phase_end_date - phase_start_date",
+    "Task delay = actual_completion_date - scheduled_completion_date",
+    "Workflow efficiency = (on_time_completions / total_completions) * 100"
+  ],
+  "invariants": [
+    "Workflow must have at least one phase",
+    "Phase must have at least one task",
+    "Task dependencies must not create cycles",
+    "Workflow status must be valid (pending, in_progress, completed, cancelled)",
+    "Task assignment must be to valid participant or role"
+  ],
+  "edge_cases": [
+    "Task assignee is unavailable - system allows reassignment or extension of deadline",
+    "Task dependency is not met - system blocks dependent task, sends notification",
+    "Workflow deadline is missed - system flags overdue, sends escalation notification",
+    "Workflow is cancelled mid-execution - system handles partial completion, maintains history",
+    "Recurring workflow instance conflicts - system detects conflict, adjusts schedule or creates exception",
+    "Task is completed out of sequence - system flags violation, may allow or require correction",
+    "Workflow phase is skipped - system prevents skip unless authorized override is provided",
+    "Workflow automation fails - system logs error, sends alert, may require manual intervention"
+  ],
+  "compliance_requirements": [
+    "Workflow execution must be logged for audit purposes",
+    "Task completions must be timestamped and attributed",
+    "Workflow changes must be documented with reason",
+    "Workflow history must be retained for compliance",
+    "Workflow automation must be tested and validated"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Workflow definition (phases, tasks, dependencies)",
+      "Task assignments and participants",
+      "Workflow schedule and recurrence",
+      "Task completion status",
+      "Phase transition triggers"
+    ],
+    "outputs": [
+      "Workflow instance with status",
+      "Task completion records",
+      "Phase transition logs",
+      "Workflow notifications",
+      "Workflow completion reports"
+    ]
+  },
+  "user_journeys": [
+    "HR creates performance workflow - defines phases and tasks, workflow template is available",
+    "System creates workflow instance - assigns participants, activates first phase, sends notifications",
+    "Participant completes assigned task - marks task complete, system validates and advances if phase complete",
+    "System automates phase transition - when all tasks complete, system advances to next phase",
+    "Workflow completes - all phases finished, workflow is closed, completion notification is sent",
+    "Recurring workflow creates new instance - based on schedule, new instance is created and started"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given workflow creation, when phases and tasks are defined, then workflow template is created and available",
+    "Given workflow instance, when participants are assigned, then instance is created and first phase is activated",
+    "Given task completion, when task is marked complete, then system validates and advances phase if all tasks done",
+    "Given phase completion, when all tasks are complete, then system advances to next phase automatically",
+    "Given workflow completion, when all phases are finished, then workflow is closed and completion is communicated"
+  ],
+  "open_questions": [
+    "What are the specific workflow types? (evaluation? objective setting? performance review?)",
+    "How are task dependencies handled? (blocking? non-blocking? warnings?)",
+    "What is the workflow recurrence pattern? (annual? quarterly? custom?)",
+    "How are workflow deadlines enforced? (automatic escalation? notifications? penalties?)",
+    "What is the process for workflow modifications? (can active workflows be modified?)",
+    "How are workflow automation rules configured? (triggers? conditions? actions?)"
+  ],
+  "assumptions": [
+    "Workflows consist of phases containing tasks",
+    "Tasks must be completed in sequence within phases",
+    "Phases must be completed in order",
+    "Workflow automation can trigger phase transitions",
+    "Workflow recurrence creates new instances based on schedule"
+  ],
+  "confidence": "medium"
+}
+

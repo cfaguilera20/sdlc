@@ -1,0 +1,111 @@
+{
+  "domain": "Performance - Objectives & KPIs",
+  "glossary": [
+    {
+      "term": "Objective",
+      "definition": "A specific, measurable goal set for an employee or team"
+    },
+    {
+      "term": "KPI",
+      "definition": "Key Performance Indicator - a measurable value demonstrating effectiveness"
+    },
+    {
+      "term": "Objective Alignment",
+      "definition": "Linking individual objectives to team or organizational objectives"
+    },
+    {
+      "term": "Objective Cascade",
+      "definition": "Process of breaking down high-level objectives into lower-level objectives"
+    }
+  ],
+  "business_rules": [
+    "Objectives must be specific, measurable, achievable, relevant, and time-bound (SMART)",
+    "Objectives must have defined target and current value",
+    "Objectives can be aligned to higher-level objectives (cascading)",
+    "KPIs must have measurement method and frequency defined",
+    "Objective progress must be updated regularly (typically monthly or quarterly)",
+    "Objectives can have dependencies on other objectives",
+    "Objective completion requires validation and approval",
+    "KPIs are calculated automatically or updated manually based on data sources",
+    "Objectives can be shared across team members",
+    "Objective achievement affects performance ratings"
+  ],
+  "calculations_or_formulas": [
+    "Objective progress = (current_value / target_value) * 100",
+    "Objective achievement = (achieved_objectives / total_objectives) * 100",
+    "KPI value = measurement calculation based on data source",
+    "Aligned objective contribution = individual_objective_progress * alignment_weight"
+  ],
+  "invariants": [
+    "Objective target must be greater than current value (for growth objectives)",
+    "Objective must have valid owner (employee or team)",
+    "KPI measurement method must be defined",
+    "Objective alignment must not create circular dependencies",
+    "Objective dates must be valid (start <= end)"
+  ],
+  "edge_cases": [
+    "Objective target is adjusted mid-period - system recalculates progress, maintains history",
+    "Objective dependency is not met - system flags dependency, may block dependent objective completion",
+    "KPI data source is unavailable - system flags missing data, uses last known value or estimates",
+    "Objective is shared across team - system tracks individual contributions, aggregates team progress",
+    "Objective alignment creates cycle - system detects cycle, prevents alignment, requires resolution",
+    "Objective owner changes - system transfers ownership, maintains history, notifies new owner",
+    "Objective is completed early - system marks complete, allows new objective creation",
+    "KPI calculation fails - system logs error, uses fallback calculation or manual entry"
+  ],
+  "compliance_requirements": [
+    "Objective data must be retained for performance history",
+    "Objective changes must be logged with reason and approver",
+    "KPI calculations must be auditable and traceable",
+    "Objective alignment must be documented",
+    "Performance ratings based on objectives must be fair and consistent"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Objective definition (description, target, current value, dates)",
+      "KPI definition (measurement method, data source, frequency)",
+      "Objective alignment relationships",
+      "Progress updates",
+      "Completion status and validation"
+    ],
+    "outputs": [
+      "Objective record with progress tracking",
+      "KPI values and calculations",
+      "Alignment relationships and cascades",
+      "Achievement reports",
+      "Performance impact analysis"
+    ]
+  },
+  "user_journeys": [
+    "Manager creates objective for employee - defines target, dates, and alignment, objective is active",
+    "Employee updates objective progress - updates current value, system recalculates progress percentage",
+    "System calculates KPI value - retrieves data from source, calculates value, updates KPI record",
+    "Manager aligns objectives - links individual objective to team objective, creates cascade",
+    "Objective is completed - employee marks complete, manager validates, objective is closed",
+    "System generates objective report - aggregates progress, calculates achievement, shows alignment"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given objective creation, when target and dates are defined, then objective is created and tracking begins",
+    "Given progress update, when current value is updated, then progress percentage is recalculated and displayed",
+    "Given KPI calculation, when data source is available, then KPI value is calculated and updated",
+    "Given objective alignment, when objectives are linked, then alignment relationship is created and cascade is established",
+    "Given objective completion, when target is reached and validated, then objective is marked complete and achievement is recorded"
+  ],
+  "open_questions": [
+    "What are the specific objective types? (individual? team? organizational?)",
+    "How are KPI values calculated? (automatic from data sources? manual entry? hybrid?)",
+    "What is the process for objective adjustments? (mid-period changes? approval required?)",
+    "How are objective dependencies handled? (blocking? non-blocking? warnings?)",
+    "What is the objective update frequency? (monthly? quarterly? on-demand?)",
+    "How are shared objectives tracked? (individual contributions? team aggregate?)"
+  ],
+  "assumptions": [
+    "Objectives follow SMART criteria (Specific, Measurable, Achievable, Relevant, Time-bound)",
+    "KPIs can be calculated automatically from data sources or updated manually",
+    "Objective alignment creates cascading relationships",
+    "Objective progress is updated regularly throughout the period",
+    "Objective achievement affects overall performance ratings"
+  ],
+  "confidence": "medium"
+}
+

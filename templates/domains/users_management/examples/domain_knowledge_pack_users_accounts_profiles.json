@@ -1,0 +1,110 @@
+{
+  "domain": "Users Management - Accounts & Profiles",
+  "glossary": [
+    {
+      "term": "User Account",
+      "definition": "A system identity for an individual with login credentials and access permissions"
+    },
+    {
+      "term": "User Profile",
+      "definition": "A collection of personal and professional information about a user"
+    },
+    {
+      "term": "Bulk Operation",
+      "definition": "An action performed on multiple users simultaneously (import, export, update)"
+    },
+    {
+      "term": "User Status",
+      "definition": "The current state of a user account (active, inactive, suspended, terminated)"
+    }
+  ],
+  "business_rules": [
+    "User accounts must have unique email addresses",
+    "User profiles must contain required fields (name, email, etc.)",
+    "User account creation requires email verification",
+    "User status changes must be logged and auditable",
+    "Bulk operations must validate data before execution",
+    "Profile updates require appropriate permissions",
+    "User accounts can be deactivated but not deleted (soft delete)",
+    "Personal information must comply with privacy regulations",
+    "Bulk imports must handle errors and provide detailed reports",
+    "User search must respect privacy and access controls"
+  ],
+  "calculations_or_formulas": [
+    "User activation rate = (active_users / total_users) * 100",
+    "Profile completeness = (filled_fields / total_fields) * 100",
+    "Bulk operation success rate = (successful_operations / total_operations) * 100",
+    "User account age = current_date - account_creation_date"
+  ],
+  "invariants": [
+    "User email must be unique within the system",
+    "User account must have valid status",
+    "User profile must have required fields",
+    "User account cannot be deleted if has active associations",
+    "Bulk operation must target valid users"
+  ],
+  "edge_cases": [
+    "User account is created with duplicate email - system detects duplicate, prevents creation, suggests password reset",
+    "Bulk import contains invalid data - system validates, imports valid records, reports errors for invalid records",
+    "User profile update conflicts with existing data - system detects conflict, requires resolution or override",
+    "User account is deactivated while has active sessions - system terminates sessions, logs deactivation",
+    "Bulk operation fails mid-execution - system rolls back or continues based on policy, reports partial success",
+    "User requests data deletion (GDPR) - system handles deletion request, maintains audit trail, removes personal data",
+    "User profile has missing required fields - system flags incomplete profile, prevents certain operations",
+    "User account is transferred between tenants - system handles transfer, maintains history, updates associations"
+  ],
+  "compliance_requirements": [
+    "User data must comply with GDPR and privacy regulations",
+    "User account access must be logged for security auditing",
+    "Personal information must be encrypted and access-controlled",
+    "User data retention must comply with legal requirements",
+    "Bulk operations must be auditable and traceable"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "User account information (email, password, status)",
+      "User profile data (name, personal info, preferences)",
+      "Bulk operation data (CSV, Excel, JSON)",
+      "User configuration settings",
+      "Status change requests"
+    ],
+    "outputs": [
+      "User account record",
+      "User profile with all fields",
+      "Bulk operation results and reports",
+      "User search results",
+      "User data exports"
+    ]
+  },
+  "user_journeys": [
+    "Admin creates user account - provides email and initial info, account is created, verification email is sent",
+    "User completes profile - fills required and optional fields, profile is saved and validated",
+    "Admin performs bulk user import - uploads file, system validates and imports, provides detailed report",
+    "User updates profile - modifies information, changes are saved, history is maintained",
+    "Admin deactivates user account - account is deactivated, sessions are terminated, user is notified"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given user account creation, when email is unique and valid, then account is created and verification email is sent",
+    "Given profile update, when fields are valid, then profile is updated and history is maintained",
+    "Given bulk import, when data is valid, then users are imported and detailed report is provided",
+    "Given user deactivation, when account is active, then account is deactivated and sessions are terminated",
+    "Given GDPR deletion request, when request is valid, then personal data is deleted and audit trail is maintained"
+  ],
+  "open_questions": [
+    "What are the required profile fields? (name? email? phone? address?)",
+    "How are bulk imports validated? (pre-validation? post-validation? both?)",
+    "What is the user account lifecycle? (creation? activation? deactivation? deletion?)",
+    "How are user profile conflicts resolved? (last write wins? merge? manual resolution?)",
+    "What is the process for user account transfers? (between tenants? between systems?)",
+    "How are user search results filtered? (by permissions? by privacy settings?)"
+  ],
+  "assumptions": [
+    "User accounts require unique email addresses",
+    "User profiles contain personal and professional information",
+    "Bulk operations support CSV, Excel, and JSON formats",
+    "User accounts use soft delete (deactivation, not hard deletion)",
+    "User data must comply with privacy regulations"
+  ],
+  "confidence": "medium"
+}
+

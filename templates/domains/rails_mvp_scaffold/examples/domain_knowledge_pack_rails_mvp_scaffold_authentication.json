@@ -1,0 +1,122 @@
+{
+  "domain": "Rails MVP Scaffold - Authentication & Devise",
+  "glossary": [
+    {
+      "term": "Devise",
+      "definition": "Flexible authentication solution for Rails based on Warden"
+    },
+    {
+      "term": "Warden",
+      "definition": "Rack-based authentication middleware used by Devise"
+    },
+    {
+      "term": "Omniauth",
+      "definition": "Rack middleware for multi-provider authentication (OAuth, etc.)"
+    },
+    {
+      "term": "Pundit",
+      "definition": "Minimal authorization library for Rails applications"
+    },
+    {
+      "term": "CanCanCan",
+      "definition": "Authorization library for Ruby on Rails that restricts access to resources"
+    }
+  ],
+  "business_rules": [
+    "User registration requires email and password (minimum 8 characters)",
+    "Email addresses must be unique and validated",
+    "Password reset tokens expire after 2 hours",
+    "Email confirmation is required before account activation",
+    "Users can sign in with email and password",
+    "Remember me functionality persists for 2 weeks",
+    "Failed login attempts are rate-limited (5 attempts per 20 minutes)",
+    "Password changes require current password verification",
+    "Account lockout after 10 failed login attempts (unlocks after 1 hour or via email)",
+    "User sessions expire after 30 days of inactivity"
+  ],
+  "calculations_or_formulas": [
+    "Password strength score = length_score + complexity_score + uniqueness_score",
+    "Session expiration = last_activity + 30.days",
+    "Account lockout duration = 1.hour or until unlock email is clicked",
+    "Remember me expiration = 2.weeks from sign in"
+  ],
+  "invariants": [
+    "User email must be unique within the system",
+    "User must have encrypted password stored (never plain text)",
+    "Password reset tokens must be single-use and time-limited",
+    "Email confirmation tokens must be unique and expire after 24 hours",
+    "User cannot sign in without confirmed email (if confirmation required)"
+  ],
+  "edge_cases": [
+    "User tries to register with existing email - show friendly error, suggest password reset",
+    "Password reset requested multiple times - invalidate previous tokens, send new one",
+    "User confirms email after token expires - allow resending confirmation email",
+    "Concurrent login attempts from different devices - allow multiple sessions with remember me",
+    "User changes email - require re-confirmation of new email",
+    "Account locked due to failed attempts - provide unlock via email link",
+    "Remember me cookie stolen - invalidate on password change or explicit sign out",
+    "OAuth provider returns existing email - link to existing account or show conflict resolution"
+  ],
+  "compliance_requirements": [
+    "Passwords must be encrypted using bcrypt (never store plain text)",
+    "Password reset emails must contain secure, time-limited tokens",
+    "User data must comply with GDPR (right to deletion, data export)",
+    "Login attempts must be logged for security auditing",
+    "Email addresses must be validated and sanitized",
+    "Session data must be stored securely (encrypted cookies or server-side sessions)"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "User email address",
+      "User password (plain text, encrypted before storage)",
+      "Password confirmation (for registration/change)",
+      "Current password (for password changes)",
+      "Remember me checkbox (boolean)",
+      "OAuth provider and token (if using OAuth)"
+    ],
+    "outputs": [
+      "User model with encrypted password",
+      "Authentication token or session",
+      "Email confirmation token",
+      "Password reset token",
+      "Account lock status",
+      "Last sign in timestamp and IP"
+    ]
+  },
+  "user_journeys": [
+    "User registers with email/password - receives confirmation email, clicks link, account activated",
+    "User signs in with email/password - session created, redirected to dashboard",
+    "User forgets password - requests reset, receives email, clicks link, sets new password",
+    "User enables remember me - session persists across browser restarts for 2 weeks",
+    "User changes password - provides current password, sets new password, all sessions invalidated",
+    "User signs in with OAuth (Google) - account created/linked, session established"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given user registration, when email and valid password provided, then user account is created and confirmation email is sent",
+    "Given email confirmation, when user clicks confirmation link, then account is activated and user can sign in",
+    "Given password reset request, when user provides email, then reset token is generated and email is sent with 2-hour expiration",
+    "Given failed login attempts, when 10 failed attempts occur, then account is locked and unlock email is sent",
+    "Given remember me enabled, when user signs in, then session persists for 2 weeks without requiring re-authentication"
+  ],
+  "open_questions": [
+    "What is the minimum password complexity requirement? (uppercase, lowercase, numbers, symbols?)",
+    "Should email confirmation be required or optional?",
+    "What OAuth providers are needed? (Google, Facebook, GitHub, etc.)",
+    "What authorization library should be used? (Pundit, CanCanCan, custom?)",
+    "Should multi-factor authentication (2FA) be implemented?",
+    "What is the session storage strategy? (cookie-based, Redis, database?)",
+    "Should users be able to have multiple active sessions?",
+    "What is the account deletion policy? (soft delete, hard delete, data retention?)"
+  ],
+  "assumptions": [
+    "Devise gem will be used for authentication",
+    "PostgreSQL will be used as the database",
+    "Email delivery will be configured (ActionMailer with SMTP or service like SendGrid)",
+    "Multi-tenant architecture will scope users to tenants",
+    "Rails 7+ will be used with modern authentication practices",
+    "Password encryption will use bcrypt (Devise default)",
+    "Sessions will be stored server-side or in encrypted cookies"
+  ],
+  "confidence": "high"
+}
+

@@ -1,0 +1,110 @@
+{
+  "domain": "Compensations - Structure & Management",
+  "glossary": [
+    {
+      "term": "Compensation Structure",
+      "definition": "A framework defining how employees are compensated (base salary, bonuses, equity, etc.)"
+    },
+    {
+      "term": "Salary Band",
+      "definition": "A range of salary values for a specific position level or role"
+    },
+    {
+      "term": "Compensation Package",
+      "definition": "The complete compensation for an employee including base salary, bonuses, and benefits"
+    },
+    {
+      "term": "Salary Configuration",
+      "definition": "The specific salary settings for an employee within a compensation structure"
+    }
+  ],
+  "business_rules": [
+    "Compensation structures must be defined before salary assignment",
+    "Salary must be within defined salary band for the position",
+    "Compensation changes require approval based on amount and type",
+    "Compensation history must be maintained for audit purposes",
+    "Salary configurations must comply with labor regulations",
+    "Compensation structures can vary by position, level, or department",
+    "Performance-based compensation requires performance evaluation completion",
+    "Compensation changes must be effective-dated",
+    "Salary bands must be updated periodically to reflect market rates",
+    "Compensation data must be kept confidential and access-controlled"
+  ],
+  "calculations_or_formulas": [
+    "Total compensation = base_salary + bonuses + equity_value + benefits_value",
+    "Salary within band = (current_salary - band_min) / (band_max - band_min) * 100",
+    "Compensation increase = new_salary - old_salary",
+    "Compensation increase percentage = (increase / old_salary) * 100"
+  ],
+  "invariants": [
+    "Salary must be within valid salary band for position",
+    "Compensation effective date must be valid (not in past unless retroactive)",
+    "Compensation structure must be defined before use",
+    "Compensation history must be maintained and immutable",
+    "Salary cannot be negative or zero"
+  ],
+  "edge_cases": [
+    "Salary increase exceeds band maximum - system flags violation, requires band update or exception approval",
+    "Compensation structure is updated - system handles current employees, may require migration or grandfathering",
+    "Retroactive compensation change - system backdates change, recalculates affected periods, maintains history",
+    "Performance bonus calculation fails - system flags error, uses fallback calculation or manual entry",
+    "Compensation approval is rejected - system maintains original compensation, logs rejection reason",
+    "Salary band is updated mid-year - system handles current salaries, may require adjustment or exception",
+    "Employee transfers to different compensation structure - system migrates compensation, maintains history",
+    "Compensation data is accessed without authorization - system logs access attempt, enforces access controls"
+  ],
+  "compliance_requirements": [
+    "Compensation data must be encrypted and access-controlled",
+    "Compensation changes must be approved by authorized personnel",
+    "Compensation history must be retained for legal compliance",
+    "Salary bands must comply with labor regulations and market standards",
+    "Compensation reporting must protect employee privacy"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Compensation structure definition",
+      "Salary band ranges",
+      "Employee salary configuration",
+      "Compensation change requests",
+      "Approval workflows"
+    ],
+    "outputs": [
+      "Compensation structure records",
+      "Salary band definitions",
+      "Employee compensation packages",
+      "Compensation change history",
+      "Compensation reports and analytics"
+    ]
+  },
+  "user_journeys": [
+    "HR creates compensation structure - defines structure type and rules, structure is available for positions",
+    "HR defines salary bands - sets min/max for each level, bands are used for salary validation",
+    "HR configures employee salary - sets salary within band, compensation is active",
+    "Manager requests salary increase - submits request, approval workflow is triggered",
+    "Compensation change is approved - salary is updated, history is maintained, employee is notified"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given compensation structure creation, when structure is defined, then structure is created and available for use",
+    "Given salary configuration, when salary is within band, then configuration is saved and compensation is active",
+    "Given compensation change request, when request is submitted, then approval workflow is triggered",
+    "Given compensation approval, when change is approved, then salary is updated and history is maintained",
+    "Given salary band update, when bands are modified, then current salaries are validated and flagged if outside bands"
+  ],
+  "open_questions": [
+    "What are the specific compensation structure types? (fixed? variable? hybrid?)",
+    "How are salary bands determined? (market data? internal equity? both?)",
+    "What is the approval workflow for compensation changes? (manager? HR? finance?)",
+    "How are performance-based compensations calculated? (formula? manual? hybrid?)",
+    "What is the process for retroactive compensation changes? (backdating? recalculation?)",
+    "How are compensation structures customized per department or role?"
+  ],
+  "assumptions": [
+    "Compensation structures define how employees are paid",
+    "Salary bands provide ranges for salary validation",
+    "Compensation changes require approval",
+    "Compensation history is maintained for audit",
+    "Compensation data is confidential and access-controlled"
+  ],
+  "confidence": "medium"
+}
+

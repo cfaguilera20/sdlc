@@ -1,0 +1,111 @@
+{
+  "domain": "Attendance - Policies & Rules",
+  "glossary": [
+    {
+      "term": "Attendance Policy",
+      "definition": "A set of rules governing attendance behavior, penalties, and exceptions"
+    },
+    {
+      "term": "Policy Group",
+      "definition": "A collection of related policies that can be applied together"
+    },
+    {
+      "term": "Policy Group Item",
+      "definition": "An individual policy within a policy group"
+    },
+    {
+      "term": "Schedule Policy",
+      "definition": "Rules applied to schedules (work hours, rest periods, etc.)"
+    }
+  ],
+  "business_rules": [
+    "Attendance policies must have clear rules and penalties defined",
+    "Policy groups can contain multiple related policies",
+    "Policies are applied to employees based on assignment",
+    "Policy violations trigger notifications and may trigger penalties",
+    "Schedule policies enforce work hour limits and rest period requirements",
+    "Policy changes require versioning and effective dating",
+    "Employees can only have one active policy group at a time",
+    "Policy exceptions require approval and documentation",
+    "Policy compliance is validated during time record processing",
+    "Policy violations are logged for audit purposes"
+  ],
+  "calculations_or_formulas": [
+    "Policy violation count = number of violations in policy period",
+    "Penalty calculation = base_penalty * violation_count * severity_multiplier",
+    "Compliance rate = (compliant_records / total_records) * 100",
+    "Policy effectiveness = (violations_before - violations_after) / violations_before"
+  ],
+  "invariants": [
+    "Policy must have at least one rule defined",
+    "Policy group must contain at least one policy",
+    "Policy effective dates must be valid (start <= end)",
+    "Policy cannot be deleted if assigned to active employees",
+    "Policy violations must be logged with timestamp and details"
+  ],
+  "edge_cases": [
+    "Policy change affects active employees - system versions policy, maintains history",
+    "Policy exception is requested - requires approval workflow, exception is documented",
+    "Policy violation threshold is reached - system triggers escalation (HR notification, penalty)",
+    "Policy group is modified - system updates all employees using the group",
+    "Conflicting policies in same group - system flags conflict, requires resolution",
+    "Policy is deleted while in use - system prevents deletion or requires reassignment",
+    "Policy effective date is in the past - system applies retroactively or flags error",
+    "Employee switches policy groups mid-period - system prorates violations and penalties"
+  ],
+  "compliance_requirements": [
+    "Attendance policies must comply with labor law requirements",
+    "Policy violations must be documented and retained for legal compliance",
+    "Policy changes must be communicated to affected employees",
+    "Policy history must be maintained for audit purposes",
+    "Policy exceptions must be approved by authorized personnel"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Policy rules and definitions",
+      "Policy group configuration",
+      "Employee policy assignments",
+      "Policy effective dates",
+      "Exception requests and approvals"
+    ],
+    "outputs": [
+      "Policy group assignments",
+      "Policy violation reports",
+      "Compliance metrics",
+      "Policy change history",
+      "Exception documentation"
+    ]
+  },
+  "user_journeys": [
+    "HR creates attendance policy - defines rules and penalties, policy is available for policy groups",
+    "HR creates policy group - adds policies to group, group can be assigned to employees",
+    "HR assigns policy group to employee - group is active, employee is notified of policy rules",
+    "System detects policy violation - violation is logged, notification is sent, penalty may be applied",
+    "Employee requests policy exception - request is submitted, supervisor reviews and approves/denies",
+    "HR modifies policy - policy is versioned, changes are communicated, compliance is re-evaluated"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given policy creation, when rules are defined, then policy is created and available for policy groups",
+    "Given policy group assignment, when employee has no active group, then group is assigned and becomes active",
+    "Given policy violation, when violation is detected, then violation is logged and notification is sent",
+    "Given policy exception request, when supervisor approves, then exception is documented and applied",
+    "Given policy modification, when policy is in use, then policy is versioned and history is maintained"
+  ],
+  "open_questions": [
+    "What are the specific policy rules and penalties? (late arrival, absence, etc.)",
+    "How are policy violations escalated? (automatic penalties? supervisor review?)",
+    "What is the approval workflow for policy exceptions?",
+    "How are policy changes communicated to employees? (email? notification? required acknowledgment?)",
+    "Can policies be customized per employee or must they use policy groups?",
+    "What is the process for handling policy violations that affect payroll?"
+  ],
+  "assumptions": [
+    "Policies are organized into policy groups for easier management",
+    "Policy groups are assigned at the employee level",
+    "Policy violations trigger notifications and may trigger penalties",
+    "Policy changes require versioning to maintain history",
+    "Policy exceptions require supervisor or HR approval"
+  ],
+  "confidence": "medium"
+}
+

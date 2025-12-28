@@ -1,0 +1,115 @@
+{
+  "domain": "Attendance - Shifts & Schedules",
+  "glossary": [
+    {
+      "term": "Shift",
+      "definition": "A defined work period with specific start time, end time, and break periods"
+    },
+    {
+      "term": "Schedule",
+      "definition": "A recurring pattern of shifts assigned to an employee"
+    },
+    {
+      "term": "Rotating Shift",
+      "definition": "A shift pattern that rotates on a defined cycle (e.g., day/night rotation)"
+    },
+    {
+      "term": "Custom Schedule",
+      "definition": "A non-standard schedule created for specific employee needs"
+    },
+    {
+      "term": "Schedule Policy",
+      "definition": "Rules and constraints applied to schedules (minimum rest, maximum hours, etc.)"
+    }
+  ],
+  "business_rules": [
+    "Shifts must have valid start time and end time",
+    "Shift duration cannot exceed maximum work hours per labor law",
+    "Rotating shifts must have defined cycle length and rotation pattern",
+    "Employee can only have one active schedule at a time",
+    "Schedule changes require advance notice (typically 7 days)",
+    "Schedule conflicts (overlapping shifts) are not allowed",
+    "Custom schedules must comply with schedule policies",
+    "Schedule assignments must respect employee contracts and labor agreements",
+    "Rotating shift cycles must be complete (all days covered)",
+    "Schedule templates can be reused across multiple employees"
+  ],
+  "calculations_or_formulas": [
+    "Shift duration = end_time - start_time - break_duration",
+    "Weekly hours = sum of all shift durations in the week",
+    "Rotating shift cycle length = number of days in rotation pattern",
+    "Schedule coverage = (assigned_days / total_days) * 100"
+  ],
+  "invariants": [
+    "Shift start time must be before end time",
+    "Employee must have exactly one active schedule at any time",
+    "Schedule must cover all required work days",
+    "Shift times must be within valid range (00:00 to 23:59)",
+    "Rotating shift cycle must be complete and non-empty"
+  ],
+  "edge_cases": [
+    "Employee schedule change mid-week - system prorates schedule, handles transition period",
+    "Rotating shift cycle doesn't cover all days - system flags incomplete cycle",
+    "Schedule conflict detected - system prevents assignment, requires resolution",
+    "Schedule policy violation - system flags violation, requires override or adjustment",
+    "Employee has no schedule assigned - system flags missing schedule, prevents time record validation",
+    "Schedule template is modified - system updates all employees using template or creates new versions",
+    "Holiday falls on scheduled work day - system handles holiday rules (paid/unpaid, reschedule?)",
+    "Employee works across midnight - system handles shift spanning two calendar days"
+  ],
+  "compliance_requirements": [
+    "Schedules must comply with labor law maximum work hours",
+    "Minimum rest periods between shifts must be enforced",
+    "Schedule changes must be documented and communicated to employees",
+    "Rotating shift patterns must comply with health and safety regulations",
+    "Schedule assignments must respect employee contracts and collective agreements"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Shift definition (start time, end time, break periods)",
+      "Schedule pattern (daily, weekly, rotating)",
+      "Employee ID for assignment",
+      "Schedule policy associations",
+      "Effective dates for schedule changes"
+    ],
+    "outputs": [
+      "Employee schedule assignment",
+      "Schedule template for reuse",
+      "Schedule conflict reports",
+      "Schedule compliance validation",
+      "Schedule change history"
+    ]
+  },
+  "user_journeys": [
+    "HR creates shift definition - defines start/end times and breaks, shift is available for schedules",
+    "HR creates schedule template - assigns shifts to days, creates reusable template",
+    "HR assigns schedule to employee - schedule is active, employee receives notification",
+    "Employee requests schedule change - request is submitted, supervisor reviews and approves/denies",
+    "System detects schedule conflict - flags conflict, prevents assignment until resolved",
+    "HR modifies rotating shift cycle - updates cycle pattern, all affected employees are updated"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given shift creation, when start/end times are valid, then shift is created and available for schedules",
+    "Given schedule assignment, when employee has no active schedule, then schedule is assigned and becomes active",
+    "Given schedule conflict, when overlapping shifts are detected, then assignment is prevented and conflict is flagged",
+    "Given rotating shift cycle, when cycle is complete and valid, then cycle is created and can be assigned",
+    "Given schedule change, when effective date is in future, then current schedule remains active until change date"
+  ],
+  "open_questions": [
+    "What is the minimum advance notice required for schedule changes?",
+    "How are schedule conflicts resolved? (automatic adjustment? manual resolution?)",
+    "What happens when schedule policy is violated? (prevent assignment? allow override?)",
+    "How are holidays handled in schedules? (paid? rescheduled? skipped?)",
+    "Can employees have multiple schedules for different periods? (temporary assignments?)",
+    "What is the process for modifying schedule templates that are in use?"
+  ],
+  "assumptions": [
+    "Schedules are assigned at the employee level",
+    "Schedule templates can be shared across multiple employees",
+    "Schedule changes require appropriate permissions (HR or supervisor)",
+    "Rotating shifts follow a defined pattern that repeats",
+    "Schedule policies are enforced at assignment time"
+  ],
+  "confidence": "medium"
+}
+

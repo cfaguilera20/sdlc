@@ -1,0 +1,114 @@
+{
+  "domain": "Users Management - Permissions & Roles",
+  "glossary": [
+    {
+      "term": "Permission",
+      "definition": "A specific action or access right that can be granted to a user"
+    },
+    {
+      "term": "Role",
+      "definition": "A collection of permissions that can be assigned to users"
+    },
+    {
+      "term": "Access Control",
+      "definition": "The mechanism for enforcing permissions and restricting access"
+    },
+    {
+      "term": "Authorization",
+      "definition": "The process of determining if a user has permission to perform an action"
+    },
+    {
+      "term": "RBAC",
+      "definition": "Role-Based Access Control - access control based on user roles"
+    }
+  ],
+  "business_rules": [
+    "Permissions must be defined before assignment to roles",
+    "Roles must contain at least one permission",
+    "Users can be assigned multiple roles",
+    "Permission inheritance follows role hierarchy (if applicable)",
+    "Access control is enforced at system and feature levels",
+    "Role assignments require appropriate authorization",
+    "Permission changes require re-evaluation of access",
+    "Role hierarchies must not create cycles",
+    "Permission auditing must log all access attempts",
+    "Default roles are assigned based on user type or department"
+  ],
+  "calculations_or_formulas": [
+    "User effective permissions = union of all permissions from assigned roles",
+    "Role coverage = (users_with_role / total_users) * 100",
+    "Permission usage = (access_attempts / total_permissions) * 100",
+    "Authorization success rate = (authorized_access / total_access_attempts) * 100"
+  ],
+  "invariants": [
+    "Permission must be uniquely defined",
+    "Role must have at least one permission",
+    "User-role assignment must be valid",
+    "Role hierarchy must not create cycles",
+    "Permission cannot be deleted if assigned to active roles"
+  ],
+  "edge_cases": [
+    "User is assigned conflicting roles - system resolves conflicts based on policy (most permissive? most restrictive?)",
+    "Permission is removed from role while users are active - system updates effective permissions, may revoke access",
+    "Role hierarchy creates cycle - system detects cycle, prevents creation, flags error",
+    "User requests access to restricted resource - system checks permissions, denies access, logs attempt",
+    "Role is deleted while assigned to users - system prevents deletion or requires role reassignment",
+    "Permission inheritance conflicts - system resolves based on hierarchy rules, maintains audit trail",
+    "User role assignment is temporary - system handles expiration dates, automatically revokes when expired",
+    "Permission check fails due to system error - system defaults to deny, logs error, alerts administrator"
+  ],
+  "compliance_requirements": [
+    "Permission assignments must be auditable and traceable",
+    "Access control must be enforced consistently across the system",
+    "Role changes must be documented and approved",
+    "Permission violations must be logged for security auditing",
+    "Access control must comply with security standards and regulations"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Permission definitions",
+      "Role definitions and structures",
+      "User-role assignments",
+      "Role hierarchy relationships",
+      "Access control rules"
+    ],
+    "outputs": [
+      "Permission records",
+      "Role records with permissions",
+      "User effective permissions",
+      "Access control decisions",
+      "Permission audit logs"
+    ]
+  },
+  "user_journeys": [
+    "Admin creates permission - defines permission name and scope, permission is available for roles",
+    "Admin creates role - defines role name, assigns permissions, role is available for users",
+    "Admin assigns role to user - creates assignment, user receives effective permissions, access is updated",
+    "User attempts to access resource - system checks permissions, grants or denies access, logs attempt",
+    "Admin modifies role permissions - updates role, system recalculates user effective permissions"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given permission creation, when permission is defined, then permission is created and available for roles",
+    "Given role creation, when permissions are assigned, then role is created and available for users",
+    "Given role assignment, when user and role are valid, then assignment is created and effective permissions are updated",
+    "Given access attempt, when user requests resource, then system checks permissions and grants or denies access",
+    "Given permission change, when role permissions are modified, then user effective permissions are recalculated"
+  ],
+  "open_questions": [
+    "What is the permission granularity? (feature-level? action-level? resource-level?)",
+    "How are role hierarchies defined? (parent-child? inheritance rules?)",
+    "What is the process for permission conflicts? (most permissive? most restrictive? explicit override?)",
+    "How are temporary role assignments handled? (expiration dates? automatic revocation?)",
+    "What is the permission audit frequency? (real-time? batch? on-demand?)",
+    "How are default roles assigned? (automatic? manual? based on department?)"
+  ],
+  "assumptions": [
+    "Permissions are defined at system and feature levels",
+    "Roles contain collections of permissions",
+    "Users can be assigned multiple roles",
+    "Access control is enforced consistently",
+    "Permission changes require re-evaluation of access"
+  ],
+  "confidence": "medium"
+}
+

@@ -1,0 +1,123 @@
+{
+  "domain": "Rails MVP Scaffold - Active Admin",
+  "glossary": [
+    {
+      "term": "Active Admin",
+      "definition": "Administration framework for Ruby on Rails applications"
+    },
+    {
+      "term": "Admin Resource",
+      "definition": "Active Admin configuration for a model that defines the admin interface"
+    },
+    {
+      "term": "Batch Action",
+      "definition": "Action that can be performed on multiple selected records at once"
+    },
+    {
+      "term": "Scope",
+      "definition": "Predefined filter or view of records in Active Admin"
+    },
+    {
+      "term": "Dashboard",
+      "definition": "Main admin panel page showing statistics and overview"
+    }
+  ],
+  "business_rules": [
+    "Only admin users can access Active Admin interface",
+    "Admin resources must be explicitly registered for each model",
+    "Default CRUD operations (create, read, update, delete) are available unless disabled",
+    "Batch actions require confirmation before execution",
+    "Filters are available for all model attributes by default",
+    "CSV export includes all visible columns",
+    "Admin users can only manage data within their tenant (if multi-tenant)",
+    "Admin actions are logged for audit purposes",
+    "Form validations must match model validations",
+    "Nested resources require proper association configuration"
+  ],
+  "calculations_or_formulas": [
+    "Dashboard statistics = aggregate queries on main models",
+    "Filter count = filtered records matching criteria",
+    "Batch action scope = selected records from current index view",
+    "CSV export rows = all records matching current filters and scopes"
+  ],
+  "invariants": [
+    "Admin user must be authenticated via Devise",
+    "Admin resource must correspond to an existing ActiveRecord model",
+    "Batch actions cannot be performed on more than 1000 records at once",
+    "CSV exports are limited to 10,000 records per export",
+    "Admin interface must respect multi-tenant data scoping"
+  ],
+  "edge_cases": [
+    "Admin tries to delete record with dependent associations - show error with dependent records list",
+    "Batch action on filtered results - only selected records are affected, not all filtered records",
+    "CSV export of large dataset - use background job or streaming response",
+    "Admin creates nested resource - parent association must be valid",
+    "Admin updates record that violates business rules - show validation errors in form",
+    "Concurrent admin updates - last write wins or show conflict warning",
+    "Admin exports data with sensitive information - require additional confirmation or masking",
+    "Multi-tenant admin accesses other tenant's data - must be prevented by scoping"
+  ],
+  "compliance_requirements": [
+    "All admin actions must be logged with user, timestamp, and action details",
+    "Admin access must be restricted to authorized users only",
+    "Sensitive data in exports must be masked or require additional authorization",
+    "Admin interface must comply with data privacy regulations (GDPR)",
+    "Audit trail must be maintained for all admin modifications",
+    "Admin user passwords must meet security requirements"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Model class name for resource registration",
+      "Admin user authentication (via Devise)",
+      "Form field definitions and customizations",
+      "Filter and scope configurations",
+      "Batch action definitions",
+      "Dashboard widget configurations"
+    ],
+    "outputs": [
+      "Admin resource interface",
+      "CRUD operation endpoints",
+      "CSV export files",
+      "Dashboard statistics",
+      "Admin action logs",
+      "Filtered and scoped record lists"
+    ]
+  },
+  "user_journeys": [
+    "Admin signs in to Active Admin - sees dashboard with statistics and recent activity",
+    "Admin views users list - sees paginated table with filters, can search and filter",
+    "Admin creates new user - fills form, validates, saves, sees success message",
+    "Admin edits user - updates fields, saves, sees updated record",
+    "Admin performs batch action - selects multiple records, chooses action, confirms, sees results",
+    "Admin exports data to CSV - clicks export, receives CSV file with filtered data",
+    "Admin views nested resource - sees associated records, can create/edit nested items"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given admin resource registration, when model is registered, then CRUD interface is available with default configuration",
+    "Given admin creates record, when form is submitted with valid data, then record is created and success message is shown",
+    "Given admin filters records, when filter criteria is applied, then only matching records are displayed",
+    "Given batch action execution, when admin selects records and confirms action, then action is applied to all selected records",
+    "Given CSV export, when admin clicks export, then CSV file is generated with current filtered data"
+  ],
+  "open_questions": [
+    "Which models need Active Admin resources? (all models or specific ones?)",
+    "What customizations are needed for each resource? (custom forms, filters, actions?)",
+    "Should dashboard show real-time statistics or cached data?",
+    "What batch actions are needed? (bulk delete, bulk update, bulk export?)",
+    "Should CSV imports be supported? (for bulk data entry?)",
+    "What level of customization is needed for forms? (nested forms, custom inputs, etc.)",
+    "Should admin actions be queued as background jobs for large operations?",
+    "What audit logging is required? (all actions, specific actions only?)"
+  ],
+  "assumptions": [
+    "Active Admin gem will be used for admin interface",
+    "Devise will be used for admin authentication",
+    "Admin users will be a separate model or have admin flag on User model",
+    "Multi-tenant architecture will scope admin data to current tenant",
+    "Rails 7+ will be used",
+    "PostgreSQL will be used as the database",
+    "Admin interface will use default Active Admin styling (can be customized later)"
+  ],
+  "confidence": "high"
+}
+

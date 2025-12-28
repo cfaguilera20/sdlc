@@ -1,0 +1,114 @@
+{
+  "domain": "Surveys - Surveys & Assessments",
+  "glossary": [
+    {
+      "term": "Survey",
+      "definition": "A structured set of questions used to collect information from participants"
+    },
+    {
+      "term": "Psychometric Assessment",
+      "definition": "A standardized test measuring psychological traits, abilities, or characteristics"
+    },
+    {
+      "term": "NOM-035",
+      "definition": "Mexican labor standard for identifying, analyzing, and preventing psychosocial risk factors"
+    },
+    {
+      "term": "Survey Question",
+      "definition": "An individual item in a survey that collects a specific piece of information"
+    },
+    {
+      "term": "Question Branching",
+      "definition": "Conditional logic that shows different questions based on previous answers"
+    }
+  ],
+  "business_rules": [
+    "Surveys must have at least one question defined",
+    "Survey questions must have valid question types (multiple choice, scale, text, etc.)",
+    "Psychometric assessments must use validated question sets",
+    "NOM-035 surveys must comply with regulatory requirements",
+    "Survey configuration must define distribution and completion rules",
+    "Question branching logic must be valid and non-circular",
+    "Surveys can be anonymous or identified based on configuration",
+    "Survey templates can be reused and customized",
+    "Survey versioning must be maintained for updates",
+    "Survey scheduling must respect participant availability"
+  ],
+  "calculations_or_formulas": [
+    "Survey completion rate = (completed_evaluations / distributed_evaluations) * 100",
+    "Question response rate = (responses / total_participants) * 100",
+    "Average response time = sum of completion_times / number of completions",
+    "Survey score = calculated based on question types and scoring rules"
+  ],
+  "invariants": [
+    "Survey must have at least one question",
+    "Question must have valid question type",
+    "Survey configuration must be valid",
+    "Question branching must not create cycles",
+    "Survey distribution must target valid participants"
+  ],
+  "edge_cases": [
+    "Survey is updated while evaluations are in progress - system versions survey, maintains participants in original version",
+    "Question branching logic creates cycle - system detects cycle, prevents creation, flags error",
+    "Participant starts survey but doesn't complete - system saves partial responses, allows completion later",
+    "Survey distribution fails - system retries, logs error, alerts administrator",
+    "NOM-035 compliance requirements change - system updates survey, maintains compliance history",
+    "Psychometric assessment scoring fails - system flags error, uses fallback calculation or manual review",
+    "Survey question is removed mid-evaluation - system handles existing responses, maintains data integrity",
+    "Survey anonymity is violated - system detects and prevents, logs violation attempt"
+  ],
+  "compliance_requirements": [
+    "NOM-035 surveys must comply with Mexican labor regulations",
+    "Survey data must be protected and access-controlled",
+    "Participant anonymity must be maintained for anonymous surveys",
+    "Survey results must be retained for compliance and audit purposes",
+    "Psychometric assessments must use validated instruments"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Survey definition and structure",
+      "Question definitions and types",
+      "Survey configuration and settings",
+      "Distribution rules and participant lists",
+      "Scoring and interpretation rules"
+    ],
+    "outputs": [
+      "Survey template or instance",
+      "Question structures and branching",
+      "Survey configuration",
+      "Distribution lists and schedules",
+      "Survey analytics and metadata"
+    ]
+  },
+  "user_journeys": [
+    "HR creates survey - defines questions and configuration, survey is available for distribution",
+    "HR configures NOM-035 survey - selects compliance template, customizes questions, survey is ready",
+    "System distributes survey - sends invitations to participants, tracks distribution status",
+    "Participant completes survey - answers questions, submits responses, completion is recorded",
+    "System calculates survey results - aggregates responses, calculates scores, generates reports"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given survey creation, when questions are defined, then survey is created and available for distribution",
+    "Given survey distribution, when participants are selected, then invitations are sent and distribution is tracked",
+    "Given survey completion, when participant submits responses, then completion is recorded and results are calculated",
+    "Given NOM-035 survey, when compliance requirements are met, then survey is validated and ready for distribution",
+    "Given question branching, when logic is defined, then branching is validated and applied during evaluation"
+  ],
+  "open_questions": [
+    "What are the specific survey question types? (multiple choice? scale? text? matrix?)",
+    "How are psychometric assessments validated? (certification? internal validation?)",
+    "What is the NOM-035 compliance process? (mandatory? frequency? reporting?)",
+    "How are survey results interpreted? (automatic scoring? manual review? hybrid?)",
+    "What is the survey distribution method? (email? in-app? both?)",
+    "How are survey templates managed? (versioning? customization? reuse?)"
+  ],
+  "assumptions": [
+    "Surveys consist of questions with various types",
+    "Psychometric assessments use validated question sets",
+    "NOM-035 surveys must comply with regulatory requirements",
+    "Survey distribution targets specific participant groups",
+    "Survey results are aggregated and analyzed for insights"
+  ],
+  "confidence": "medium"
+}
+

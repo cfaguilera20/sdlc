@@ -1,0 +1,115 @@
+{
+  "domain": "Performance - Evaluations & Reviews",
+  "glossary": [
+    {
+      "term": "Evaluation",
+      "definition": "A formal assessment of an employee's performance over a specific period"
+    },
+    {
+      "term": "Evaluation Cycle",
+      "definition": "A defined time period for conducting performance evaluations (e.g., annual, semi-annual, quarterly)"
+    },
+    {
+      "term": "Evaluation Phase",
+      "definition": "A stage in the evaluation process (e.g., self-assessment, manager review, calibration, finalization)"
+    },
+    {
+      "term": "Participant",
+      "definition": "A person involved in the evaluation process (evaluator, evaluatee, reviewer)"
+    },
+    {
+      "term": "Application",
+      "definition": "An evaluation instance for a specific employee in a specific cycle"
+    }
+  ],
+  "business_rules": [
+    "Evaluations must be associated with an evaluation cycle",
+    "Evaluation cycles have defined start and end dates",
+    "Employees can only have one active evaluation per cycle",
+    "Evaluation phases must be completed in sequence",
+    "Participants must be assigned appropriate roles (evaluator, evaluatee, reviewer)",
+    "Evaluation forms must be completed before phase transition",
+    "Evaluation completion requires all required phases to be finished",
+    "Evaluations can be reopened for corrections within defined time window",
+    "Evaluation history must be maintained for audit purposes",
+    "Multi-rater evaluations require multiple evaluators to complete"
+  ],
+  "calculations_or_formulas": [
+    "Evaluation completion rate = (completed_evaluations / total_evaluations) * 100",
+    "Average evaluation score = sum of all criteria scores / number of criteria",
+    "Phase completion time = phase_end_date - phase_start_date",
+    "Evaluation cycle progress = (current_date - cycle_start_date) / (cycle_end_date - cycle_start_date) * 100"
+  ],
+  "invariants": [
+    "Evaluation must be associated with valid employee and cycle",
+    "Evaluation phases must be completed in order",
+    "Participant roles must be valid and assigned",
+    "Evaluation cannot be completed without all required phases finished",
+    "Evaluation cycle dates must be valid (start < end)"
+  ],
+  "edge_cases": [
+    "Employee is terminated mid-evaluation - system handles partial evaluation, may close or complete based on policy",
+    "Evaluator is unavailable - system allows reassignment or extension of phase deadline",
+    "Evaluation phase deadline is missed - system flags overdue, sends reminders, may auto-advance with default values",
+    "Evaluation is reopened for correction - system maintains history, allows edits within time window",
+    "Multiple evaluators provide conflicting scores - system flags discrepancies, may require calibration or manager review",
+    "Evaluation cycle is extended - system updates deadlines, notifies participants, adjusts phase timelines",
+    "Employee changes roles mid-cycle - system handles role change, may require new evaluation or continuation",
+    "Evaluation data is corrupted - system maintains backups, allows recovery from last valid state"
+  ],
+  "compliance_requirements": [
+    "Evaluation data must be retained for legal compliance (typically 7 years)",
+    "Evaluation history must be immutable once finalized",
+    "Participant access must be logged for audit purposes",
+    "Evaluation corrections must be documented with reason and approver",
+    "Evaluation cycles must comply with company policies and labor regulations"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Evaluation cycle definition",
+      "Employee ID for evaluation",
+      "Participant assignments and roles",
+      "Evaluation form responses",
+      "Phase completion status"
+    ],
+    "outputs": [
+      "Evaluation application record",
+      "Evaluation scores and ratings",
+      "Phase completion status",
+      "Evaluation completion notification",
+      "Evaluation history and audit trail"
+    ]
+  },
+  "user_journeys": [
+    "HR creates evaluation cycle - defines period, phases, and participants, cycle is active",
+    "System creates evaluation applications - one per employee in cycle, participants are notified",
+    "Employee completes self-assessment - fills evaluation form, submits, phase is marked complete",
+    "Manager reviews employee evaluation - provides feedback and scores, submits review",
+    "Evaluation goes through calibration - scores are reviewed and adjusted if needed",
+    "Evaluation is finalized - all phases complete, evaluation is closed, results are communicated"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given evaluation cycle creation, when period and phases are defined, then cycle is created and evaluations are generated",
+    "Given evaluation application, when employee is in cycle, then application is created and participants are notified",
+    "Given phase completion, when all required forms are submitted, then phase is marked complete and next phase is activated",
+    "Given evaluation finalization, when all phases are complete, then evaluation is finalized and results are communicated",
+    "Given evaluation correction, when correction is approved, then evaluation is updated and history is maintained"
+  ],
+  "open_questions": [
+    "What are the specific evaluation phases? (self-assessment, manager review, calibration, finalization?)",
+    "How are evaluation scores calculated? (average? weighted? criteria-based?)",
+    "What happens when evaluation deadline is missed? (auto-advance? extension? default scores?)",
+    "How are multi-rater evaluations handled? (360-degree? peer reviews? upward feedback?)",
+    "What is the process for evaluation corrections? (time window? approval required?)",
+    "How are evaluation cycles configured? (annual? quarterly? custom periods?)"
+  ],
+  "assumptions": [
+    "Evaluation cycles are defined at organizational or department level",
+    "Evaluation phases must be completed sequentially",
+    "Participants have specific roles and permissions",
+    "Evaluation forms are customizable per cycle or role",
+    "Evaluation history is maintained for audit and reporting"
+  ],
+  "confidence": "medium"
+}
+

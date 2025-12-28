@@ -1,0 +1,114 @@
+{
+  "domain": "Structure & Organization - Hierarchy & Units",
+  "glossary": [
+    {
+      "term": "Organizational Unit",
+      "definition": "A component of the organizational structure (area, department, division, etc.)"
+    },
+    {
+      "term": "Organizational Hierarchy",
+      "definition": "The tree structure representing reporting relationships and organizational levels"
+    },
+    {
+      "term": "Area",
+      "definition": "A major organizational division or business unit"
+    },
+    {
+      "term": "Department",
+      "definition": "A functional unit within an area or organization"
+    },
+    {
+      "term": "Organizational Level",
+      "definition": "A tier in the organizational hierarchy (e.g., company, division, department, team)"
+    }
+  ],
+  "business_rules": [
+    "Organizational units must have valid parent-child relationships",
+    "Organizational hierarchy must form a valid tree (no cycles)",
+    "Each unit must have a manager or head assigned",
+    "Organizational levels must be consistent across the hierarchy",
+    "Unit changes require validation to prevent orphaned employees",
+    "Hierarchy changes must maintain data integrity",
+    "Units can be reorganized but history must be preserved",
+    "Geographic organization (localities) can be independent of functional hierarchy",
+    "Company and group structures can span multiple organizational units",
+    "Reporting relationships must follow organizational hierarchy"
+  ],
+  "calculations_or_formulas": [
+    "Unit size = count of employees in unit and all sub-units",
+    "Hierarchy depth = maximum levels from root to leaf",
+    "Span of control = count of direct reports to manager",
+    "Organizational coverage = (units_with_employees / total_units) * 100"
+  ],
+  "invariants": [
+    "Organizational hierarchy must be a valid tree (single root, no cycles)",
+    "Unit must have valid parent (except root unit)",
+    "Unit cannot be its own parent or ancestor",
+    "Unit deletion requires all employees to be reassigned",
+    "Organizational level must be valid and consistent"
+  ],
+  "edge_cases": [
+    "Unit reorganization creates orphaned employees - system prevents reorganization or requires reassignment",
+    "Hierarchy cycle is detected - system prevents cycle creation, flags error",
+    "Unit is deleted with active employees - system prevents deletion or requires employee reassignment",
+    "Manager is assigned to multiple units - system allows or prevents based on policy",
+    "Unit is moved to different parent - system updates hierarchy, maintains history, validates relationships",
+    "Geographic and functional hierarchies conflict - system handles both hierarchies independently",
+    "Unit name conflicts - system enforces uniqueness or allows duplicates with disambiguation",
+    "Organizational level is changed - system updates level, validates consistency, maintains history"
+  ],
+  "compliance_requirements": [
+    "Organizational structure changes must be documented and approved",
+    "Hierarchy history must be maintained for audit purposes",
+    "Unit assignments must comply with labor regulations",
+    "Organizational data must be retained for legal compliance",
+    "Structure changes must be communicated to affected employees"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Organizational unit definition (name, type, level)",
+      "Parent-child relationships",
+      "Manager assignments",
+      "Geographic organization (localities)",
+      "Company and group associations"
+    ],
+    "outputs": [
+      "Organizational hierarchy tree",
+      "Unit listings and hierarchies",
+      "Reporting relationship chains",
+      "Organizational analytics and reports",
+      "Structure change history"
+    ]
+  },
+  "user_journeys": [
+    "HR creates organizational unit - defines name, type, and parent, unit is added to hierarchy",
+    "HR assigns manager to unit - manager is assigned, reporting relationships are established",
+    "HR reorganizes structure - units are moved, hierarchy is updated, employees are notified",
+    "System validates hierarchy - checks for cycles, validates relationships, flags issues",
+    "Manager views organizational tree - sees reporting structure, direct and indirect reports"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given unit creation, when name and parent are provided, then unit is created and added to hierarchy",
+    "Given hierarchy reorganization, when units are moved, then hierarchy is updated and relationships are maintained",
+    "Given unit deletion, when no employees are assigned, then unit is deleted and hierarchy is updated",
+    "Given cycle detection, when cycle is attempted, then creation is prevented and error is shown",
+    "Given manager assignment, when manager is valid, then assignment is created and reporting relationships are established"
+  ],
+  "open_questions": [
+    "What are the specific organizational levels? (company, division, department, team?)",
+    "How are geographic and functional hierarchies related? (independent? integrated?)",
+    "What is the process for unit reorganization? (approval required? automatic?)",
+    "How are unit managers assigned? (single manager? multiple managers? co-management?)",
+    "What happens when unit is deleted? (reassign employees? prevent deletion?)",
+    "How are organizational changes communicated? (notifications? announcements?)"
+  ],
+  "assumptions": [
+    "Organizational hierarchy forms a tree structure",
+    "Each unit has a single parent (except root)",
+    "Units can have multiple child units",
+    "Manager assignments follow organizational hierarchy",
+    "Geographic organization can be independent of functional hierarchy"
+  ],
+  "confidence": "medium"
+}
+

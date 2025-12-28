@@ -1,0 +1,118 @@
+{
+  "domain_slug": "rails_mvp_scaffold",
+  "domain_title": "Rails MVP Scaffold",
+  "recommended_sub_agents": [
+    {
+      "agent_name": "Domain Expert — Rails MVP Scaffold (Authentication & Devise)",
+      "slug": "domain_expert_rails_mvp_scaffold_authentication",
+      "focus": [
+        "Devise gem installation and configuration",
+        "User model setup and customizations",
+        "Authentication strategies (email/password, OAuth, etc.)",
+        "Registration and sign-in flows",
+        "Password reset and email confirmation workflows",
+        "Session management and remember me functionality",
+        "Authorization rules and role-based access control",
+        "Integration with multi-tenant architecture",
+        "Security best practices (password strength, rate limiting)"
+      ],
+      "schema": "/schemas/domain_knowledge_pack.schema.json"
+    },
+    {
+      "agent_name": "Domain Expert — Rails MVP Scaffold (Active Admin)",
+      "slug": "domain_expert_rails_mvp_scaffold_active_admin",
+      "focus": [
+        "Active Admin gem installation and configuration",
+        "Admin user model setup",
+        "Resource definitions and customizations",
+        "Admin dashboard configuration",
+        "Filters, scopes, and search functionality",
+        "Custom actions and batch actions",
+        "Form customizations and nested forms",
+        "CSV export and import functionality",
+        "Integration with authentication (Devise)",
+        "Multi-tenant admin scoping",
+        "Authorization and permissions for admin users"
+      ],
+      "schema": "/schemas/domain_knowledge_pack.schema.json"
+    },
+    {
+      "agent_name": "Domain Expert — Rails MVP Scaffold (Multi-Tenant Architecture)",
+      "slug": "domain_expert_rails_mvp_scaffold_multi_tenant",
+      "focus": [
+        "Multi-tenancy strategy selection and rationale",
+        "Tenant model setup and identification",
+        "Data scoping and default scopes",
+        "Tenant switching and context management",
+        "Subdomain/domain routing configuration",
+        "Tenant isolation rules",
+        "Shared data vs. tenant-specific data patterns",
+        "Tenant creation and management workflows",
+        "Migration strategies for existing data",
+        "Performance considerations and optimizations"
+      ],
+      "schema": "/schemas/domain_knowledge_pack.schema.json"
+    },
+    {
+      "agent_name": "Domain Expert — Rails MVP Scaffold (Database & Migrations)",
+      "slug": "domain_expert_rails_mvp_scaffold_database",
+      "focus": [
+        "Database configuration and setup",
+        "Migration patterns and best practices",
+        "Schema design and relationships",
+        "Indexes and performance optimization",
+        "Foreign key constraints",
+        "Seed data and fixtures",
+        "Database rollback strategies",
+        "Multi-tenant database considerations",
+        "Data migration patterns",
+        "Database backup and restore procedures"
+      ],
+      "schema": "/schemas/domain_knowledge_pack.schema.json"
+    },
+    {
+      "agent_name": "Domain Expert — Rails MVP Scaffold (MVP Foundation)",
+      "slug": "domain_expert_rails_mvp_scaffold_foundation",
+      "focus": [
+        "Rails project initialization and setup",
+        "Gemfile configuration and essential gems",
+        "Environment configuration (development, staging, production)",
+        "Initial project structure and organization",
+        "Configuration files (database.yml, application.rb, etc.)",
+        "Asset pipeline or Webpacker setup",
+        "Testing framework setup (RSpec, Minitest)",
+        "Code quality tools (RuboCop, SimpleCov)",
+        "Deployment configuration and CI/CD basics",
+        "MVP-specific optimizations and shortcuts"
+      ],
+      "schema": "/schemas/domain_knowledge_pack.schema.json"
+    }
+  ],
+  "materialize": {
+    "files": [
+      {
+        "path": "sdlc/templates/domains/rails_mvp_scaffold/README.md",
+        "type": "doc_md",
+        "content": "# Rails MVP Scaffold Domain\n\nThis domain covers the technical setup and configuration of new Rails projects with standard MVP-ready features.\n\n## Domain Overview\n\nThe Rails MVP Scaffold domain manages the foundational setup for new Rails applications, including:\n- Authentication with Devise\n- Admin panel with Active Admin\n- Multi-tenant architecture\n- Database configuration and migrations\n- MVP boilerplate and best practices\n\n## Domain Expert Agents\n\nThis domain is broken down into specialized expert agents:\n\n1. **Domain Expert — Rails MVP Scaffold (Authentication & Devise)**\n   - Focus: Devise setup, user models, authentication flows, authorization\n   - Template: `domain_expert_rails_mvp_scaffold_authentication.md`\n\n2. **Domain Expert — Rails MVP Scaffold (Active Admin)**\n   - Focus: Active Admin configuration, admin models, customizations\n   - Template: `domain_expert_rails_mvp_scaffold_active_admin.md`\n\n3. **Domain Expert — Rails MVP Scaffold (Multi-Tenant Architecture)**\n   - Focus: Multi-tenancy strategies, tenant isolation, data scoping\n   - Template: `domain_expert_rails_mvp_scaffold_multi_tenant.md`\n\n4. **Domain Expert — Rails MVP Scaffold (Database & Migrations)**\n   - Focus: Database setup, migration patterns, schema design, seeds\n   - Template: `domain_expert_rails_mvp_scaffold_database.md`\n\n5. **Domain Expert — Rails MVP Scaffold (MVP Foundation)**\n   - Focus: Project structure, initial setup, boilerplate, best practices\n   - Template: `domain_expert_rails_mvp_scaffold_foundation.md`\n\n## Usage\n\nWhen working on Rails project setup or MVP initialization tickets:\n\n1. Identify which subdomain(s) the ticket touches\n2. Run the appropriate Domain Expert agent(s) using the template files\n3. Collect the `DomainKnowledgePack` JSON output(s)\n4. Use the pack(s) as input to Agent 02 (Product Analyst) for backlog generation\n\n## Example Files\n\nSee `examples/` directory for example `DomainKnowledgePack` JSONs that demonstrate the expected structure and content for each subdomain.\n",
+        "reason": "Domain landing page"
+      }
+    ]
+  },
+  "orchestrator_patch_suggestions": [
+    "Add trigger keywords for Rails MVP Scaffold domain: 'rails setup', 'new rails project', 'mvp scaffold', 'devise setup', 'active admin', 'multi-tenant', 'rails boilerplate'",
+    "When ticket involves setting up new Rails project, suggest running Domain Expert for MVP Foundation",
+    "When ticket mentions authentication or user management, suggest Domain Expert for Authentication & Devise",
+    "When ticket involves admin panel or admin interface, suggest Domain Expert for Active Admin",
+    "When ticket involves multi-tenancy or tenant isolation, suggest Domain Expert for Multi-Tenant Architecture",
+    "When ticket involves database setup or migrations, suggest Domain Expert for Database & Migrations",
+    "For comprehensive Rails MVP setup tickets, suggest running multiple Domain Expert agents and merging their DomainKnowledgePacks"
+  ],
+  "how_to_use_in_cursor": [
+    "1) Run Orchestrator (Agent 00) -> if suggests domain scaffolding, run this Domain Scaffolder with domain_name=rails_mvp_scaffold",
+    "2) Create files from materialize.files[] (use scripts/apply_materialize.py or manually create files)",
+    "3) When working on Rails setup tickets, identify relevant subdomain(s) and run appropriate Domain Expert agent(s)",
+    "4) Run Domain Expert agents for actual tickets; save resulting DomainKnowledgePack under domain examples",
+    "5) Use DomainKnowledgePack(s) as input to Agent 02 (Product Analyst) for backlog generation",
+    "6) For tickets touching multiple subdomains, run multiple experts and merge their packs (Agent 02 handles merging)"
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "domain": "Rails MVP Scaffold - Multi-Tenant Architecture",
+  "glossary": [
+    {
+      "term": "Tenant",
+      "definition": "A separate organization or customer instance with isolated data"
+    },
+    {
+      "term": "Tenant Isolation",
+      "definition": "Ensuring data from one tenant cannot be accessed by another tenant"
+    },
+    {
+      "term": "Row-Level Security",
+      "definition": "Database-level security ensuring rows are only accessible to authorized tenants"
+    },
+    {
+      "term": "Schema-Based Multi-Tenancy",
+      "definition": "Each tenant has a separate database schema"
+    },
+    {
+      "term": "Row-Based Multi-Tenancy",
+      "definition": "All tenants share the same schema, data is isolated by tenant_id column"
+    }
+  ],
+  "business_rules": [
+    "All tenant-scoped models must have tenant_id column or belong to tenant",
+    "Data queries must automatically scope to current tenant",
+    "Tenant switching must be secure and require proper authorization",
+    "Shared data (e.g., lookup tables) must be accessible to all tenants",
+    "Tenant creation requires unique subdomain/domain identifier",
+    "Tenant data cannot be accessed across tenant boundaries",
+    "Default scope must be applied to all tenant-scoped models",
+    "Tenant context must be set before any data access",
+    "Super admin can access all tenants (if applicable)",
+    "Tenant deletion must cascade to all tenant-scoped data"
+  ],
+  "calculations_or_formulas": [
+    "Tenant scope = where(tenant_id: current_tenant.id)",
+    "Data isolation = default_scope { where(tenant_id: Current.tenant_id) }",
+    "Tenant subdomain = request.subdomain or request.domain",
+    "Tenant lookup = Tenant.find_by(subdomain: subdomain)"
+  ],
+  "invariants": [
+    "Tenant ID must be present on all tenant-scoped records",
+    "Current tenant must be set before accessing tenant-scoped data",
+    "Tenant ID cannot be changed after record creation",
+    "Cross-tenant data access must be prevented at model and controller levels",
+    "Tenant context must be thread-safe (using Current attributes or request context)"
+  ],
+  "edge_cases": [
+    "Request without subdomain/domain - redirect to default tenant or show tenant selection",
+    "Invalid or non-existent tenant subdomain - show 404 or tenant not found error",
+    "User belongs to multiple tenants - provide tenant switcher, scope to selected tenant",
+    "Shared model accessed without tenant context - show error or use global scope",
+    "Tenant deletion with large dataset - use background job, show progress, allow cancellation",
+    "Concurrent tenant creation with same subdomain - database unique constraint prevents duplicate",
+    "Tenant data migration - must preserve tenant_id, validate data integrity",
+    "Super admin accessing tenant data - must explicitly set tenant context, log access"
+  ],
+  "compliance_requirements": [
+    "Tenant data must be completely isolated (no cross-tenant data leakage)",
+    "Tenant access must be logged for audit purposes",
+    "Data export must only include current tenant's data",
+    "Backup and restore must preserve tenant isolation",
+    "GDPR compliance requires tenant-specific data deletion",
+    "Database queries must use parameterized queries to prevent SQL injection"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Tenant identifier (subdomain, domain, or ID)",
+      "Tenant model attributes (name, subdomain, settings, etc.)",
+      "Current tenant context (from request or session)",
+      "Model associations and scoping requirements"
+    ],
+    "outputs": [
+      "Tenant-scoped data queries",
+      "Tenant context (Current.tenant)",
+      "Tenant switching mechanism",
+      "Isolated data per tenant",
+      "Tenant-specific configurations"
+    ]
+  },
+  "user_journeys": [
+    "User accesses app via subdomain - tenant is identified, context is set, user sees tenant-specific data",
+    "User switches tenants - selects new tenant, context updates, redirects to tenant-specific dashboard",
+    "Admin creates new tenant - provides subdomain and details, tenant is created, default data is seeded",
+    "User creates record - record is automatically scoped to current tenant",
+    "Admin views tenant data - sees only current tenant's data, cannot access other tenants",
+    "Super admin switches tenant context - explicitly sets tenant, accesses that tenant's data, logs access"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given tenant subdomain access, when user visits app via subdomain, then tenant context is set and data is scoped",
+    "Given record creation, when user creates record, then tenant_id is automatically set to current tenant",
+    "Given data query, when model is queried, then only current tenant's records are returned",
+    "Given tenant switching, when user selects different tenant, then context updates and data refreshes",
+    "Given cross-tenant access attempt, when user tries to access other tenant's data, then access is denied with error"
+  ],
+  "open_questions": [
+    "What multi-tenancy strategy should be used? (row-based, schema-based, database-per-tenant?)",
+    "How is tenant identified? (subdomain, domain, path parameter, header?)",
+    "Should tenants share the same database or have separate databases?",
+    "What models need tenant scoping? (all models or specific ones?)",
+    "Are there shared models that should be accessible to all tenants?",
+    "Should super admin functionality be included? (access all tenants?)",
+    "What is the tenant switching mechanism? (dropdown, separate login, etc.)",
+    "How should tenant-specific configurations be stored? (database, environment variables?)"
+  ],
+  "assumptions": [
+    "Row-based multi-tenancy will be used (tenant_id column on models)",
+    "Subdomain-based tenant identification will be used",
+    "ActsAsTenant or similar gem may be used for scoping",
+    "PostgreSQL will be used as the database",
+    "Rails 7+ will be used",
+    "All tenant-scoped models will have tenant_id foreign key",
+    "Current tenant will be stored in Current.tenant (Rails Current attributes)",
+    "Default scope will be applied to tenant-scoped models"
+  ],
+  "confidence": "medium"
+}
+

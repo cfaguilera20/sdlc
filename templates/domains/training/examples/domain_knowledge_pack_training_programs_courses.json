@@ -1,0 +1,114 @@
+{
+  "domain": "Training - Programs & Courses",
+  "glossary": [
+    {
+      "term": "Training Program",
+      "definition": "A structured learning path consisting of multiple courses and resources"
+    },
+    {
+      "term": "Course",
+      "definition": "A specific learning unit with defined content and objectives"
+    },
+    {
+      "term": "Training Resource",
+      "definition": "Learning material such as videos, documents, assessments, or interactive content"
+    },
+    {
+      "term": "Training Provider",
+      "definition": "External organization or vendor that provides training content or services"
+    },
+    {
+      "term": "Instructor",
+      "definition": "Person who delivers training, either internal employee or external trainer"
+    }
+  ],
+  "business_rules": [
+    "Training programs must have defined structure and learning objectives",
+    "Courses must be associated with at least one training program",
+    "Resources must be linked to courses or programs",
+    "Training providers must be registered before their content can be used",
+    "Instructors must be assigned to courses that require live instruction",
+    "Program phases must be completed in sequence",
+    "Resource access requires appropriate permissions",
+    "Content versioning must be maintained for updates",
+    "Training catalog must be searchable and filterable",
+    "Programs can be mandatory or optional based on role or department"
+  ],
+  "calculations_or_formulas": [
+    "Program completion = (completed_courses / total_courses) * 100",
+    "Course duration = sum of all resource durations",
+    "Resource utilization = (accesses / total_participants) * 100",
+    "Program effectiveness = (completed_programs / enrolled_programs) * 100"
+  ],
+  "invariants": [
+    "Training program must have at least one course",
+    "Course must have at least one resource or instructor",
+    "Resource must be associated with valid course or program",
+    "Instructor must be assigned to courses requiring instruction",
+    "Program structure must be valid (phases in order, no circular dependencies)"
+  ],
+  "edge_cases": [
+    "Training program is updated while participants are enrolled - system versions program, maintains participant progress in original version",
+    "Course resource is removed - system handles enrolled participants, may require alternative resource or course modification",
+    "Instructor becomes unavailable - system allows reassignment or rescheduling of instructor-led sessions",
+    "Training provider contract expires - system flags content, may restrict access or require renewal",
+    "Resource content is updated - system versions resource, maintains access to previous version for in-progress participants",
+    "Program structure is modified - system handles enrolled participants, may require migration or completion of original structure",
+    "Course prerequisite is not met - system blocks enrollment, shows prerequisite requirements",
+    "Training catalog search returns no results - system provides suggestions or filters"
+  ],
+  "compliance_requirements": [
+    "Training content must comply with company policies and legal requirements",
+    "Training records must be retained for compliance and audit purposes",
+    "Instructor qualifications must be documented and verified",
+    "Training provider contracts must be maintained and tracked",
+    "Content licensing and copyright must be respected"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Training program definition and structure",
+      "Course definitions and content",
+      "Resource files and metadata",
+      "Training provider information",
+      "Instructor assignments and qualifications"
+    ],
+    "outputs": [
+      "Training program catalog",
+      "Course listings and details",
+      "Resource access and delivery",
+      "Training provider directory",
+      "Instructor schedules and assignments"
+    ]
+  },
+  "user_journeys": [
+    "HR creates training program - defines structure, courses, and resources, program is available in catalog",
+    "Employee browses training catalog - searches and filters programs, views program details and requirements",
+    "Instructor is assigned to course - instructor receives notification, course is marked as instructor-led",
+    "Training resource is updated - new version is created, enrolled participants are notified",
+    "Training provider is registered - provider information is stored, their content becomes available"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given training program creation, when structure and courses are defined, then program is created and available in catalog",
+    "Given course enrollment, when prerequisites are met, then enrollment is successful and participant is notified",
+    "Given resource update, when new version is created, then version is tracked and participants are notified",
+    "Given instructor assignment, when instructor is available, then assignment is created and instructor is notified",
+    "Given training catalog search, when criteria are provided, then matching programs are returned and displayed"
+  ],
+  "open_questions": [
+    "What are the specific training program types? (mandatory? optional? role-based?)",
+    "How are course prerequisites enforced? (automatic blocking? warnings? recommendations?)",
+    "What is the resource versioning strategy? (maintain all versions? migrate participants?)",
+    "How are instructor qualifications validated? (certifications? experience? internal approval?)",
+    "What is the training provider relationship model? (contract-based? content licensing?)",
+    "How are training programs customized per department or role?"
+  ],
+  "assumptions": [
+    "Training programs consist of courses and resources",
+    "Courses can be self-paced or instructor-led",
+    "Resources can be various types (video, document, assessment, interactive)",
+    "Training providers are external organizations",
+    "Instructors can be internal employees or external trainers"
+  ],
+  "confidence": "medium"
+}
+

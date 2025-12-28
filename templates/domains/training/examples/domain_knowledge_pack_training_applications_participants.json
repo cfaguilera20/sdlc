@@ -1,0 +1,110 @@
+{
+  "domain": "Training - Applications & Participants",
+  "glossary": [
+    {
+      "term": "Training Plan Application",
+      "definition": "An enrollment request for a specific training program or course"
+    },
+    {
+      "term": "Participant",
+      "definition": "An employee enrolled in a training program or course"
+    },
+    {
+      "term": "Application Phase",
+      "definition": "A stage in the training application process (e.g., pending, approved, in-progress, completed)"
+    },
+    {
+      "term": "Training Progress",
+      "definition": "The completion status and advancement through training content"
+    }
+  ],
+  "business_rules": [
+    "Training applications must be associated with valid training program or course",
+    "Participants must meet prerequisites before enrollment",
+    "Application approval may be required based on program type or cost",
+    "Training progress must be tracked and updated as participant advances",
+    "Application phases must be completed in sequence",
+    "Participants can withdraw from training with proper notification",
+    "Training completion requires all required content to be finished",
+    "Completion certificates are issued upon successful completion",
+    "Training history is maintained for each participant",
+    "Participants can be enrolled in multiple training programs simultaneously"
+  ],
+  "calculations_or_formulas": [
+    "Training progress = (completed_content / total_content) * 100",
+    "Application approval rate = (approved_applications / total_applications) * 100",
+    "Completion rate = (completed_applications / enrolled_applications) * 100",
+    "Time to complete = completion_date - enrollment_date"
+  ],
+  "invariants": [
+    "Training application must be associated with valid program or course",
+    "Participant must be active employee",
+    "Application status must be valid (pending, approved, rejected, in-progress, completed, withdrawn)",
+    "Training progress cannot exceed 100%",
+    "Application cannot be completed without finishing all required content"
+  ],
+  "edge_cases": [
+    "Participant withdraws mid-training - system handles partial completion, maintains progress history",
+    "Training program is cancelled - system notifies participants, handles refunds or rescheduling if applicable",
+    "Participant fails assessment - system allows retake based on policy, tracks attempts",
+    "Application approval is delayed - system sends reminders, may auto-approve after timeout",
+    "Participant completes training early - system marks complete, issues certificate, allows new enrollment",
+    "Training content is updated during enrollment - system maintains participant in original version or migrates based on policy",
+    "Participant is terminated - system handles training records, may complete or cancel based on policy",
+    "Prerequisites are not met - system blocks enrollment, shows missing prerequisites, allows prerequisite completion"
+  ],
+  "compliance_requirements": [
+    "Training records must be retained for compliance and audit purposes",
+    "Completion certificates must be verifiable and tamper-proof",
+    "Training history must be maintained for each employee",
+    "Application approvals must be documented with approver and reason",
+    "Training data must comply with privacy regulations"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Training program or course selection",
+      "Participant information",
+      "Application approval (if required)",
+      "Progress updates",
+      "Completion status"
+    ],
+    "outputs": [
+      "Training application record",
+      "Participant enrollment confirmation",
+      "Progress tracking data",
+      "Completion certificate",
+      "Training history record"
+    ]
+  },
+  "user_journeys": [
+    "Employee applies for training - selects program, system checks prerequisites, application is created",
+    "Manager approves training application - reviews request, approves or rejects, participant is notified",
+    "Participant starts training - accesses content, progress is tracked, reminders are sent if inactive",
+    "Participant completes training - finishes all content, passes assessments, completion is recorded",
+    "System issues completion certificate - certificate is generated, participant receives notification and certificate"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given training application, when prerequisites are met, then application is created and submitted for approval",
+    "Given application approval, when manager approves, then participant is enrolled and notified",
+    "Given training progress, when content is accessed, then progress is tracked and updated",
+    "Given training completion, when all content is finished, then completion is recorded and certificate is issued",
+    "Given participant withdrawal, when withdrawal is requested, then application is cancelled and history is maintained"
+  ],
+  "open_questions": [
+    "What is the application approval workflow? (manager? HR? automatic?)",
+    "How are prerequisites validated? (automatic check? manual review?)",
+    "What happens when training is not completed? (deadline? extension? cancellation?)",
+    "How are completion certificates generated? (template? digital signature?)",
+    "What is the process for training program cancellation? (refunds? rescheduling?)",
+    "How are training assessments handled? (passing score? retake policy?)"
+  ],
+  "assumptions": [
+    "Training applications require approval for certain program types",
+    "Participants must meet prerequisites before enrollment",
+    "Training progress is tracked automatically as content is accessed",
+    "Completion certificates are issued upon successful completion",
+    "Training history is maintained for each participant"
+  ],
+  "confidence": "medium"
+}
+
