@@ -1,0 +1,115 @@
+{
+  "domain": "Recruitment - Candidate Management",
+  "glossary": [
+    {
+      "term": "Candidate Profile",
+      "definition": "Complete record of a candidate including personal information, skills, experience, and application history"
+    },
+    {
+      "term": "Application",
+      "definition": "A candidate's submission for a specific job posting, linked to their profile"
+    },
+    {
+      "term": "Duplicate Detection",
+      "definition": "Process of identifying and merging candidate records that refer to the same person"
+    },
+    {
+      "term": "Sourcing Channel",
+      "definition": "Origin of candidate application (e.g., job board, referral, direct application, recruiter sourced)"
+    },
+    {
+      "term": "Resume Parsing",
+      "definition": "Automated extraction of candidate information from resume/CV documents"
+    }
+  ],
+  "business_rules": [
+    "Candidate email addresses must be unique per tenant (one profile per email)",
+    "Duplicate candidates are detected using email, phone, or name matching algorithms",
+    "When duplicates are detected, system suggests merge with most complete profile as primary",
+    "Candidate profiles can have multiple applications to different job postings",
+    "Resume/CV uploads are versioned - latest version is primary, previous versions are archived",
+    "Candidate data can be marked as 'Do Not Contact' with reason and expiration date",
+    "Referral tracking requires referrer employee ID and referral date",
+    "Candidate search supports full-text search on resume content, skills, and profile fields",
+    "GDPR: Candidate data retention is 2 years after last activity unless consent extended",
+    "Candidate communication preferences (email, SMS, phone) must be respected"
+  ],
+  "calculations_or_formulas": [
+    "Duplicate score = (email_match * 0.5) + (phone_match * 0.3) + (name_similarity * 0.2)",
+    "Profile completeness = (filled_required_fields / total_required_fields) * 100",
+    "Time since last activity = current_date - last_application_date"
+  ],
+  "invariants": [
+    "Candidate email must be valid and unique within tenant",
+    "Candidate profile cannot be deleted if they have active applications",
+    "Resume file size must not exceed 10MB",
+    "Candidate must have at least first name and email to create profile",
+    "Merged candidate profiles preserve all application history"
+  ],
+  "edge_cases": [
+    "Candidate applies with different email addresses - duplicate detection must identify and suggest merge",
+    "Resume parsing fails for non-standard formats - fallback to manual entry with notification",
+    "Candidate updates profile while application is in progress - changes apply to all applications",
+    "Bulk import of 10,000 candidates - requires batch processing, duplicate detection, and error reporting",
+    "Candidate requests data deletion (GDPR) while in active interview process - requires workflow pause",
+    "Referral reward calculation when referred candidate is hired - needs integration with rewards system",
+    "Candidate profile has conflicting information across multiple applications - needs conflict resolution"
+  ],
+  "compliance_requirements": [
+    "GDPR: Candidate consent must be obtained before storing personal data",
+    "GDPR: Right to access - candidates can request export of all their data",
+    "GDPR: Right to deletion - candidates can request profile deletion (with retention exceptions)",
+    "Data retention: Candidate profiles inactive for 2+ years must be archived or deleted",
+    "Resume storage must be encrypted at rest and in transit",
+    "Audit log must track all profile access and modifications"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Candidate personal information (name, email, phone, address)",
+      "Resume/CV file or text content",
+      "Skills and experience data",
+      "Application details (job posting ID, application date)",
+      "Sourcing channel information",
+      "Referral information (if applicable)"
+    ],
+    "outputs": [
+      "Candidate profile record",
+      "Parsed resume data (structured fields)",
+      "Duplicate detection results",
+      "Search and filter results",
+      "Data export (for GDPR requests)"
+    ]
+  },
+  "user_journeys": [
+    "Candidate applies via job board - profile created, resume parsed, application linked",
+    "Recruiter searches for candidates with specific skills - results ranked by relevance",
+    "System detects duplicate candidate profiles - suggests merge to recruiter",
+    "Candidate updates profile information - changes reflected across all applications",
+    "Candidate requests data export (GDPR) - system generates and delivers complete data package",
+    "Recruiter tags candidate for future opportunities - tag persists across applications"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given a new candidate application, when email doesn't exist, then new profile is created and application is linked",
+    "Given candidate with existing email, when duplicate detected, then merge suggestion is shown with confidence score",
+    "Given resume upload, when parsing succeeds, then candidate profile fields are auto-populated with extracted data",
+    "Given GDPR deletion request, when candidate has no active applications, then profile is deleted within 30 days",
+    "Given candidate search query, when results found, then candidates are ranked by relevance and profile completeness"
+  ],
+  "open_questions": [
+    "What is the exact duplicate detection algorithm? (fuzzy matching thresholds, field weights?)",
+    "How are resume parsing errors handled? (manual review queue, notification to recruiter?)",
+    "What is the maximum number of applications a candidate can have simultaneously?",
+    "Are there different profile fields required for different job types/levels?",
+    "How is candidate data synchronized with external ATS/HRIS systems?",
+    "What is the referral reward structure and calculation method?"
+  ],
+  "assumptions": [
+    "Candidate profiles are tenant-scoped (multi-tenant architecture)",
+    "Resume parsing supports common formats (PDF, DOC, DOCX) and extracts key fields",
+    "Duplicate detection runs in real-time during profile creation and periodically in background",
+    "Candidate search uses full-text indexing on resume content and profile fields",
+    "GDPR compliance features are required for EU-based tenants"
+  ],
+  "confidence": "medium"
+}
+

@@ -1,0 +1,119 @@
+{
+  "domain": "Recruitment - Offer & Onboarding",
+  "glossary": [
+    {
+      "term": "Offer Package",
+      "definition": "Complete compensation and benefits proposal including salary, equity, benefits, start date"
+    },
+    {
+      "term": "Counter-Offer",
+      "definition": "Candidate's response to initial offer with proposed changes to compensation or terms"
+    },
+    {
+      "term": "Offer Expiration",
+      "definition": "Date by which candidate must accept or decline offer, after which offer is void"
+    },
+    {
+      "term": "Pre-boarding",
+      "definition": "Process between offer acceptance and first day, including background checks, paperwork, equipment setup"
+    },
+    {
+      "term": "Background Check",
+      "definition": "Verification process for candidate's employment history, education, criminal record"
+    }
+  ],
+  "business_rules": [
+    "Offers must be approved by hiring manager and HR before being sent to candidate",
+    "Offer expiration is 7 calendar days from send date (configurable per offer type)",
+    "Counter-offers can be submitted up to 3 times before offer is withdrawn",
+    "Offer acceptance requires electronic signature and triggers pre-boarding workflow",
+    "Background checks must be initiated within 48 hours of offer acceptance",
+    "Pre-boarding tasks must be completed before candidate's start date",
+    "Offer packages must include: base salary, start date, job title, reporting manager",
+    "Equity grants require additional approval from finance/legal if above threshold",
+    "Offer revisions require re-approval if compensation changes by more than 10%",
+    "Offer decline triggers candidate feedback collection and pipeline update to 'Rejected'"
+  ],
+  "calculations_or_formulas": [
+    "Total compensation = base_salary + equity_value + benefits_value",
+    "Offer acceptance rate = accepted_offers / total_offers_sent",
+    "Time to offer = offer_sent_date - final_interview_date",
+    "Pre-boarding completion = (completed_tasks / total_tasks) * 100"
+  ],
+  "invariants": [
+    "Offer salary must be within approved salary band for job level",
+    "Offer start date cannot be in the past",
+    "Offer cannot be sent if candidate is not in 'Offer' pipeline stage",
+    "Offer acceptance requires all required fields to be completed",
+    "Background check status must be 'Cleared' before candidate can start"
+  ],
+  "edge_cases": [
+    "Candidate accepts offer but background check fails - offer is rescinded, candidate moved to 'Rejected', legal/HR notified",
+    "Counter-offer exceeds approved salary band - requires escalation and additional approval workflow",
+    "Offer expires while candidate is negotiating - system sends expiration warning 24 hours before, then auto-withdraws",
+    "Multiple offers sent to same candidate for different positions - system prevents conflicts, requires candidate choice",
+    "Pre-boarding task fails (e.g., equipment not available) - system alerts HR, may delay start date",
+    "Candidate accepts offer but then withdraws before start date - system updates status, triggers replacement search",
+    "Background check takes longer than expected - system allows conditional start with pending check status",
+    "Offer revision after initial acceptance - requires candidate re-acceptance and may trigger new approval workflow"
+  ],
+  "compliance_requirements": [
+    "Offer letters must be stored with digital signatures and timestamps (legal requirement)",
+    "Background check results must be handled per FCRA (Fair Credit Reporting Act) requirements",
+    "Salary information must comply with pay transparency laws (varies by jurisdiction)",
+    "Offer data must be retained for legal compliance (typically 7 years)",
+    "Equity grant details must be approved by finance/legal if above company threshold",
+    "Candidate personal information in offers must be encrypted and access-controlled"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Offer components (salary, equity, benefits, start date)",
+      "Approval workflow participants (hiring manager, HR, finance if needed)",
+      "Candidate acceptance/decline response",
+      "Counter-offer details (if applicable)",
+      "Background check initiation and results",
+      "Pre-boarding task assignments and completions"
+    ],
+    "outputs": [
+      "Offer letter document with signature",
+      "Offer status and acceptance tracking",
+      "Pre-boarding checklist and progress",
+      "Background check status and results",
+      "Onboarding handoff data to HRIS"
+    ]
+  },
+  "user_journeys": [
+    "Hiring manager creates offer - system routes for approval, generates offer letter template",
+    "Candidate receives offer - reviews terms, submits counter-offer with requested changes",
+    "Offer accepted - system triggers pre-boarding workflow, initiates background check, sends welcome email",
+    "Pre-boarding tasks assigned - candidate completes paperwork, HR sets up equipment and access",
+    "Background check clears - system confirms start date, sends final onboarding instructions",
+    "Candidate starts - system transfers data to HRIS, marks recruitment process complete"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given offer creation, when all required fields are filled and within salary band, then offer is submitted for approval",
+    "Given offer acceptance, when candidate signs electronically, then pre-boarding workflow is triggered and background check is initiated",
+    "Given counter-offer, when within approval limits, then revised offer is generated and sent; if exceeds limits, escalation is triggered",
+    "Given offer expiration, when 7 days pass without response, then offer is auto-withdrawn and candidate is notified",
+    "Given background check failure, when results are negative, then offer is rescinded, candidate is rejected, and HR is notified"
+  ],
+  "open_questions": [
+    "What are the exact salary band limits per job level? How are they validated?",
+    "What is the counter-offer approval workflow? (automatic up to X%, requires approval above?)",
+    "How are background check results integrated? (third-party API? manual upload?)",
+    "What pre-boarding tasks are required? (paperwork, equipment, access setup, etc.)",
+    "How is offer data transferred to HRIS? (API integration? file export? manual?)",
+    "What happens if start date needs to be delayed after offer acceptance?",
+    "Are there different offer templates for different job types/levels?"
+  ],
+  "assumptions": [
+    "Offer approval workflow supports multi-level approvals (hiring manager → HR → finance if needed)",
+    "Electronic signature platform is integrated (DocuSign, HelloSign, or similar)",
+    "Background check integration with third-party provider is available",
+    "Pre-boarding tasks are configurable per job type or department",
+    "HRIS integration exists for seamless onboarding handoff",
+    "Offer expiration warnings are sent via email 24 and 48 hours before expiration"
+  ],
+  "confidence": "medium"
+}
+

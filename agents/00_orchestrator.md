@@ -180,7 +180,7 @@ Instead, the orchestrator should **suggest running a Domain Expert Agent** befor
 
 ### What to do (interactive mode)
 1) Output a `PipelinePlan` that includes a new phase right after Context:
-   - `Domain Expert (suggested)` (human-run prompt based on `templates/domain_expert_agent_prompt.md`)
+   - `Domain Expert (suggested)` (human-run prompt based on `templates/domains/_shared/domain_expert_agent_prompt.md`)
 2) Ask for the `DomainKnowledgePack JSON` and then proceed to Backlog (Agent 02).
 
 ### What to do (one_message mode)
@@ -203,11 +203,89 @@ If you can’t obtain domain input, you must:
   - Expert A: IMSS/INFONAVIT/SAT/ISN legal & compliance
   - Expert B: calculation engine & formulas
 
-When multiple packs are produced, instruct Agent 02 (Product Analyst) to consume them as `DomainKnowledgePacks[]` and merge them (keeping conflicts as open questions).
+When multiple packs are produced, instruct Agent 02 (Product Analyst) to consume them as `DomainKnowledgePacks[]` and merge them (keeping conflicts as open_questions).
 
 ### Saving Domain Expert outputs as templates
 Domain Expert Agents automatically save their outputs as reusable templates:
 - JSON example: `sdlc/examples/domain/domain_knowledge_pack_<domain_slug>.json`
 - Template guide: `sdlc/templates/domain_expert_<domain_slug>.md`
 
-See `templates/domain_expert_agent_prompt.md` for detailed saving instructions. This ensures domain knowledge is reusable for future tickets in the same domain.
+See `templates/domains/_shared/domain_expert_agent_prompt.md` for detailed saving instructions. This ensures domain knowledge is reusable for future tickets in the same domain.
+---
+
+## Prompt format (recommended): XML-style tags
+
+Yes — the “XML tags” style is useful here because it reduces mixing **instructions vs context vs examples vs schema**.
+
+- Guide: `templates/xml_prompting_guide.md`
+- You can wrap *any* agent invocation with tags like `<instructions>`, `<context>`, `<schema>`.
+
+**Rule:** If the user provides examples, keep them inside `<examples>` so they don’t get treated as instructions.
+---
+
+## Code writing vs planning (critical)
+
+Some pipelines will end with an **ImplementationPlan** but no code changes — that is expected.
+
+- `07A/07B/07C` Implementer agents produce an **ImplementationPlan** (what to change).
+- **07W Code Writer** applies the plan to the open repo and produces a `CodeChangeSet`.
+
+### Orchestrator rule (interactive)
+After any Implementer runs (07A/07B/07C), ask:
+> “Do you want me to start 07W Code Writer now to apply the plan to your repo?”
+
+- If yes → NEXT: `07w_code_writer`
+- If no → stop with a clear instruction on how to run 07W later.
+
+### Orchestrator rule (one_message)
+Because code writing depends on the repo open in Cursor, include a `writer_prompt` in `notes` that the user can run right away, and include the `implementation_plan` artifacts in the bundle.
+
+### When to always suggest 07W
+- You have `ImplementationPlan` with file paths and step-by-step edits
+- The user said “implement now”, “write the code”, “make the PR”, or similar
+---
+
+## Run folder naming heuristic
+
+If the ticket id is missing, generate:
+- `ticket_key`: `NOID`
+- `short-slug`: 3–6 words, kebab-case, derived from the ticket title.
+
+Example:
+`runs/NOID_fix-email-claim-mismatch_20251228_120501/`
+
+Generated: 2025-12-28
+
+
+---
+
+## Agent that suggests new domain agents
+
+When the orchestrator detects repeated uncertainty (many assumptions/open_questions) in a regulated/workflow-heavy domain,
+it should suggest running:
+
+- **Agent `01x_domain_agent_scout`** — proposes specialized Domain Expert agents + where to store them.
+
+
+---
+
+## Domain template storage (scalable)
+
+Prefer grouping by domain:
+
+- Templates: `sdlc/templates/domains/<domain>/...`
+- Example packs: `sdlc/templates/domains/<domain>/examples/...`
+
+Keep shared prompts in:
+- `sdlc/templates/domains/_shared/`
+
+
+---
+
+## 01X materialize (create new domain agents)
+
+If you suggest running **01X Domain Agent Scout**, prefer the **materialize** behavior:
+- 01X returns `materialize.files[]` with full file contents for new domain agents + example packs.
+- User can paste them into the repo, or run `scripts/apply_materialize.py` to write them.
+
+This makes domain expertise scale without manual prompt-writing.

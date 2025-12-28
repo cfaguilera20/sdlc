@@ -1,0 +1,105 @@
+{
+  "domain": "Recruitment - Pipeline & Stages",
+  "glossary": [
+    {
+      "term": "Pipeline",
+      "definition": "A structured workflow representing the stages a candidate moves through during the recruitment process"
+    },
+    {
+      "term": "Stage",
+      "definition": "A specific step in the recruitment pipeline (e.g., Applied, Phone Screen, Onsite Interview, Offer)"
+    },
+    {
+      "term": "Stage Transition",
+      "definition": "The movement of a candidate from one pipeline stage to another, subject to defined rules"
+    },
+    {
+      "term": "Auto-advance",
+      "definition": "Automatic progression of a candidate to the next stage based on predefined conditions"
+    },
+    {
+      "term": "Auto-reject",
+      "definition": "Automatic rejection of a candidate based on predefined criteria or time-based rules"
+    }
+  ],
+  "business_rules": [
+    "Candidates can only move forward or backward one stage at a time (no skipping stages)",
+    "Stage transitions require appropriate permissions based on user role",
+    "Candidates cannot be moved to a 'Closed' stage if they have pending interviews",
+    "Auto-reject triggers after candidate remains in 'Applied' stage for 30 days without activity",
+    "Auto-advance occurs when all required interviews are completed with passing scores",
+    "Pipeline stages are customizable per job posting but must include at least: Applied, Screening, Interview, Offer, Hired, Rejected",
+    "Bulk stage transitions are allowed only for 'Rejected' and 'Withdrawn' stages",
+    "Stage changes must be logged with timestamp, user, and reason"
+  ],
+  "calculations_or_formulas": [
+    "Time in stage = current_date - stage_entry_date",
+    "Pipeline velocity = total_candidates / average_time_in_pipeline",
+    "Stage conversion rate = candidates_advanced_from_stage / candidates_entered_stage"
+  ],
+  "invariants": [
+    "A candidate must be in exactly one stage at any given time",
+    "Stage entry date must be <= current date",
+    "Stage transition history must be immutable once logged",
+    "Candidates in 'Hired' or 'Rejected' stages cannot transition to other stages"
+  ],
+  "edge_cases": [
+    "Candidate moves to 'Offer' stage but offer expires - should auto-transition to 'Rejected' or previous stage",
+    "Multiple recruiters attempt to move same candidate simultaneously - requires conflict resolution",
+    "Pipeline template changes while candidates are in progress - need migration strategy",
+    "Candidate withdraws application while in interview stage - transition to 'Withdrawn' with notification",
+    "Stage transition fails due to missing required data - rollback to previous stage with error notification",
+    "Bulk operation on 1000+ candidates - requires batch processing and progress tracking"
+  ],
+  "compliance_requirements": [
+    "All stage transitions must be auditable with user, timestamp, and reason",
+    "Candidates must be notified of stage changes per GDPR requirements (if consent given)",
+    "Stage transition data must be retained for legal compliance period (typically 7 years)",
+    "Bulk operations must log individual actions for each candidate"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Current stage ID",
+      "Target stage ID",
+      "User ID (who is making the transition)",
+      "Transition reason (optional but recommended)",
+      "Candidate ID",
+      "Job posting ID"
+    ],
+    "outputs": [
+      "Updated candidate stage",
+      "Stage transition log entry",
+      "Notification events (if applicable)",
+      "Updated pipeline metrics"
+    ]
+  },
+  "user_journeys": [
+    "Recruiter moves candidate from 'Applied' to 'Phone Screen' after initial review",
+    "System auto-advances candidate from 'Phone Screen' to 'Onsite Interview' when phone screen passes",
+    "Hiring manager rejects candidate in 'Onsite Interview' stage, moving to 'Rejected'",
+    "Candidate accepts offer, system moves from 'Offer' to 'Hired' stage",
+    "Candidate withdraws application, system moves to 'Withdrawn' stage and notifies recruiter"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given a candidate in 'Applied' stage, when recruiter moves to 'Phone Screen', then stage is updated, transition is logged, and candidate is notified",
+    "Given a candidate with all interviews passed, when auto-advance condition is met, then candidate moves to 'Offer' stage automatically",
+    "Given a candidate in 'Offer' stage, when offer expires after 7 days, then candidate auto-transitions to 'Rejected' stage",
+    "Given bulk selection of 50 candidates, when recruiter moves all to 'Rejected', then each transition is logged individually and notifications are sent"
+  ],
+  "open_questions": [
+    "What are the exact auto-advance conditions? (e.g., all interviews passed, minimum score threshold?)",
+    "Can candidates be moved backward in pipeline? If yes, what are the allowed backward transitions?",
+    "What happens to scheduled interviews when a candidate is moved to 'Rejected' stage?",
+    "Are there different pipeline templates per job type/level?",
+    "How are stage transitions handled in multi-tenant scenarios with different pipeline configurations?"
+  ],
+  "assumptions": [
+    "Pipeline stages are defined at the job posting level and can be customized",
+    "Stage transitions require appropriate user permissions",
+    "All stage transitions are logged for audit purposes",
+    "System supports both manual and automated stage transitions",
+    "Pipeline metrics are calculated in real-time or near real-time"
+  ],
+  "confidence": "medium"
+}
+

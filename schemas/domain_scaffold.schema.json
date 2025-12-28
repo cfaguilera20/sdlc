@@ -1,0 +1,71 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "DomainScaffold",
+    "type": "object",
+    "required": [
+      "domain_slug",
+      "domain_title",
+      "recommended_sub_agents",
+      "materialize",
+      "how_to_use_in_cursor"
+    ],
+    "properties": {
+      "domain_slug": {
+        "type": "string",
+        "description": "kebab_case domain identifier (e.g. recruitment, payroll_mx)"
+      },
+      "domain_title": {
+        "type": "string",
+        "description": "Human readable domain name"
+      },
+      "recommended_sub_agents": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["agent_name", "slug", "focus", "schema"],
+          "properties": {
+            "agent_name": { "type": "string" },
+            "slug": { "type": "string" },
+            "focus": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "schema": {
+              "type": "string",
+              "description": "Schema the agent must output"
+            }
+          }
+        }
+      },
+      "materialize": {
+        "type": "object",
+        "required": ["files"],
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["path", "type", "content", "reason"],
+              "properties": {
+                "path": { "type": "string" },
+                "type": {
+                  "type": "string",
+                  "enum": ["template_md", "example_json", "doc_md"]
+                },
+                "content": { "type": "string" },
+                "reason": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "orchestrator_patch_suggestions": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "how_to_use_in_cursor": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    }
+  }

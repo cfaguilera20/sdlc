@@ -1,0 +1,29 @@
+{
+  "domain": "Payroll MX - INFONAVIT",
+  "business_rules": [
+    "Cada empleado puede tener 0..N cr\u00e9ditos activos; cada cr\u00e9dito tiene tipo, vigencia y reglas de descuento.",
+    "La deducci\u00f3n INFONAVIT por periodo debe respetar l\u00edmites/topes y reglas de suspensi\u00f3n seg\u00fan incidencias."
+  ],
+  "edge_cases": [
+    "Cr\u00e9dito inicia o termina a mitad de periodo.",
+    "Empleado con ausencias/incapacidades que alteran base o descuento.",
+    "Finiquito: liquidaci\u00f3n y ajustes del descuento."
+  ],
+  "compliance_requirements": [
+    "Auditar cambios en cr\u00e9ditos: alta, modificaci\u00f3n, suspensi\u00f3n, reactivaci\u00f3n.",
+    "Trazabilidad: monto descontado \u2192 tipo de cr\u00e9dito \u2192 insumos del periodo."
+  ],
+  "acceptance_criteria_suggestions": [
+    "Dado un cr\u00e9dito tipo X con vigencia Y, al procesar periodo P se calcula descuento conforme al tipo X y se registra desglose.",
+    "Si hay suspensi\u00f3n por incidencia, el descuento se omite y se registra motivo."
+  ],
+  "open_questions": [
+    "\u00bfQu\u00e9 tipos de cr\u00e9dito INFONAVIT soportar\u00e1 la primera versi\u00f3n?",
+    "\u00bfC\u00f3mo se capturan incidencias y c\u00f3mo afectan el descuento en el producto?"
+  ],
+  "assumptions": [
+    "Las reglas por tipo de cr\u00e9dito se configuran y versionan por vigencia.",
+    "El motor de n\u00f3mina puede ejecutar deducciones condicionadas a incidencias del periodo."
+  ],
+  "confidence": "medium"
+}

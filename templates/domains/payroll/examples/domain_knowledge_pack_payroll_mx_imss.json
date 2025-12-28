@@ -1,0 +1,39 @@
+{
+  "domain": "Payroll MX - IMSS",
+  "glossary": [
+    {
+      "term": "SBC",
+      "definition": "Salario Base de Cotizaci\u00f3n usado para calcular cuotas IMSS."
+    },
+    {
+      "term": "UMA",
+      "definition": "Unidad de Medida y Actualizaci\u00f3n usada para topes."
+    }
+  ],
+  "business_rules": [
+    "Las cuotas IMSS se calculan usando tablas/factores vigentes por fecha efectiva (effective dating).",
+    "El SBC debe derivarse de percepciones integrables seg\u00fan configuraci\u00f3n y reglas vigentes."
+  ],
+  "edge_cases": [
+    "Alta/baja a mitad de periodo con prorrateo de bases.",
+    "Cambios retroactivos de salario que requieren rec\u00e1lculo de periodos previos.",
+    "Incapacidades/ausencias con tratamiento distinto por tipo."
+  ],
+  "compliance_requirements": [
+    "Mantener historial de tablas IMSS por vigencia y auditor\u00eda de cambios.",
+    "Generar evidencia trazable: insumos \u2192 bases \u2192 factores \u2192 cuotas."
+  ],
+  "acceptance_criteria_suggestions": [
+    "Dado un empleado con SBC X y vigencia Y, al calcular n\u00f3mina del periodo P se aplican factores IMSS vigentes en Y y se produce desglose por ramo.",
+    "Si cambia el SBC retroactivo, el sistema recalcula y registra ajuste con referencia a la vigencia."
+  ],
+  "open_questions": [
+    "\u00bfQu\u00e9 definici\u00f3n de SBC se usa en el producto hoy y qu\u00e9 percepciones integran?",
+    "\u00bfC\u00f3mo se almacenan y versionan tablas IMSS actualmente?"
+  ],
+  "assumptions": [
+    "Las tablas y factores se cargan por vigencia (effective dating) y se pueden consultar por fecha del periodo.",
+    "El sistema es multi-tenant y las tablas pueden variar por cliente solo si negocio lo permite."
+  ],
+  "confidence": "medium"
+}

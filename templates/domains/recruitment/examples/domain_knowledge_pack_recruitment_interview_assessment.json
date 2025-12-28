@@ -1,0 +1,116 @@
+{
+  "domain": "Recruitment - Interview & Assessment",
+  "glossary": [
+    {
+      "term": "Interview Type",
+      "definition": "Category of interview (phone screen, video interview, onsite, panel, technical assessment)"
+    },
+    {
+      "term": "Interview Panel",
+      "definition": "Group of interviewers conducting an interview together (typically for onsite/final rounds)"
+    },
+    {
+      "term": "Feedback Form",
+      "definition": "Structured form for interviewers to provide candidate evaluation and ratings"
+    },
+    {
+      "term": "Assessment Score",
+      "definition": "Numerical or categorical rating given to candidate based on interview performance"
+    },
+    {
+      "term": "Interview Outcome",
+      "definition": "Final decision from interview: Pass, Fail, Hold (needs more information)"
+    }
+  ],
+  "business_rules": [
+    "Interviews must be scheduled at least 24 hours in advance (no same-day scheduling)",
+    "Interviewers must provide feedback within 48 hours of interview completion",
+    "Panel interviews require at least 2 interviewers, maximum 5",
+    "Video interviews require calendar integration and video platform link generation",
+    "Technical assessments can be scheduled independently or as part of interview sequence",
+    "Interview cancellation requires 24-hour notice; last-minute cancellations are marked",
+    "Interview feedback is required before candidate can advance to next stage",
+    "Interview outcome is determined by: all interviewers pass = pass, any fail = fail, mixed = hold",
+    "Interview recordings (if enabled) require candidate consent and are stored for 90 days",
+    "Interview scheduling respects interviewer timezone and working hours"
+  ],
+  "calculations_or_formulas": [
+    "Interview score = average of all interviewer ratings",
+    "Overall assessment = weighted average of (technical_score * 0.4) + (cultural_fit * 0.3) + (communication * 0.3)",
+    "Time to schedule = interview_date - request_date",
+    "Interview completion rate = completed_interviews / scheduled_interviews"
+  ],
+  "invariants": [
+    "Interview cannot be scheduled in the past",
+    "Interviewer cannot be double-booked for overlapping time slots",
+    "Interview feedback cannot be modified after 7 days (locked for audit)",
+    "Candidate must be in appropriate pipeline stage to schedule interview",
+    "Interview date must be within job posting's active period"
+  ],
+  "edge_cases": [
+    "Interviewer cancels 2 hours before interview - system sends notification, attempts to find replacement, or reschedules",
+    "Multiple interviewers provide conflicting feedback (one pass, one fail) - system flags for hiring manager review",
+    "Video interview platform fails during interview - backup scheduling option or reschedule required",
+    "Candidate no-shows for interview - system marks as 'no-show', notifies recruiter, may auto-reject after 2 no-shows",
+    "Interview feedback is incomplete (missing required fields) - system blocks stage advancement until complete",
+    "Interview scheduled across timezones - system displays times in both interviewer and candidate timezones",
+    "Panel interview where one interviewer is unavailable - system allows partial panel or reschedule",
+    "Technical assessment expires before candidate completes - system allows extension request or marks incomplete"
+  ],
+  "compliance_requirements": [
+    "Interview recordings require explicit candidate consent (GDPR/legal requirement)",
+    "Interview feedback must be stored with timestamp and cannot be deleted (audit requirement)",
+    "Interview scheduling must comply with candidate availability and timezone preferences",
+    "Interview data must be retained for legal compliance (typically 2-3 years)",
+    "Bias mitigation: Interview feedback forms must use structured criteria, not free-form only"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Interview type and duration",
+      "Interviewer IDs and availability",
+      "Candidate ID and availability",
+      "Interview date, time, and timezone",
+      "Interview location or video platform link",
+      "Interview agenda or assessment details"
+    ],
+    "outputs": [
+      "Scheduled interview with calendar invites",
+      "Interview feedback records",
+      "Assessment scores and ratings",
+      "Interview outcome (pass/fail/hold)",
+      "Interview metrics and analytics"
+    ]
+  },
+  "user_journeys": [
+    "Recruiter schedules phone screen - system finds interviewer availability, sends calendar invites to both parties",
+    "Interviewer completes interview and submits feedback - system calculates score, updates candidate status",
+    "Candidate completes technical assessment - system scores automatically, results linked to candidate profile",
+    "Panel interview scheduled - system coordinates multiple interviewer calendars, sends group invites",
+    "Interview feedback triggers auto-advance - when all interviews pass, candidate moves to offer stage",
+    "Interview no-show - system marks candidate, notifies recruiter, may trigger auto-reject workflow"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given interview scheduling request, when interviewer and candidate availability matches, then interview is scheduled with calendar invites sent",
+    "Given interview completion, when all required feedback is submitted, then interview outcome is calculated and candidate status updated",
+    "Given panel interview, when at least 2 interviewers provide feedback, then outcome is determined (unanimous pass = pass, any fail = fail)",
+    "Given interview no-show, when candidate doesn't attend, then interview is marked no-show and recruiter is notified",
+    "Given technical assessment, when candidate completes within time limit, then score is calculated and linked to profile"
+  ],
+  "open_questions": [
+    "What is the exact interview outcome determination logic? (unanimous required? majority vote? weighted scores?)",
+    "How are interview conflicts resolved when multiple interviewers have different availability?",
+    "What happens to scheduled interviews when a candidate is rejected in a previous stage?",
+    "Are there different interview types required for different job levels? (e.g., executive vs. entry-level)",
+    "How are interview recordings stored and accessed? (cloud storage, retention policy?)",
+    "What is the process for interview feedback disputes or appeals?"
+  ],
+  "assumptions": [
+    "Calendar integration supports Google Calendar and Microsoft Outlook",
+    "Video interview platform integration is available (Zoom, Teams, or custom)",
+    "Interview feedback forms are customizable per job posting or interview type",
+    "Interview scheduling respects business hours and timezone preferences",
+    "Technical assessments can be integrated with third-party coding platforms (HackerRank, Codility, etc.)"
+  ],
+  "confidence": "medium"
+}
+

@@ -1,0 +1,14 @@
+{
+  "implementation_plans": [
+    {
+      "stack": "laravel",
+      "tasks": [
+        {
+          "task": "Add Form Request for payroll calculation endpoint",
+          "files_touched": ["app/Http/Requests/Payroll/CalculateRequest.php", "app/Http/Controllers/PayrollController.php"]
+        }
+      ]
+    }
+  ],
+  "notes": ["Run 07W with this bundle in Cursor (repo must be open)."]
+}

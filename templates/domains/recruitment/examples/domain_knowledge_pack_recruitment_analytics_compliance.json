@@ -1,0 +1,123 @@
+{
+  "domain": "Recruitment - Analytics & Compliance",
+  "glossary": [
+    {
+      "term": "Time-to-Fill",
+      "definition": "Number of days from job posting creation to offer acceptance"
+    },
+    {
+      "term": "Time-to-Hire",
+      "definition": "Number of days from candidate application to offer acceptance"
+    },
+    {
+      "term": "Offer Acceptance Rate",
+      "definition": "Percentage of offers that are accepted by candidates"
+    },
+    {
+      "term": "Source of Hire",
+      "definition": "Sourcing channel that led to a successful hire (e.g., job board, referral, direct)"
+    },
+    {
+      "term": "EEOC Reporting",
+      "definition": "Equal Employment Opportunity Commission reporting requirements for diversity and hiring statistics"
+    }
+  ],
+  "business_rules": [
+    "Time-to-fill is calculated as: offer_acceptance_date - job_posting_created_date",
+    "Time-to-hire is calculated as: offer_acceptance_date - candidate_application_date",
+    "Offer acceptance rate = (accepted_offers / total_offers_sent) * 100",
+    "Source of hire is determined by the sourcing channel of the hired candidate's first application",
+    "Diversity metrics are calculated based on self-reported candidate demographics (voluntary)",
+    "Recruitment funnel metrics are calculated at each pipeline stage",
+    "Reports must support date range filtering (custom ranges and predefined: last 30/90/365 days)",
+    "Export functionality must support CSV, Excel, and PDF formats",
+    "Real-time dashboards update every 15 minutes; historical reports use batch processing",
+    "Anonymized reports can be shared externally; full reports require access controls"
+  ],
+  "calculations_or_formulas": [
+    "Time-to-fill = offer_acceptance_date - job_posting_created_date",
+    "Time-to-hire = offer_acceptance_date - candidate_application_date",
+    "Offer acceptance rate = (accepted_offers / total_offers_sent) * 100",
+    "Stage conversion rate = candidates_advanced / candidates_entered",
+    "Cost per hire = total_recruitment_costs / number_of_hires",
+    "Source effectiveness = hires_from_source / applications_from_source"
+  ],
+  "invariants": [
+    "Metrics cannot be calculated for future dates",
+    "Report data must be consistent across export formats",
+    "Diversity data is only included if candidate provided consent",
+    "Anonymized reports must not contain PII (personally identifiable information)",
+    "Audit logs must track all report generation and data access"
+  ],
+  "edge_cases": [
+    "Job posting is reposted after closing - time-to-fill calculation must use original posting date",
+    "Candidate applies to multiple positions - each application tracked separately for metrics",
+    "Offer is declined and new offer sent to different candidate - both offers counted in acceptance rate",
+    "Diversity data is incomplete (some candidates didn't provide) - metrics show 'N/A' or exclude incomplete data",
+    "Report generation for large date range (2+ years) - requires batch processing and progress indicator",
+    "Export contains sensitive data - system requires additional approval or masking",
+    "Real-time dashboard shows different numbers than historical report - due to data updates, both are valid",
+    "EEOC report requires specific date ranges and formats - system must support regulatory templates"
+  ],
+  "compliance_requirements": [
+    "EEOC reporting: Annual EEO-1 report generation with required demographic categories",
+    "GDPR: Candidate data in reports must be anonymized or pseudonymized unless explicit consent",
+    "Data retention: Recruitment metrics must be retained for 7 years (legal compliance)",
+    "Access controls: Sensitive reports (salary data, diversity) require additional permissions",
+    "Audit trail: All report generation, export, and data access must be logged",
+    "Data privacy: Reports exported must be encrypted and access-controlled",
+    "Anonymization: External reports must remove PII (names, emails, phone numbers)"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Job posting data (creation date, close date, status)",
+      "Candidate application data (application date, source, demographics)",
+      "Pipeline stage transitions (dates, stages)",
+      "Offer data (send date, acceptance date, decline date)",
+      "Interview data (scheduled date, completion date, feedback scores)",
+      "Hire data (start date, job title, department)"
+    ],
+    "outputs": [
+      "Recruitment metrics (time-to-fill, time-to-hire, acceptance rate)",
+      "Funnel analytics (conversion rates by stage)",
+      "Source effectiveness reports",
+      "Diversity and inclusion metrics",
+      "EEOC compliance reports",
+      "Custom dashboards and visualizations"
+    ]
+  },
+  "user_journeys": [
+    "HR manager views recruitment dashboard - sees real-time metrics for active job postings",
+    "Recruiter exports candidate pipeline report - generates CSV with all candidates in pipeline stages",
+    "Compliance officer generates EEOC report - system creates formatted report with required demographics",
+    "Hiring manager views source effectiveness - sees which channels produce best candidates",
+    "Analytics team creates custom report - uses date range and filter options to analyze recruitment trends",
+    "Executive reviews quarterly recruitment metrics - dashboard shows high-level KPIs and trends"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given recruitment dashboard request, when data is available, then metrics are calculated and displayed within 15 minutes of data update",
+    "Given report export request, when date range is selected, then CSV/Excel file is generated with all requested metrics",
+    "Given EEOC report generation, when annual reporting period is selected, then formatted report matches regulatory requirements",
+    "Given diversity metrics request, when candidate consent is given, then metrics are calculated and displayed; otherwise marked as 'N/A'",
+    "Given large date range report, when 2+ years of data requested, then batch processing is used with progress indicator"
+  ],
+  "open_questions": [
+    "What are the exact EEOC reporting requirements? (categories, date ranges, format specifications?)",
+    "How are diversity metrics calculated when data is incomplete? (exclude? estimate? mark as incomplete?)",
+    "What is the data refresh frequency for real-time dashboards? (15 min? 1 hour? configurable?)",
+    "Are there different metric definitions for different job types/levels?",
+    "How are recruitment costs tracked and integrated into cost-per-hire calculations?",
+    "What is the anonymization algorithm for external report sharing?",
+    "Are there regulatory requirements beyond EEOC? (state-specific? industry-specific?)"
+  ],
+  "assumptions": [
+    "Recruitment metrics are calculated from pipeline stage transitions and offer data",
+    "Diversity data is self-reported by candidates and is voluntary",
+    "Report generation supports both real-time and batch processing modes",
+    "Export formats (CSV, Excel, PDF) maintain data consistency",
+    "Dashboard visualizations use standard charting libraries (charts.js, d3.js, or similar)",
+    "Audit logging tracks all data access for compliance purposes"
+  ],
+  "confidence": "medium"
+}
+

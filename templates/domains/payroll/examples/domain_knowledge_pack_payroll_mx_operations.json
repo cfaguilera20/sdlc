@@ -1,0 +1,2434 @@
+{
+  "domain": "Payroll MX - Operations",
+  "version": "1.1",
+  "description": "Comprehensive payroll scenarios for Mexican payroll operations testing and validation",
+  "scenarios": [
+    {
+      "id": "SCENARIO-SEMANAL-001",
+      "name": "Nómina Semanal - Sin Variaciones",
+      "period_type": "semanal",
+      "period_days": 7,
+      "description": "Nómina semanal básica sin faltas, bonos, ni horas extras",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-07",
+        "payment_date": "2024-01-08"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 7,
+          "variations": [],
+          "expected_calculations": {
+            "gross_pay": 3453.94,
+            "isr": 0.00,
+            "imss_employee": 140.00,
+            "imss_employer": 420.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 3313.94
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify worked days = 7",
+        "Verify daily salary = 15000 / 30.4 = 493.42",
+        "Verify gross pay = 493.42 × 7 = 3453.94",
+        "Verify ISR calculation (should be 0 for low income)",
+        "Verify IMSS contributions",
+        "Verify net pay = gross_pay - deductions - withholdings"
+      ],
+      "compliance_checks": [
+        "SAT: ISR calculation correct",
+        "IMSS: Contributions within limits",
+        "CFDI: Can be generated"
+      ]
+    },
+    {
+      "id": "SCENARIO-SEMANAL-002",
+      "name": "Nómina Semanal - Con Faltas",
+      "period_type": "semanal",
+      "period_days": 7,
+      "description": "Nómina semanal con 2 días de falta injustificada",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-07",
+        "payment_date": "2024-01-08"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 5,
+          "absences": 2,
+          "absence_type": "unjustified",
+          "variations": [
+            {
+              "type": "absence",
+              "days": 2,
+              "type_detail": "unjustified"
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay": 2467.10,
+            "isr": 0.00,
+            "imss_employee": 100.00,
+            "imss_employer": 300.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 2367.10
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify worked days = 5 (7 - 2 absences)",
+        "Verify gross pay = 493.42 × 5 = 2467.10",
+        "Verify IMSS prorated for 5 days",
+        "Verify deductions adjusted"
+      ]
+    },
+    {
+      "id": "SCENARIO-SEMANAL-003",
+      "name": "Nómina Semanal - Con Bonos",
+      "period_type": "semanal",
+      "period_days": 7,
+      "description": "Nómina semanal con bono de asistencia y bono de puntualidad",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-07",
+        "payment_date": "2024-01-08"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 7,
+          "variations": [
+            {
+              "type": "bonus",
+              "name": "Bono de Asistencia",
+              "amount": 500.00
+            },
+            {
+              "type": "bonus",
+              "name": "Bono de Puntualidad",
+              "amount": 300.00
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay": 4253.94,
+            "bonuses": 800.00,
+            "isr": 50.00,
+            "imss_employee": 170.00,
+            "imss_employer": 510.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 4033.94
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify gross pay includes bonuses",
+        "Verify ISR calculated on total (salary + bonuses)",
+        "Verify IMSS calculated on total"
+      ]
+    },
+    {
+      "id": "SCENARIO-SEMANAL-004",
+      "name": "Nómina Semanal - Con Horas Extras Triples",
+      "period_type": "semanal",
+      "period_days": 7,
+      "description": "Nómina semanal con 8 horas extras triples",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-07",
+        "payment_date": "2024-01-08"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "hourly_salary": 61.68,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 7,
+          "variations": [
+            {
+              "type": "overtime",
+              "hours": 8,
+              "multiplier": 3,
+              "type_detail": "triple"
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay": 4934.50,
+            "overtime": 1480.32,
+            "isr": 120.00,
+            "imss_employee": 197.00,
+            "imss_employer": 591.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 4617.50
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify overtime = 61.68 × 8 × 3 = 1480.32",
+        "Verify gross pay = salary + overtime",
+        "Verify ISR calculated on total"
+      ]
+    },
+    {
+      "id": "SCENARIO-SEMANAL-005",
+      "name": "Nómina Semanal - Con Trabajo Séptimo Día",
+      "period_type": "semanal",
+      "period_days": 7,
+      "description": "Nómina semanal con trabajo en séptimo día",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-07",
+        "payment_date": "2024-01-08"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 7,
+          "variations": [
+            {
+              "type": "seventh_day",
+              "worked": true
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay": 3946.36,
+            "seventh_day_payment": 493.42,
+            "isr": 0.00,
+            "imss_employee": 158.00,
+            "imss_employer": 474.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 3788.36
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify seventh day payment = daily salary",
+        "Verify gross pay includes seventh day",
+        "Verify calculations correct"
+      ]
+    },
+    {
+      "id": "SCENARIO-QUINCENAL-001",
+      "name": "Nómina Quincenal - Sin Variaciones",
+      "period_type": "quincenal",
+      "period_days": 15,
+      "description": "Nómina quincenal básica sin variaciones",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-15",
+        "payment_date": "2024-01-16"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 15,
+          "variations": [],
+          "expected_calculations": {
+            "gross_pay": 7401.30,
+            "isr": 150.00,
+            "imss_employee": 296.00,
+            "imss_employer": 888.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 6955.30
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify worked days = 15",
+        "Verify gross pay = 493.42 × 15 = 7401.30",
+        "Verify ISR calculation",
+        "Verify IMSS contributions"
+      ]
+    },
+    {
+      "id": "SCENARIO-CATORCENAL-001",
+      "name": "Nómina Catorcenal - Sin Variaciones",
+      "period_type": "catorcenal",
+      "period_days": 14,
+      "description": "Nómina catorcenal básica sin variaciones",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-14",
+        "payment_date": "2024-01-15"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 14,
+          "variations": [],
+          "expected_calculations": {
+            "gross_pay": 6907.88,
+            "isr": 120.00,
+            "imss_employee": 276.00,
+            "imss_employer": 828.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 6511.88
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify worked days = 14",
+        "Verify gross pay = 493.42 × 14 = 6907.88",
+        "Verify ISR calculation",
+        "Verify IMSS contributions"
+      ]
+    },
+    {
+      "id": "SCENARIO-MENSUAL-001",
+      "name": "Nómina Mensual - Sin Variaciones",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Nómina mensual básica sin variaciones",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 30,
+          "variations": [],
+          "expected_calculations": {
+            "gross_pay": 14802.60,
+            "isr": 450.00,
+            "imss_employee": 592.00,
+            "imss_employer": 1776.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 13760.60
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify worked days = 30",
+        "Verify gross pay = 493.42 × 30 = 14802.60",
+        "Verify ISR calculation",
+        "Verify IMSS contributions"
+      ]
+    },
+    {
+      "id": "SCENARIO-MENSUAL-002",
+      "name": "Nómina Mensual - Con Prima Vacacional",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Nómina mensual con prima vacacional",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 30,
+          "years_of_service": 3,
+          "vacation_days": 10,
+          "variations": [
+            {
+              "type": "vacation_bonus",
+              "vacation_days": 10,
+              "vacation_salary": 4934.20,
+              "bonus_percentage": 0.25,
+              "bonus_amount": 1233.55
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay": 16036.15,
+            "vacation_bonus": 1233.55,
+            "isr": 550.00,
+            "imss_employee": 641.00,
+            "imss_employer": 1923.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 14845.15
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify vacation bonus = vacation_salary × 0.25",
+        "Verify gross pay includes vacation bonus",
+        "Verify ISR calculated on total"
+      ]
+    },
+    {
+      "id": "SCENARIO-EXTRAORDINARY-001",
+      "name": "Aguinaldo - Nómina Extraordinaria",
+      "period_type": "extraordinary",
+      "extraordinary_type": "aguinaldo",
+      "description": "Nómina extraordinaria de aguinaldo (bono de fin de año)",
+      "period_dates": {
+        "start_date": "2024-12-01",
+        "end_date": "2024-12-31",
+        "payment_date": "2024-12-20"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days_year": 365,
+          "variations": [
+            {
+              "type": "aguinaldo",
+              "minimum_days": 15,
+              "proportional": true,
+              "worked_days": 365,
+              "calculation": "daily_salary × 15 × (worked_days / 365)"
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay": 7401.30,
+            "aguinaldo": 7401.30,
+            "isr": 200.00,
+            "imss_employee": 296.00,
+            "imss_employer": 888.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 6905.30
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify aguinaldo = 493.42 × 15 × (365/365) = 7401.30",
+        "Verify minimum 15 days (LFT requirement)",
+        "Verify ISR calculated on aguinaldo",
+        "Verify IMSS contributions"
+      ],
+      "compliance_checks": [
+        "LFT: Minimum 15 days aguinaldo",
+        "SAT: ISR calculation on aguinaldo",
+        "IMSS: Contributions on aguinaldo"
+      ]
+    },
+    {
+      "id": "SCENARIO-EXTRAORDINARY-002",
+      "name": "PTU (Utilidades) - Nómina Extraordinaria",
+      "period_type": "extraordinary",
+      "extraordinary_type": "ptu",
+      "description": "Nómina extraordinaria de PTU (Participación de los Trabajadores en las Utilidades)",
+      "period_dates": {
+        "start_date": "2024-05-01",
+        "end_date": "2024-05-31",
+        "payment_date": "2024-06-01"
+      },
+      "company_data": {
+        "company_profits": 1000000.00,
+        "ptu_percentage": 0.10,
+        "ptu_pool": 100000.00
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days_year": 365,
+          "variations": [
+            {
+              "type": "ptu",
+              "employee_factor": 5475000.00,
+              "total_factors": 54750000.00,
+              "calculation": "ptu_pool × (employee_factor / total_factors)"
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay": 1000.00,
+            "ptu": 1000.00,
+            "isr": 150.00,
+            "imss_employee": 40.00,
+            "imss_employer": 120.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 810.00
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify PTU = 100000 × (5475000 / 54750000) = 1000.00",
+        "Verify employee factor = salary × days worked",
+        "Verify ISR calculated on PTU",
+        "Verify IMSS contributions"
+      ],
+      "compliance_checks": [
+        "LFT: 10% of company profits",
+        "SAT: ISR calculation on PTU",
+        "IMSS: Contributions on PTU"
+      ]
+    },
+    {
+      "id": "SCENARIO-EXTRAORDINARY-003",
+      "name": "Finiquito - Nómina Extraordinaria",
+      "period_type": "extraordinary",
+      "extraordinary_type": "finiquito",
+      "description": "Nómina extraordinaria de finiquito (liquidación por terminación)",
+      "period_dates": {
+        "start_date": "2024-01-15",
+        "end_date": "2024-01-15",
+        "payment_date": "2024-01-16"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "years_of_service": 5,
+          "termination_date": "2024-01-15",
+          "termination_type": "voluntary",
+          "variations": [
+            {
+              "type": "settlement",
+              "components": [
+                {
+                  "name": "Proportional salary",
+                  "amount": 2467.10
+                },
+                {
+                  "name": "Vacation days not taken",
+                  "days": 15,
+                  "amount": 7401.30
+                },
+                {
+                  "name": "Prima vacacional proportional",
+                  "amount": 1850.33
+                },
+                {
+                  "name": "Aguinaldo proportional",
+                  "amount": 304.11
+                }
+              ],
+              "total_settlement": 12022.84
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay": 12022.84,
+            "settlement": 12022.84,
+            "isr": 300.00,
+            "imss_employee": 481.00,
+            "imss_employer": 1443.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 11241.84
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify settlement components calculated correctly",
+        "Verify proportional calculations",
+        "Verify ISR calculated on settlement",
+        "Verify IMSS contributions"
+      ],
+      "compliance_checks": [
+        "LFT: Settlement components required",
+        "SAT: ISR calculation on settlement",
+        "IMSS: Contributions on settlement"
+      ]
+    },
+    {
+      "id": "SCENARIO-MULTI-EMPLOYEE-001",
+      "name": "Nómina Mensual - Múltiples Empleados",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Nómina mensual con múltiples empleados con diferentes configuraciones",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 30,
+          "variations": []
+        },
+        {
+          "employee_id": "EMP-002",
+          "employee_external_id": "EXT-002",
+          "name": "María García",
+          "salary": 20000.00,
+          "salary_type": "fixed",
+          "daily_salary": 657.89,
+          "state": "NL",
+          "contract_type": "permanent",
+          "worked_days": 28,
+          "absences": 2,
+          "variations": [
+            {
+              "type": "absence",
+              "days": 2,
+              "type_detail": "justified"
+            }
+          ]
+        },
+        {
+          "employee_id": "EMP-003",
+          "employee_external_id": "EXT-003",
+          "name": "Carlos López",
+          "salary": 12000.00,
+          "salary_type": "fixed",
+          "daily_salary": 394.74,
+          "state": "JAL",
+          "contract_type": "permanent",
+          "worked_days": 30,
+          "variations": [
+            {
+              "type": "bonus",
+              "name": "Bono de Productividad",
+              "amount": 1000.00
+            },
+            {
+              "type": "overtime",
+              "hours": 10,
+              "multiplier": 2,
+              "type_detail": "doble"
+            }
+          ]
+        }
+      ],
+      "validation_points": [
+        "Verify each employee calculated independently",
+        "Verify different states (ISN rates)",
+        "Verify variations applied correctly per employee",
+        "Verify total payroll amounts"
+      ]
+    },
+    {
+      "id": "SCENARIO-ASIMILADOS-001",
+      "name": "Nómina Mensual - Con Honorarios Asimilables",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Nómina mensual con pago fiscal regular más honorarios asimilables. Los asimilables no generan IMSS pero sí ISR al 10%",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 30,
+          "variations": [
+            {
+              "type": "assimilated_fees",
+              "base_amount": 35000.00,
+              "description": "Honorarios asimilables base",
+              "formula": "VAR_HONORARIOS_ASIMILABLES*1.16-(VAR_HONORARIOS_ASIMILABLES*0.10)-(VAR_HONORARIOS_ASIMILABLES*0.10667)"
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay_fiscal": 14802.60,
+            "assimilated_fees_base": 35000.00,
+            "assimilated_fees_net": 33366.50,
+            "assimilated_isr": 3500.00,
+            "assimilated_other_deduction": 3733.50,
+            "total_gross_pay": 48169.10,
+            "isr_fiscal": 450.00,
+            "isr_assimilated": 3500.00,
+            "total_isr": 3950.00,
+            "imss_employee": 592.00,
+            "imss_employer": 1776.00,
+            "imss_assimilated": 0.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 44227.10
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify fiscal payroll calculated normally (with IMSS)",
+        "Verify assimilated fees formula: base*1.16 - base*0.10 - base*0.10667",
+        "Verify assimilated fees do NOT generate IMSS contributions",
+        "Verify ISR on assimilated fees is 10% of base",
+        "Verify total net pay = fiscal net + assimilated net"
+      ],
+      "compliance_checks": [
+        "SAT: ISR on assimilated fees at 10%",
+        "SAT: CFDI must include assimilated fees as separate concept (code 046)",
+        "IMSS: No contributions on assimilated fees",
+        "LFT: Assimilated fees are separate from regular salary"
+      ],
+      "cfdi_analysis": {
+        "cfdi_count": 1,
+        "cfdi_structure": "combined",
+        "description": "Single CFDI with regular nómina + assimilated fees in OtrosPagos section",
+        "cfdi_details": {
+          "main_cfdi": {
+            "tipo_comprobante": "N",
+            "complemento": "nomina12",
+            "percepciones": "Regular salary perceptions",
+            "deducciones": "Regular deductions (ISR, IMSS, etc.)",
+            "otros_pagos": {
+              "code": "046",
+              "description": "Ingresos asimilados a salarios",
+              "amount": 33366.50,
+              "tipo_regimen": "09"
+            }
+          },
+          "separate_cfdi_required": false,
+          "reason": "Assimilated fees can be included in same CFDI as regular payroll in OtrosPagos section"
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-ASIMILADOS-002",
+      "name": "Nómina Mensual - Pago Fiscal 9,000 + Asimilados para Neto 50,000",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Caso específico: Pago fiscal de 9,000 pesos más honorarios asimilables calculados para llegar a un neto total de 50,000 pesos",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 9000.00,
+          "salary_type": "fixed",
+          "daily_salary": 296.05,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 30,
+          "variations": [
+            {
+              "type": "assimilated_fees",
+              "base_amount": 43000.00,
+              "description": "Honorarios asimilables calculados para llegar a neto objetivo de 50,000",
+              "formula": "VAR_HONORARIOS_ASIMILABLES*1.16-(VAR_HONORARIOS_ASIMILABLES*0.10)-(VAR_HONORARIOS_ASIMILABLES*0.10667)",
+              "target_net_pay": 50000.00
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay_fiscal": 8881.50,
+            "assimilated_fees_base": 43000.00,
+            "assimilated_fees_net": 40993.10,
+            "assimilated_isr": 4300.00,
+            "assimilated_other_deduction": 4590.90,
+            "total_gross_pay": 49874.60,
+            "isr_fiscal": 0.00,
+            "isr_assimilated": 4300.00,
+            "total_isr": 4300.00,
+            "imss_employee": 355.00,
+            "imss_employer": 1065.00,
+            "imss_assimilated": 0.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 45219.60,
+            "note": "Neto real puede variar según ajustes, objetivo es 50,000"
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify fiscal payroll: 9,000 salary generates ~8,881.50 gross (after deductions)",
+        "Verify assimilated base calculated to reach target net of 50,000",
+        "Verify formula: base*1.16 - base*0.10 - base*0.10667 = net",
+        "Verify reverse calculation: if target net is 50,000, calculate required base",
+        "Verify no IMSS on assimilated portion",
+        "Verify ISR on assimilated is 10% of base"
+      ],
+      "compliance_checks": [
+        "SAT: ISR calculation correct on both portions",
+        "SAT: CFDI structure includes both fiscal and assimilated concepts",
+        "IMSS: Only fiscal portion generates contributions",
+        "LFT: Total compensation properly documented"
+      ],
+      "cfdi_analysis": {
+        "cfdi_count": 1,
+        "cfdi_structure": "combined",
+        "description": "Single CFDI with regular nómina (9,000 fiscal) + assimilated fees in OtrosPagos",
+        "cfdi_details": {
+          "main_cfdi": {
+            "tipo_comprobante": "N",
+            "complemento": "nomina12",
+            "percepciones": "Regular salary (9,000 fiscal portion)",
+            "deducciones": "Regular deductions (ISR, IMSS)",
+            "otros_pagos": {
+              "code": "046",
+              "description": "Ingresos asimilados a salarios",
+              "amount": 40993.10,
+              "tipo_regimen": "09"
+            }
+          },
+          "separate_cfdi_required": false,
+          "reason": "Both portions can be in same CFDI when regular payroll exists"
+        }
+      },
+      "calculation_notes": [
+        "To reach net of 50,000:",
+        "Fiscal net = 9,000 - ISR - IMSS ≈ 8,526",
+        "Required assimilated net = 50,000 - 8,526 = 41,474",
+        "Reverse formula: base = net / 0.95333 ≈ 43,500",
+        "Verify final net matches target within tolerance"
+      ]
+    },
+    {
+      "id": "SCENARIO-ASIMILADOS-003",
+      "name": "Nómina Quincenal - Con Asimilados y Bonos",
+      "period_type": "quincenal",
+      "period_days": 15,
+      "description": "Nómina quincenal con pago fiscal, bonos, y honorarios asimilables",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-15",
+        "payment_date": "2024-01-16"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 20000.00,
+          "salary_type": "fixed",
+          "daily_salary": 657.89,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 15,
+          "variations": [
+            {
+              "type": "bonus",
+              "name": "Bono de Productividad",
+              "amount": 2000.00
+            },
+            {
+              "type": "assimilated_fees",
+              "base_amount": 20000.00,
+              "description": "Honorarios asimilables quincenales",
+              "formula": "VAR_HONORARIOS_ASIMILABLES*1.16-(VAR_HONORARIOS_ASIMILABLES*0.10)-(VAR_HONORARIOS_ASIMILABLES*0.10667)"
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay_fiscal": 9868.35,
+            "bonuses": 2000.00,
+            "assimilated_fees_base": 20000.00,
+            "assimilated_fees_net": 19066.60,
+            "assimilated_isr": 2000.00,
+            "assimilated_other_deduction": 2133.40,
+            "total_gross_pay": 28934.95,
+            "isr_fiscal": 300.00,
+            "isr_assimilated": 2000.00,
+            "total_isr": 2300.00,
+            "imss_employee": 395.00,
+            "imss_employer": 1185.00,
+            "imss_assimilated": 0.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 26239.95
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify fiscal payroll includes bonuses in gross",
+        "Verify ISR calculated on fiscal portion (salary + bonuses)",
+        "Verify assimilated fees calculated independently",
+        "Verify IMSS only on fiscal portion (not on bonuses above cap, not on assimilated)",
+        "Verify total net = fiscal net + assimilated net"
+      ],
+      "compliance_checks": [
+        "SAT: ISR on fiscal portion includes bonuses",
+        "SAT: ISR on assimilated at 10%",
+        "IMSS: Contributions only on fiscal base salary",
+        "LFT: All components properly documented"
+      ],
+      "cfdi_analysis": {
+        "cfdi_count": 1,
+        "cfdi_structure": "combined",
+        "description": "Single CFDI with regular nómina (salary + bonuses) + assimilated fees",
+        "cfdi_details": {
+          "main_cfdi": {
+            "tipo_comprobante": "N",
+            "complemento": "nomina12",
+            "percepciones": "Regular salary + bonuses",
+            "deducciones": "Regular deductions",
+            "otros_pagos": {
+              "code": "046",
+              "description": "Ingresos asimilados a salarios",
+              "amount": 19066.60,
+              "tipo_regimen": "09"
+            }
+          },
+          "separate_cfdi_required": false,
+          "reason": "Regular payroll exists, assimilated can be in same CFDI"
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-ASIMILADOS-004",
+      "name": "Nómina Semanal - Solo Asimilados (Sin Pago Fiscal)",
+      "period_type": "semanal",
+      "period_days": 7,
+      "description": "Nómina semanal con solo honorarios asimilables, sin pago fiscal regular",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-07",
+        "payment_date": "2024-01-08"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 0.00,
+          "salary_type": "assimilated_only",
+          "daily_salary": 0.00,
+          "state": "DF",
+          "contract_type": "assimilated",
+          "worked_days": 7,
+          "variations": [
+            {
+              "type": "assimilated_fees",
+              "base_amount": 10000.00,
+              "description": "Honorarios asimilables semanales",
+              "formula": "VAR_HONORARIOS_ASIMILABLES*1.16-(VAR_HONORARIOS_ASIMILABLES*0.10)-(VAR_HONORARIOS_ASIMILABLES*0.10667)"
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay_fiscal": 0.00,
+            "assimilated_fees_base": 10000.00,
+            "assimilated_fees_net": 9533.30,
+            "assimilated_isr": 1000.00,
+            "assimilated_other_deduction": 1066.70,
+            "total_gross_pay": 9533.30,
+            "isr_fiscal": 0.00,
+            "isr_assimilated": 1000.00,
+            "total_isr": 1000.00,
+            "imss_employee": 0.00,
+            "imss_employer": 0.00,
+            "imss_assimilated": 0.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 9533.30
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify no fiscal payroll calculation",
+        "Verify only assimilated fees calculated",
+        "Verify no IMSS contributions (assimilated only)",
+        "Verify ISR at 10% on assimilated base",
+        "Verify net = base * 0.95333"
+      ],
+      "compliance_checks": [
+        "SAT: ISR at 10% on assimilated fees",
+        "SAT: CFDI structure for assimilated-only payroll",
+        "IMSS: No contributions (assimilated fees exempt)",
+        "LFT: Contract type properly identified as assimilated"
+      ],
+      "cfdi_analysis": {
+        "cfdi_count": 1,
+        "cfdi_structure": "assimilated_only",
+        "description": "CFDI for assimilated-only payroll (no regular salary)",
+        "cfdi_details": {
+          "main_cfdi": {
+            "tipo_comprobante": "N",
+            "complemento": "nomina12",
+            "tipo_regimen": "09",
+            "percepciones": "None (no regular salary)",
+            "deducciones": "ISR on assimilated (10%)",
+            "otros_pagos": {
+              "code": "046",
+              "description": "Ingresos asimilados a salarios",
+              "amount": 9533.30,
+              "tipo_regimen": "09"
+            },
+            "note": "When only assimilated fees exist, CFDI structure differs: no IMSS data, no regular perceptions"
+          },
+          "separate_cfdi_required": false,
+          "reason": "Single CFDI sufficient for assimilated-only, but structure is different from regular payroll"
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-ASIMILADOS-005",
+      "name": "Nómina Mensual - Asimilados con Faltas",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Nómina mensual con pago fiscal (con faltas) más honorarios asimilables",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 25,
+          "absences": 5,
+          "absence_type": "unjustified",
+          "variations": [
+            {
+              "type": "absence",
+              "days": 5,
+              "type_detail": "unjustified"
+            },
+            {
+              "type": "assimilated_fees",
+              "base_amount": 30000.00,
+              "description": "Honorarios asimilables (no afectados por faltas)",
+              "formula": "VAR_HONORARIOS_ASIMILABLES*1.16-(VAR_HONORARIOS_ASIMILABLES*0.10)-(VAR_HONORARIOS_ASIMILABLES*0.10667)"
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay_fiscal": 12335.50,
+            "assimilated_fees_base": 30000.00,
+            "assimilated_fees_net": 28599.90,
+            "assimilated_isr": 3000.00,
+            "assimilated_other_deduction": 3200.10,
+            "total_gross_pay": 40935.40,
+            "isr_fiscal": 200.00,
+            "isr_assimilated": 3000.00,
+            "total_isr": 3200.00,
+            "imss_employee": 493.00,
+            "imss_employer": 1479.00,
+            "imss_assimilated": 0.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 37242.40
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify fiscal payroll reduced by 5 days (25 worked days)",
+        "Verify IMSS prorated for 25 days on fiscal portion",
+        "Verify assimilated fees NOT affected by absences (fixed amount)",
+        "Verify ISR calculated separately on each portion",
+        "Verify total net = fiscal net (with absences) + assimilated net (fixed)"
+      ],
+      "compliance_checks": [
+        "SAT: ISR calculated correctly on both portions",
+        "IMSS: Prorated for worked days on fiscal portion only",
+        "LFT: Assimilated fees are independent of attendance"
+      ],
+      "cfdi_analysis": {
+        "cfdi_count": 1,
+        "cfdi_structure": "combined",
+        "description": "Single CFDI with reduced fiscal payroll (due to absences) + fixed assimilated fees",
+        "cfdi_details": {
+          "main_cfdi": {
+            "tipo_comprobante": "N",
+            "complemento": "nomina12",
+            "percepciones": "Reduced salary (25 days worked)",
+            "deducciones": "Prorated deductions (ISR, IMSS for 25 days)",
+            "otros_pagos": {
+              "code": "046",
+              "description": "Ingresos asimilados a salarios",
+              "amount": 28599.90,
+              "tipo_regimen": "09",
+              "note": "Assimilated amount is fixed, not affected by absences"
+            }
+          },
+          "separate_cfdi_required": false,
+          "reason": "Both portions in same CFDI, but fiscal portion reflects absences while assimilated is fixed"
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-ASIMILADOS-006",
+      "name": "Nómina Mensual - CFDI Combinado (Regular + Asimilados)",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Escenario: En algunas ocasiones se pueden generar 2 CFDIs (uno fiscal y otro asimilados), pero también puede ser un solo CFDI combinado según política de la empresa o requisitos SAT",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 20000.00,
+          "salary_type": "fixed",
+          "daily_salary": 657.89,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 30,
+          "variations": [
+            {
+              "type": "assimilated_fees",
+              "base_amount": 50000.00,
+              "description": "Honorarios asimilables en mismo CFDI que nómina regular",
+              "formula": "VAR_HONORARIOS_ASIMILABLES*1.16-(VAR_HONORARIOS_ASIMILABLES*0.10)-(VAR_HONORARIOS_ASIMILABLES*0.10667)"
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay_fiscal": 19736.70,
+            "assimilated_fees_base": 50000.00,
+            "assimilated_fees_net": 47666.50,
+            "assimilated_isr": 5000.00,
+            "assimilated_other_deduction": 5333.50,
+            "total_gross_pay": 67403.20,
+            "isr_fiscal": 600.00,
+            "isr_assimilated": 5000.00,
+            "total_isr": 5600.00,
+            "imss_employee": 789.00,
+            "imss_employer": 2367.00,
+            "imss_assimilated": 0.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 58814.20
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify fiscal payroll calculated normally",
+        "Verify assimilated fees calculated independently",
+        "Verify single CFDI contains both regular payroll and assimilated fees",
+        "Verify CFDI structure: regular in Percepciones, assimilated in OtrosPagos"
+      ],
+      "compliance_checks": [
+        "SAT: ISR calculated correctly on both portions",
+        "SAT: Single CFDI structure with code 046 in OtrosPagos",
+        "IMSS: Only on fiscal portion",
+        "LFT: Proper documentation in single CFDI"
+      ],
+      "cfdi_analysis": {
+        "cfdi_count": "variable",
+        "cfdi_structure": "may_require_separation",
+        "description": "Análisis: En algunas ocasiones se deben generar 2 CFDIs: uno para lo fiscal y otro para asimilados",
+        "cfdi_details": {
+          "main_cfdi": {
+            "tipo_comprobante": "N",
+            "complemento": "nomina12",
+            "percepciones": {
+              "description": "Nómina regular (salario base)",
+              "amount": 19736.70,
+              "includes": [
+                "Regular salary",
+                "Regular bonuses (if any)",
+                "Regular overtime (if any)"
+              ]
+            },
+            "deducciones": {
+              "description": "Deducciones de nómina regular",
+              "includes": [
+                "ISR on regular payroll",
+                "IMSS employee contribution",
+                "INFONAVIT (if applicable)",
+                "Other regular deductions"
+              ],
+              "total": 1389.00
+            },
+            "otros_pagos": {
+              "code": "046",
+              "description": "Ingresos asimilados a salarios",
+              "amount": 47666.50,
+              "tipo_regimen": "09",
+              "isr_deduction": 5000.00,
+              "note": "Asimilados van en OtrosPagos, NO generan IMSS"
+            },
+            "total_percepciones": 19736.70,
+            "total_deducciones": 10889.00,
+            "total_otros_pagos": 47666.50,
+            "total": 56514.20
+          },
+          "separate_cfdi_required": "variable",
+          "reason": "Depende de política de empresa o requisitos SAT. Puede ser: 1) Un solo CFDI combinado (asimilados en OtrosPagos), o 2) Dos CFDIs separados (uno fiscal, otro asimilados)",
+          "important_notes": [
+            "En algunas ocasiones se deben generar 2 CFDIs: uno para lo fiscal y otro para asimilados",
+            "Un solo CFDI combinado también es válido cuando ambos están en mismo periodo",
+            "Asimilados se registran en OtrosPagos (código 046) cuando van en CFDI combinado",
+            "ISR se calcula por separado: regular en Deducciones, asimilados en OtrosPagos o CFDI separado",
+            "IMSS solo aplica a la porción regular, no a asimilados",
+            "Ver SCENARIO-ASIMILADOS-010 para caso de diferentes registros patronales (requiere 2 CFDIs)"
+          ]
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-ASIMILADOS-010",
+      "name": "Nómina Mensual - Diferentes Registros Patronales (Fiscal vs Asimilados)",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Escenario donde el CFDI fiscal se genera con un registro patronal y el CFDI de asimilados se genera con otro registro patronal diferente",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 20000.00,
+          "salary_type": "fixed",
+          "daily_salary": 657.89,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 30,
+          "variations": [
+            {
+              "type": "assimilated_fees",
+              "base_amount": 50000.00,
+              "description": "Honorarios asimilables con registro patronal diferente",
+              "formula": "VAR_HONORARIOS_ASIMILABLES*1.16-(VAR_HONORARIOS_ASIMILABLES*0.10)-(VAR_HONORARIOS_ASIMILABLES*0.10667)",
+              "employer_registration": "RP-ASIMILADOS-001"
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay_fiscal": 19736.70,
+            "assimilated_fees_base": 50000.00,
+            "assimilated_fees_net": 47666.50,
+            "assimilated_isr": 5000.00,
+            "assimilated_other_deduction": 5333.50,
+            "total_gross_pay": 67403.20,
+            "isr_fiscal": 600.00,
+            "isr_assimilated": 5000.00,
+            "total_isr": 5600.00,
+            "imss_employee": 789.00,
+            "imss_employer": 2367.00,
+            "imss_assimilated": 0.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay_fiscal": 18347.70,
+            "net_pay_assimilated": 47666.50,
+            "total_net_pay": 66014.20
+          }
+        }
+      ],
+      "employer_registrations": {
+        "fiscal": {
+          "registration_number": "RP-FISCAL-001",
+          "legal_name": "Empresa ABC, S.A. de C.V.",
+          "rfc": "EAB123456ABC",
+          "description": "Registro patronal para nómina fiscal regular"
+        },
+        "assimilated": {
+          "registration_number": "RP-ASIMILADOS-001",
+          "legal_name": "Empresa ABC, S.A. de C.V.",
+          "rfc": "EAB123456ABC",
+          "description": "Registro patronal para honorarios asimilables"
+        }
+      },
+      "validation_points": [
+        "Verify two separate CFDIs are generated",
+        "Verify CFDI 1 (fiscal) uses RP-FISCAL-001 in Emisor",
+        "Verify CFDI 2 (assimilated) uses RP-ASIMILADOS-001 in Emisor",
+        "Verify each CFDI has correct employer registration in Complemento Nomina",
+        "Verify both CFDIs reference same employee but different employer registrations"
+      ],
+      "compliance_checks": [
+        "SAT: Each CFDI has correct registro patronal in Emisor",
+        "SAT: Complemento Nomina includes correct employer registration",
+        "IMSS: Fiscal CFDI includes IMSS data with RP-FISCAL-001",
+        "IMSS: Assimilated CFDI has no IMSS data (different RP)",
+        "LFT: Both CFDIs properly documented with respective employer registrations"
+      ],
+      "cfdi_analysis": {
+        "cfdi_count": 2,
+        "cfdi_structure": "separated_by_employer_registration",
+        "description": "DOS CFDIs requeridos porque usan diferentes registros patronales",
+        "cfdi_details": {
+          "cfdi_1_fiscal": {
+            "tipo_comprobante": "N",
+            "complemento": "nomina12",
+            "emisor": {
+              "rfc": "EAB123456ABC",
+              "nombre": "Empresa ABC, S.A. de C.V.",
+              "registro_patronal": "RP-FISCAL-001"
+            },
+            "tipo_regimen": "02",
+            "percepciones": {
+              "description": "Regular salary (20,000)",
+              "amount": 19736.70
+            },
+            "deducciones": {
+              "description": "Regular deductions (ISR, IMSS)",
+              "isr": 600.00,
+              "imss_employee": 789.00,
+              "total": 1389.00,
+              "note": "IMSS calculated with RP-FISCAL-001"
+            },
+            "otros_pagos": "None",
+            "total": 18347.70
+          },
+          "cfdi_2_assimilated": {
+            "tipo_comprobante": "N",
+            "complemento": "nomina12",
+            "emisor": {
+              "rfc": "EAB123456ABC",
+              "nombre": "Empresa ABC, S.A. de C.V.",
+              "registro_patronal": "RP-ASIMILADOS-001"
+            },
+            "tipo_regimen": "09",
+            "percepciones": "None",
+            "deducciones": {
+              "description": "ISR on assimilated (10%)",
+              "isr": 5000.00,
+              "total": 5000.00,
+              "note": "No IMSS because different employer registration"
+            },
+            "otros_pagos": {
+              "code": "046",
+              "description": "Ingresos asimilados a salarios",
+              "amount": 47666.50
+            },
+            "total": 42666.50,
+            "note": "Separate CFDI with different employer registration (RP-ASIMILADOS-001), no IMSS data"
+          },
+          "separate_cfdi_required": true,
+          "reason": "Different employer registrations (registro patronal) require separate CFDIs",
+          "important_notes": [
+            "Each employer registration has its own IMSS obligations",
+            "Fiscal payroll uses RP-FISCAL-001 (with IMSS)",
+            "Assimilated fees use RP-ASIMILADOS-001 (no IMSS)",
+            "Both CFDIs reference same employee but different employer registrations",
+            "This is common when company has separate registrations for different payment types"
+          ]
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-ASIMILADOS-007",
+      "name": "Nómina Mensual - Descuentos: Orden de Aplicación (Primero Asimilados)",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Escenario que valida que los descuentos se aplican primero al pago asimilado, luego al fiscal. Regla crítica: descuentos primero de asimilados, después de fiscal.",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 20000.00,
+          "salary_type": "fixed",
+          "daily_salary": 657.89,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 30,
+          "variations": [
+            {
+              "type": "assimilated_fees",
+              "base_amount": 30000.00,
+              "description": "Honorarios asimilables",
+              "formula": "VAR_HONORARIOS_ASIMILABLES*1.16-(VAR_HONORARIOS_ASIMILABLES*0.10)-(VAR_HONORARIOS_ASIMILABLES*0.10667)"
+            },
+            {
+              "type": "deduction",
+              "name": "Descuento por préstamo",
+              "amount": 5000.00,
+              "description": "Descuento que debe aplicarse primero a asimilados"
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay_fiscal": 19736.70,
+            "assimilated_fees_base": 30000.00,
+            "assimilated_fees_net": 28599.90,
+            "assimilated_isr": 3000.00,
+            "assimilated_other_deduction": 3200.10,
+            "total_gross_pay": 48336.60,
+            "isr_fiscal": 600.00,
+            "isr_assimilated": 3000.00,
+            "total_isr": 3600.00,
+            "imss_employee": 789.00,
+            "imss_employer": 2367.00,
+            "imss_assimilated": 0.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay_fiscal_before_deduction": 18347.70,
+            "net_pay_assimilated_before_deduction": 28599.90,
+            "deduction_amount": 5000.00,
+            "deduction_applied_to_assimilated": 5000.00,
+            "deduction_applied_to_fiscal": 0.00,
+            "net_pay_assimilated_after_deduction": 23599.90,
+            "net_pay_fiscal_after_deduction": 18347.70,
+            "total_net_pay": 41947.60
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify deduction order: first from assimilated (5000.00), then from fiscal (0.00)",
+        "Verify assimilated net before deduction = 28599.90",
+        "Verify assimilated net after deduction = 28599.90 - 5000.00 = 23599.90",
+        "Verify fiscal net remains unchanged (18347.70) because deduction fully covered by assimilated",
+        "Verify total net = fiscal net + assimilated net after deduction"
+      ],
+      "compliance_checks": [
+        "SAT: ISR calculated correctly on both portions",
+        "IMSS: Only on fiscal portion",
+        "LFT: Deduction order rule followed (assimilated first)"
+      ],
+      "cfdi_analysis": {
+        "cfdi_count": 1,
+        "cfdi_structure": "combined",
+        "description": "Single CFDI with deduction applied to assimilated portion first",
+        "cfdi_details": {
+          "main_cfdi": {
+            "tipo_comprobante": "N",
+            "complemento": "nomina12",
+            "percepciones": "Regular salary",
+            "deducciones": "ISR, IMSS, deduction (applied to assimilated)",
+            "otros_pagos": {
+              "code": "046",
+              "description": "Ingresos asimilados a salarios",
+              "amount": 23599.90,
+              "tipo_regimen": "09",
+              "note": "Amount after deduction applied"
+            }
+          },
+          "separate_cfdi_required": false,
+          "reason": "Deduction order handled in same CFDI, deduction applied to assimilated first"
+        }
+      },
+      "deduction_order_rule": "Descuentos se aplican primero al pago asimilado, luego al fiscal"
+    },
+    {
+      "id": "SCENARIO-ASIMILADOS-008",
+      "name": "Nómina Mensual - Descuentos Exceden Monto Neto",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Edge case: Cuando los descuentos exceden el monto neto total (fiscal + asimilados). Debe manejarse con carry forward o saldo negativo según política de la empresa.",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 30,
+          "variations": [
+            {
+              "type": "assimilated_fees",
+              "base_amount": 20000.00,
+              "description": "Honorarios asimilables",
+              "formula": "VAR_HONORARIOS_ASIMILABLES*1.16-(VAR_HONORARIOS_ASIMILABLES*0.10)-(VAR_HONORARIOS_ASIMILABLES*0.10667)"
+            },
+            {
+              "type": "deduction",
+              "name": "Múltiples descuentos acumulados",
+              "amount": 35000.00,
+              "description": "Descuentos que exceden el neto total"
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay_fiscal": 14802.60,
+            "assimilated_fees_base": 20000.00,
+            "assimilated_fees_net": 19066.60,
+            "assimilated_isr": 2000.00,
+            "assimilated_other_deduction": 2133.40,
+            "total_gross_pay": 33869.20,
+            "isr_fiscal": 450.00,
+            "isr_assimilated": 2000.00,
+            "total_isr": 2450.00,
+            "imss_employee": 592.00,
+            "imss_employer": 1776.00,
+            "imss_assimilated": 0.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay_fiscal_before_deduction": 13760.60,
+            "net_pay_assimilated_before_deduction": 19066.60,
+            "total_net_before_deduction": 32827.20,
+            "deduction_amount": 35000.00,
+            "deduction_applied_to_assimilated": 19066.60,
+            "deduction_applied_to_fiscal": 13760.60,
+            "deduction_excess": 2172.40,
+            "net_pay_assimilated_after_deduction": 0.00,
+            "net_pay_fiscal_after_deduction": 0.00,
+            "total_net_pay": 0.00,
+            "excess_handling": "carry_forward",
+            "excess_carry_forward": 2172.40,
+            "note": "Excess deductions (2172.40) carried forward to next period"
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify deduction order: first from assimilated (19066.60), then from fiscal (13760.60)",
+        "Verify total net before deduction = 32827.20",
+        "Verify deduction amount (35000.00) exceeds total net (32827.20)",
+        "Verify excess = 35000.00 - 32827.20 = 2172.40",
+        "Verify both net pays reduced to 0.00",
+        "Verify excess handled (carry forward or negative balance per company policy)"
+      ],
+      "compliance_checks": [
+        "SAT: ISR calculated correctly before deductions",
+        "IMSS: Only on fiscal portion",
+        "LFT: Net pay cannot be negative without explicit business rule",
+        "Business: Excess deductions policy (carry forward vs negative balance)"
+      ],
+      "cfdi_analysis": {
+        "cfdi_count": 1,
+        "cfdi_structure": "combined",
+        "description": "Single CFDI with excess deductions handled",
+        "cfdi_details": {
+          "main_cfdi": {
+            "tipo_comprobante": "N",
+            "complemento": "nomina12",
+            "percepciones": "Regular salary + assimilated",
+            "deducciones": "ISR, IMSS, deductions (exceeding net pay)",
+            "otros_pagos": {
+              "code": "046",
+              "description": "Ingresos asimilados a salarios",
+              "amount": 0.00,
+              "tipo_regimen": "09",
+              "note": "Amount after deduction (fully deducted)"
+            },
+            "total": 0.00,
+            "note": "Net pay is 0.00, excess deductions (2172.40) carried forward"
+          },
+          "separate_cfdi_required": false,
+          "reason": "Excess deductions handled in same CFDI, net pay = 0.00"
+        }
+      },
+      "excess_deduction_handling": {
+        "policy": "carry_forward",
+        "description": "Excess deductions carried forward to next payroll period",
+        "alternative": "negative_balance",
+        "note": "Company policy determines handling: carry forward or negative balance"
+      }
+    },
+    {
+      "id": "SCENARIO-ASIMILADOS-009",
+      "name": "Nómina Mensual - Dos CFDIs Requeridos (Fiscal y Asimilados Separados por Política)",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Escenario donde se requieren 2 CFDIs separados por política de empresa o requisitos SAT específicos (no por diferentes registros patronales). Diferente de SCENARIO-ASIMILADOS-010 que es por diferentes registros patronales.",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 20000.00,
+          "salary_type": "fixed",
+          "daily_salary": 657.89,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 30,
+          "variations": [
+            {
+              "type": "assimilated_fees",
+              "base_amount": 50000.00,
+              "description": "Honorarios asimilables que requieren CFDI separado por política",
+              "formula": "VAR_HONORARIOS_ASIMILABLES*1.16-(VAR_HONORARIOS_ASIMILABLES*0.10)-(VAR_HONORARIOS_ASIMILABLES*0.10667)",
+              "cfdi_separation_required": true,
+              "separation_reason": "company_policy"
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay_fiscal": 19736.70,
+            "assimilated_fees_base": 50000.00,
+            "assimilated_fees_net": 47666.50,
+            "assimilated_isr": 5000.00,
+            "assimilated_other_deduction": 5333.50,
+            "total_gross_pay": 67403.20,
+            "isr_fiscal": 600.00,
+            "isr_assimilated": 5000.00,
+            "total_isr": 5600.00,
+            "imss_employee": 789.00,
+            "imss_employer": 2367.00,
+            "imss_assimilated": 0.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay_fiscal": 18347.70,
+            "net_pay_assimilated": 47666.50,
+            "total_net_pay": 66014.20
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify two separate CFDIs are generated",
+        "Verify CFDI 1 (fiscal) contains only regular payroll",
+        "Verify CFDI 2 (assimilated) contains only assimilated fees",
+        "Verify both CFDIs use same employer registration (different from SCENARIO-ASIMILADOS-010)",
+        "Verify separation reason is company policy or SAT requirement (not different registrations)"
+      ],
+      "compliance_checks": [
+        "SAT: Each CFDI has correct structure",
+        "SAT: CFDI 1 (fiscal) has tipo_regimen 02",
+        "SAT: CFDI 2 (assimilated) has tipo_regimen 09",
+        "IMSS: Only in CFDI 1 (fiscal)",
+        "LFT: Both CFDIs properly documented"
+      ],
+      "cfdi_analysis": {
+        "cfdi_count": 2,
+        "cfdi_structure": "separated_by_policy",
+        "description": "DOS CFDIs requeridos por política de empresa o requisitos SAT (mismo registro patronal)",
+        "cfdi_details": {
+          "cfdi_1_fiscal": {
+            "tipo_comprobante": "N",
+            "complemento": "nomina12",
+            "emisor": {
+              "rfc": "EAB123456ABC",
+              "nombre": "Empresa ABC, S.A. de C.V.",
+              "registro_patronal": "RP-001"
+            },
+            "tipo_regimen": "02",
+            "percepciones": {
+              "description": "Regular salary (20,000)",
+              "amount": 19736.70
+            },
+            "deducciones": {
+              "description": "Regular deductions (ISR, IMSS)",
+              "isr": 600.00,
+              "imss_employee": 789.00,
+              "total": 1389.00
+            },
+            "otros_pagos": "None",
+            "total": 18347.70
+          },
+          "cfdi_2_assimilated": {
+            "tipo_comprobante": "N",
+            "complemento": "nomina12",
+            "emisor": {
+              "rfc": "EAB123456ABC",
+              "nombre": "Empresa ABC, S.A. de C.V.",
+              "registro_patronal": "RP-001"
+            },
+            "tipo_regimen": "09",
+            "percepciones": "None",
+            "deducciones": {
+              "description": "ISR on assimilated (10%)",
+              "isr": 5000.00,
+              "total": 5000.00
+            },
+            "otros_pagos": {
+              "code": "046",
+              "description": "Ingresos asimilados a salarios",
+              "amount": 47666.50
+            },
+            "total": 42666.50,
+            "note": "Separate CFDI by company policy or SAT requirement, same employer registration as CFDI 1"
+          },
+          "separate_cfdi_required": true,
+          "reason": "Company policy or specific SAT requirement requires separate CFDIs (not due to different employer registrations)",
+          "important_notes": [
+            "Different from SCENARIO-ASIMILADOS-010: This uses same employer registration",
+            "Separation is due to company policy or SAT requirement, not different registrations",
+            "Both CFDIs reference same employee and same employer registration",
+            "This is common when company wants separate documentation for fiscal vs assimilated payments"
+          ]
+        }
+      }
+    },
+    {
+      "id": "SCENARIO-SALARY-INCREASE-001",
+      "name": "Nómina Mensual - Aumento de Salario a Mitad del Periodo",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Aumento de salario aplicado a mitad del periodo (día 15). Cálculo proporcional de ISR, IMSS, SBC, SDI. El aumento afecta acumulados anuales y puede cambiar la tabla ISR.",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 30,
+          "salary_history": [
+            {
+              "effective_date": "2024-01-01",
+              "salary": 15000.00,
+              "days": 15
+            },
+            {
+              "effective_date": "2024-01-16",
+              "salary": 20000.00,
+              "days": 15
+            }
+          ],
+          "variations": [
+            {
+              "type": "salary_increase",
+              "effective_date": "2024-01-16",
+              "old_salary": 15000.00,
+              "new_salary": 20000.00,
+              "increase_amount": 5000.00,
+              "increase_percentage": 33.33,
+              "days_at_old_salary": 15,
+              "days_at_new_salary": 15
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay_old_salary": 7401.30,
+            "gross_pay_new_salary": 9868.35,
+            "total_gross_pay": 17269.65,
+            "isr_old_salary": 150.00,
+            "isr_new_salary": 300.00,
+            "total_isr": 450.00,
+            "imss_employee_old": 296.00,
+            "imss_employee_new": 395.00,
+            "total_imss_employee": 691.00,
+            "imss_employer_old": 888.00,
+            "imss_employer_new": 1185.00,
+            "total_imss_employer": 2073.00,
+            "sbc_old": 15000.00,
+            "sbc_new": 20000.00,
+            "sbc_weighted": 17500.00,
+            "sdi_old": 493.42,
+            "sdi_new": 657.89,
+            "sdi_weighted": 575.66,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 16128.65
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify gross pay = (old_salary/30.4 × 15) + (new_salary/30.4 × 15)",
+        "Verify ISR calculated proportionally for each salary period",
+        "Verify IMSS calculated on weighted SBC = (old_salary × 15 + new_salary × 15) / 30",
+        "Verify SDI calculated as weighted average",
+        "Verify SBC = (old_salary × days_old + new_salary × days_new) / total_days",
+        "Verify increase affects accumulated annual amounts"
+      ],
+      "compliance_checks": [
+        "SAT: ISR calculated correctly with proportional adjustment",
+        "IMSS: SBC calculated as weighted average for the period",
+        "LFT: Salary increase properly documented",
+        "SAT: Accumulated annual amounts updated correctly"
+      ],
+      "calculation_notes": [
+        "Salary increase mid-period requires proportional calculations",
+        "ISR may change tax bracket due to higher salary",
+        "SBC and SDI must be weighted averages",
+        "Accumulated annual amounts must reflect both salary periods"
+      ]
+    },
+    {
+      "id": "SCENARIO-COMMISSIONS-001",
+      "name": "Nómina Mensual - Salario Variable por Comisiones",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Nómina mensual con salario fijo más comisiones variables. Las comisiones afectan el ISR, IMSS (hasta tope), y el neto. Escenario común para empleados de ventas.",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "variable_commission",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 30,
+          "variations": [
+            {
+              "type": "commission",
+              "name": "Comisiones por ventas",
+              "base_sales": 500000.00,
+              "commission_rate": 0.05,
+              "amount": 25000.00,
+              "description": "5% de comisión sobre ventas de 500,000"
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay_base": 14802.60,
+            "commissions": 25000.00,
+            "total_gross_pay": 39802.60,
+            "isr_base": 450.00,
+            "isr_commissions": 2500.00,
+            "total_isr": 2950.00,
+            "imss_employee_base": 592.00,
+            "imss_employee_commissions": 1000.00,
+            "total_imss_employee": 1592.00,
+            "imss_employer_base": 1776.00,
+            "imss_employer_commissions": 3000.00,
+            "total_imss_employer": 4776.00,
+            "sbc_base": 15000.00,
+            "sbc_commissions": 25000.00,
+            "sbc_total": 40000.00,
+            "sbc_capped": 40000.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 35260.60
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify gross pay = base salary + commissions",
+        "Verify ISR calculated on total (base + commissions)",
+        "Verify IMSS calculated on total SBC (base + commissions), subject to cap",
+        "Verify SBC = base salary + commissions (capped at UMA limit)",
+        "Verify commissions are included in accumulated annual amounts"
+      ],
+      "compliance_checks": [
+        "SAT: ISR calculated on total income (base + commissions)",
+        "IMSS: SBC includes commissions (up to cap)",
+        "LFT: Commissions properly documented as variable income",
+        "SAT: Commissions included in annual accumulated amounts"
+      ],
+      "commission_structure": {
+        "type": "percentage_of_sales",
+        "rate": 0.05,
+        "base": 500000.00,
+        "calculation": "base_sales × commission_rate = amount"
+      }
+    },
+    {
+      "id": "SCENARIO-INCAPACIDAD-001",
+      "name": "Nómina Mensual - Con Incapacidad por Enfermedad",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Nómina mensual con incapacidad por enfermedad. La incapacidad afecta días trabajados, IMSS (puede generar subsidio), SBC, y el neto. Días de incapacidad no se pagan pero IMSS puede cubrir subsidio.",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 25,
+          "incapacity_days": 5,
+          "variations": [
+            {
+              "type": "incapacity",
+              "incapacity_type": "enfermedad",
+              "days": 5,
+              "start_date": "2024-01-20",
+              "end_date": "2024-01-24",
+              "subsidy_applicable": true,
+              "subsidy_rate": 0.60
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay": 12335.50,
+            "incapacity_subsidy": 1480.26,
+            "total_income": 13815.76,
+            "isr": 200.00,
+            "imss_employee": 493.00,
+            "imss_employer": 1479.00,
+            "imss_subsidy": 0.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "sbc": 12335.50,
+            "net_pay": 13122.76
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify worked days = 30 - 5 incapacity = 25 days",
+        "Verify gross pay = daily_salary × worked_days (25 days)",
+        "Verify incapacity subsidy = daily_salary × incapacity_days × subsidy_rate",
+        "Verify IMSS calculated on worked days only (25 days)",
+        "Verify SBC adjusted for incapacity days",
+        "Verify total income = gross_pay + incapacity_subsidy"
+      ],
+      "compliance_checks": [
+        "IMSS: Subsidy calculated correctly (60% of daily salary for illness)",
+        "IMSS: SBC adjusted for incapacity days",
+        "SAT: ISR calculated on total income (gross + subsidy)",
+        "LFT: Incapacity properly documented"
+      ],
+      "incapacity_details": {
+        "type": "enfermedad",
+        "subsidy_rate": 0.60,
+        "description": "Incapacidad por enfermedad genera subsidio del 60% del salario diario"
+      }
+    },
+    {
+      "id": "SCENARIO-FESTIVOS-001",
+      "name": "Nómina Mensual - Con Días Festivos Trabajados",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Nómina mensual con días festivos trabajados. Los días festivos trabajados requieren pago doble según LFT. Afecta el gross pay, ISR, e IMSS.",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 15000.00,
+          "salary_type": "fixed",
+          "daily_salary": 493.42,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 30,
+          "variations": [
+            {
+              "type": "holiday_work",
+              "holiday_date": "2024-01-01",
+              "holiday_name": "Año Nuevo",
+              "days": 1,
+              "payment_multiplier": 2.0,
+              "description": "Día festivo trabajado con pago doble"
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay_base": 14802.60,
+            "holiday_payment": 986.84,
+            "total_gross_pay": 15789.44,
+            "isr": 500.00,
+            "imss_employee": 631.00,
+            "imss_employer": 1893.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay": 15158.44
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify holiday payment = daily_salary × days × multiplier (493.42 × 1 × 2 = 986.84)",
+        "Verify gross pay = base salary + holiday payment",
+        "Verify ISR calculated on total (base + holiday)",
+        "Verify IMSS calculated on total (base + holiday)",
+        "Verify holiday payment is included in SBC"
+      ],
+      "compliance_checks": [
+        "LFT: Holiday work requires double pay (pago doble)",
+        "SAT: ISR calculated on total income including holiday pay",
+        "IMSS: SBC includes holiday payment",
+        "LFT: Holiday work properly documented"
+      ]
+    },
+    {
+      "id": "SCENARIO-PENSION-001",
+      "name": "Nómina Mensual - Con Pensión Alimenticia",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Nómina mensual con pensión alimenticia como descuento. La pensión alimenticia se descuenta del neto y tiene prioridad sobre otros descuentos según LFT.",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 20000.00,
+          "salary_type": "fixed",
+          "daily_salary": 657.89,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 30,
+          "variations": [
+            {
+              "type": "child_support",
+              "name": "Pensión alimenticia",
+              "amount": 5000.00,
+              "description": "Descuento por pensión alimenticia (prioridad sobre otros descuentos)",
+              "priority": 1
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay": 19736.70,
+            "isr": 600.00,
+            "imss_employee": 789.00,
+            "imss_employer": 2367.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay_before_deduction": 18347.70,
+            "child_support_deduction": 5000.00,
+            "net_pay": 13347.70
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify child support deducted from net pay",
+        "Verify child support has priority over other deductions",
+        "Verify net pay = gross_pay - ISR - IMSS - child_support",
+        "Verify child support is properly documented in CFDI"
+      ],
+      "compliance_checks": [
+        "LFT: Child support has priority over other deductions",
+        "SAT: Child support properly documented in CFDI",
+        "LFT: Child support cannot exceed legal limits",
+        "SAT: ISR and IMSS calculated before child support deduction"
+      ],
+      "child_support_details": {
+        "priority": 1,
+        "description": "Pensión alimenticia tiene prioridad sobre otros descuentos según LFT"
+      }
+    },
+    {
+      "id": "SCENARIO-PRESTAMO-001",
+      "name": "Nómina Mensual - Con Préstamo y Descuento",
+      "period_type": "mensual",
+      "period_days": 30,
+      "description": "Nómina mensual con préstamo y descuento quincenal/mensual. El préstamo se descuenta del neto y puede tener interés. Múltiples préstamos pueden existir simultáneamente.",
+      "period_dates": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-01-30",
+        "payment_date": "2024-01-31"
+      },
+      "employees": [
+        {
+          "employee_id": "EMP-001",
+          "employee_external_id": "EXT-001",
+          "name": "Juan Pérez",
+          "salary": 20000.00,
+          "salary_type": "fixed",
+          "daily_salary": 657.89,
+          "state": "DF",
+          "contract_type": "permanent",
+          "worked_days": 30,
+          "variations": [
+            {
+              "type": "loan",
+              "name": "Préstamo personal",
+              "loan_id": "LOAN-001",
+              "principal_amount": 50000.00,
+              "monthly_payment": 2000.00,
+              "interest_rate": 0.02,
+              "remaining_balance": 48000.00,
+              "description": "Préstamo con descuento mensual de 2,000 pesos"
+            }
+          ],
+          "expected_calculations": {
+            "gross_pay": 19736.70,
+            "isr": 600.00,
+            "imss_employee": 789.00,
+            "imss_employer": 2367.00,
+            "infonavit": 0.00,
+            "isn": 0.00,
+            "net_pay_before_deduction": 18347.70,
+            "loan_payment": 2000.00,
+            "loan_principal": 1960.00,
+            "loan_interest": 40.00,
+            "net_pay": 16347.70,
+            "loan_remaining_balance": 48000.00
+          }
+        }
+      ],
+      "validation_points": [
+        "Verify loan payment deducted from net pay",
+        "Verify loan payment = principal + interest",
+        "Verify loan remaining balance updated",
+        "Verify net pay = gross_pay - ISR - IMSS - loan_payment",
+        "Verify loan properly documented in CFDI"
+      ],
+      "compliance_checks": [
+        "LFT: Loan deductions cannot exceed legal limits",
+        "SAT: Loan properly documented in CFDI",
+        "LFT: Interest rates must comply with legal limits",
+        "SAT: ISR and IMSS calculated before loan deduction"
+      ],
+      "loan_details": {
+        "type": "personal",
+        "payment_frequency": "monthly",
+        "description": "Préstamo con descuento mensual, puede tener múltiples préstamos simultáneos"
+      }
+    }
+  ],
+  "test_cases": [
+    {
+      "id": "TC-SCENARIO-SEMANAL-001",
+      "scenario_id": "SCENARIO-SEMANAL-001",
+      "type": "integration",
+      "description": "Test complete weekly payroll calculation flow",
+      "steps": [
+        "1. Create payroll with scenario data",
+        "2. Run calculation pipeline",
+        "3. Verify all calculations match expected results",
+        "4. Generate CFDI",
+        "5. Verify CFDI structure"
+      ],
+      "expected_results": "All calculations match expected values within 0.01 tolerance"
+    },
+    {
+      "id": "TC-SCENARIO-ASIMILADOS-002",
+      "scenario_id": "SCENARIO-ASIMILADOS-002",
+      "type": "integration",
+      "description": "Test payroll with 9,000 fiscal + assimilated to reach 50,000 net target",
+      "steps": [
+        "1. Create payroll with 9,000 salary",
+        "2. Calculate fiscal portion (with IMSS, ISR)",
+        "3. Calculate required assimilated base to reach 50,000 net",
+        "4. Apply assimilated formula: base*1.16 - base*0.10 - base*0.10667",
+        "5. Verify total net pay ≈ 50,000 (within tolerance)",
+        "6. Verify no IMSS on assimilated portion",
+        "7. Verify ISR on assimilated at 10%",
+        "8. Generate CFDI with both concepts"
+      ],
+      "expected_results": "Total net pay matches 50,000 within 100 pesos tolerance, all calculations correct"
+    },
+    {
+      "id": "TC-SCENARIO-ASIMILADOS-007",
+      "scenario_id": "SCENARIO-ASIMILADOS-007",
+      "type": "integration",
+      "description": "Test deduction order: first from assimilated, then from fiscal",
+      "steps": [
+        "1. Create payroll with fiscal + assimilated fees",
+        "2. Add deduction amount",
+        "3. Verify deduction applied first to assimilated net",
+        "4. Verify deduction applied to fiscal only if assimilated insufficient",
+        "5. Verify total net pay calculated correctly"
+      ],
+      "expected_results": "Deduction order followed: assimilated first, then fiscal"
+    },
+    {
+      "id": "TC-SCENARIO-ASIMILADOS-008",
+      "scenario_id": "SCENARIO-ASIMILADOS-008",
+      "type": "integration",
+      "description": "Test excess deductions handling",
+      "steps": [
+        "1. Create payroll with fiscal + assimilated fees",
+        "2. Add deduction exceeding total net pay",
+        "3. Verify deduction order (assimilated first, then fiscal)",
+        "4. Verify excess calculated correctly",
+        "5. Verify excess handling (carry forward or negative balance)",
+        "6. Verify net pay = 0.00 when deductions exceed total"
+      ],
+      "expected_results": "Excess deductions handled correctly per company policy"
+    },
+    {
+      "id": "TC-SCENARIO-SALARY-INCREASE-001",
+      "scenario_id": "SCENARIO-SALARY-INCREASE-001",
+      "type": "integration",
+      "description": "Test salary increase mid-period with proportional calculations",
+      "steps": [
+        "1. Create payroll with salary increase on day 15",
+        "2. Calculate gross pay proportionally (15 days old + 15 days new)",
+        "3. Verify ISR calculated proportionally",
+        "4. Verify IMSS calculated on weighted SBC",
+        "5. Verify SDI calculated as weighted average",
+        "6. Verify accumulated annual amounts updated"
+      ],
+      "expected_results": "All calculations proportional, SBC and SDI weighted correctly"
+    },
+    {
+      "id": "TC-SCENARIO-COMMISSIONS-001",
+      "scenario_id": "SCENARIO-COMMISSIONS-001",
+      "type": "integration",
+      "description": "Test variable salary with commissions",
+      "steps": [
+        "1. Create payroll with base salary + commissions",
+        "2. Calculate gross pay = base + commissions",
+        "3. Verify ISR calculated on total",
+        "4. Verify IMSS calculated on total SBC (capped)",
+        "5. Verify commissions included in accumulated amounts"
+      ],
+      "expected_results": "Commissions properly included in all calculations, IMSS capped if needed"
+    },
+    {
+      "id": "TC-SCENARIO-INCAPACIDAD-001",
+      "scenario_id": "SCENARIO-INCAPACIDAD-001",
+      "type": "integration",
+      "description": "Test incapacity with subsidy calculation",
+      "steps": [
+        "1. Create payroll with incapacity days",
+        "2. Calculate worked days = total - incapacity days",
+        "3. Calculate incapacity subsidy (60% for illness)",
+        "4. Verify IMSS calculated on worked days only",
+        "5. Verify SBC adjusted for incapacity",
+        "6. Verify total income = gross + subsidy"
+      ],
+      "expected_results": "Incapacity handled correctly, subsidy calculated, SBC adjusted"
+    }
+  ],
+  "edge_cases": [
+    {
+      "id": "EDGE-001",
+      "name": "Employee with 0 days worked",
+      "description": "Employee with no worked days in period",
+      "scenario": {
+        "worked_days": 0,
+        "expected_gross_pay": 0.00,
+        "expected_net_pay": 0.00
+      }
+    },
+    {
+      "id": "EDGE-002",
+      "name": "Employee with maximum salary (topes IMSS)",
+      "description": "Employee at IMSS maximum contribution base",
+      "scenario": {
+        "salary": 250000.00,
+        "sbc_cap": 250000.00,
+        "expected_imss_capped": true
+      }
+    },
+    {
+      "id": "EDGE-003",
+      "name": "Period spanning year boundary",
+      "description": "Payroll period that spans December to January",
+      "scenario": {
+        "start_date": "2024-12-25",
+        "end_date": "2025-01-08",
+        "year_boundary": true
+      }
+    },
+    {
+      "id": "EDGE-004",
+      "name": "Assimilated fees only (no fiscal payroll)",
+      "description": "Employee with only assimilated fees, no regular salary",
+      "scenario": {
+        "salary": 0.00,
+        "assimilated_base": 50000.00,
+        "expected_imss": 0.00,
+        "expected_isr_rate": 0.10,
+        "expected_net_formula": "base * 0.95333"
+      }
+    },
+    {
+      "id": "EDGE-005",
+      "name": "High assimilated fees (above IMSS cap)",
+      "description": "Assimilated fees exceeding IMSS maximum base, but no IMSS applies",
+      "scenario": {
+        "salary": 15000.00,
+        "assimilated_base": 500000.00,
+        "expected_imss_capped": false,
+        "expected_imss_on_assimilated": 0.00,
+        "expected_isr_assimilated": 50000.00
+      }
+    },
+    {
+      "id": "EDGE-006",
+      "name": "Deductions exceed total net pay",
+      "description": "When deductions exceed the total net pay (fiscal + assimilated)",
+      "scenario": {
+        "fiscal_net": 8000.00,
+        "assimilated_net": 20000.00,
+        "total_net": 28000.00,
+        "deductions": 35000.00,
+        "excess": 7000.00,
+        "deduction_order": "First from assimilated, then from fiscal",
+        "excess_handling": "Carry forward or negative balance"
+      },
+      "related_scenario": "SCENARIO-ASIMILADOS-008"
+    },
+    {
+      "id": "EDGE-007",
+      "name": "Salary increase mid-period with retroactive effect",
+      "description": "Salary increase applied mid-period affecting ISR bracket, SBC, and accumulated amounts",
+      "scenario": {
+        "old_salary": 15000.00,
+        "new_salary": 20000.00,
+        "increase_date": "2024-01-16",
+        "days_at_old": 15,
+        "days_at_new": 15,
+        "isr_bracket_change": true,
+        "sbc_weighted": true
+      },
+      "related_scenario": "SCENARIO-SALARY-INCREASE-001"
+    },
+    {
+      "id": "EDGE-008",
+      "name": "Multiple incapacities in same period",
+      "description": "Employee with multiple incapacity periods in same payroll period",
+      "scenario": {
+        "incapacity_1": {
+          "type": "enfermedad",
+          "days": 3
+        },
+        "incapacity_2": {
+          "type": "maternidad",
+          "days": 2
+        },
+        "total_incapacity_days": 5,
+        "subsidy_calculation": "per_incapacity_type"
+      },
+      "related_scenario": "SCENARIO-INCAPACIDAD-001"
+    },
+    {
+      "id": "EDGE-009",
+      "name": "Commissions exceed IMSS cap",
+      "description": "Variable commissions that exceed IMSS maximum contribution base",
+      "scenario": {
+        "base_salary": 15000.00,
+        "commissions": 250000.00,
+        "sbc_total": 265000.00,
+        "sbc_cap": 250000.00,
+        "sbc_capped": true,
+        "imss_capped": true
+      },
+      "related_scenario": "SCENARIO-COMMISSIONS-001"
+    }
+  ],
+  "compliance_validation": [
+    {
+      "area": "SAT",
+      "checks": [
+        "ISR calculation matches tax tables",
+        "CFDI XML structure valid",
+        "All required fields present",
+        "UUID generated correctly"
+      ]
+    },
+    {
+      "area": "IMSS",
+      "checks": [
+        "SBC calculation correct",
+        "Contributions within limits",
+        "Topes applied correctly",
+        "Rates per branch correct"
+      ]
+    },
+    {
+      "area": "INFONAVIT",
+      "checks": [
+        "Deduction calculation correct",
+        "Credit types handled",
+        "Suspension status respected"
+      ]
+    },
+    {
+      "area": "ISN",
+      "checks": [
+        "State rates applied correctly",
+        "Taxable base aggregated correctly",
+        "Range-based calculations correct"
+      ]
+    },
+    {
+      "area": "LFT",
+      "checks": [
+        "Minimum wage respected",
+        "Overtime rates correct",
+        "Vacation calculations correct",
+        "Aguinaldo minimum 15 days",
+        "PTU 10% of profits"
+      ]
+    },
+    {
+      "area": "SAT - Asimilados",
+      "checks": [
+        "ISR on assimilated fees at 10% of base",
+        "CFDI includes assimilated concept (code 046)",
+        "Formula: base*1.16 - base*0.10 - base*0.10667",
+        "Assimilated fees properly separated from regular salary",
+        "No IMSS contributions on assimilated portion"
+      ]
+    }
+  ]
+}
+

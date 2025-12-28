@@ -344,17 +344,8 @@ Generated: 2025-12-26
 Added:
 - `schemas/domain_knowledge_pack.schema.json`
 - `templates/domain_expert_payroll_split.md`
-- `templates/domain_expert_recruitment.md`
 
 Agent 02 (Product Analyst) now explicitly accepts one or multiple `DomainKnowledgePack` inputs and must weave rules/edge cases into backlog acceptance criteria.
-
-### Template Auto-Saving
-When a Domain Expert Agent produces a `DomainKnowledgePack`, it automatically saves:
-1. **JSON example** to `sdlc/examples/domain/domain_knowledge_pack_<domain_slug>.json`
-2. **Template guide** to `sdlc/templates/domain_expert_<domain_slug>.md`
-
-Domain slug is extracted from the `domain` field (lowercase, spaces/special chars → underscores).  
-This makes domain knowledge reusable for future tickets in the same domain.
 
 Generated: 2025-12-26
 
@@ -502,3 +493,87 @@ Examples:
 - `examples/xml_vs_blob/` (blob vs tagged)
 
 Generated: 2025-12-26
+
+
+---
+
+## 07W — Code Writer (actually edits files)
+
+If your pipeline ends with an **ImplementationPlan** but no code was written, that’s expected:
+- Implementer agents plan.
+- **07W writes**.
+
+Added:
+- `agents/07w_code_writer.md`
+
+How to use:
+1) Run Architect + QA + Implementer(s) until you have ImplementationPlan JSON(s).
+2) Run **07W** with those JSONs pasted in.
+3) Then run 08 (review) and 09 (release).
+
+Generated: 2025-12-28
+
+
+---
+
+## Domain templates (scalable structure)
+
+We group domain-specific experts under:
+
+- `templates/domains/<domain>/`
+- `templates/domains/<domain>/examples/`
+
+Payroll specialists added:
+- `templates/domains/payroll/domain_expert_payroll_mx_imss.md`
+- `templates/domains/payroll/domain_expert_payroll_mx_infonavit.md`
+
+To propose new domain specialists:
+- `agents/01x_domain_agent_scout.md`
+
+Generated: 2025-12-28
+
+
+---
+
+## Estructura por dominio (simple y plana)
+
+Para evitar redundancia, usamos una estructura **plana por dominio**:
+
+- `sdlc/templates/domains/<domain>/*.md` → agentes/prompts de dominio
+- `sdlc/templates/domains/<domain>/examples/*.json` → ejemplos DomainKnowledgePack
+- `sdlc/templates/domains/_shared/*.md` → prompts compartidos
+
+Ejemplo Payroll:
+- `sdlc/templates/domains/payroll/domain_expert_payroll_mx_imss.md`
+- `sdlc/templates/domains/payroll/examples/domain_knowledge_pack_payroll_mx_imss.json`
+
+Generated:
+ 2025-12-28
+
+
+---
+
+## 01X “materialize” (crear nuevos agentes de dominio automáticamente)
+
+El Domain Agent Scout (01X) ahora puede **proponer y materializar** nuevos agentes de dominio, entregando:
+- el **template .md** del agente (prompt listo para copiar)
+- un **example DomainKnowledgePack .json** (forma esperada del output)
+
+Estructura:
+- `sdlc/templates/domains/<domain>/*.md`
+- `sdlc/templates/domains/<domain>/examples/*.json`
+
+### Aplicar el materialize con script (opcional)
+
+1) Guarda el output JSON de 01X en un archivo (ej. `runs/<ticket>/suggested_domain_agents.json`)
+2) Ejecuta:
+
+```bash
+python3 scripts/apply_materialize.py runs/<ticket>/suggested_domain_agents.json
+```
+
+Esto crea/escribe los archivos listados en `materialize.files[]`.
+
+Generated: 2025-12-28
+
+Tip: `chmod +x scripts/apply_materialize.py` if you want to run it directly.
