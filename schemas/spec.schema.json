@@ -26,6 +26,10 @@
         "generic"
       ]
     },
+    "lightweight": {
+      "type": "boolean",
+      "description": "Set to true for fast-track mode (bug fixes, small refactors). Indicates simplified spec with minimal domain model, focused API contracts, and simplified flows."
+    },
     "domain_model": {
       "type": "object"
     },

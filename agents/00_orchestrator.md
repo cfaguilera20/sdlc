@@ -11,7 +11,7 @@
 ### Basic Usage
 
 1. **Paste your ticket** (from Jira, Linear, or plain text)
-2. **Specify stack and type:**
+2. **Specify stack and commit_type (required):**
    ```
    stack=rails
    commit_type=feat
@@ -19,9 +19,30 @@
    TICKET:
    [paste ticket here]
    ```
-3. **Run the orchestrator** - it will return a PipelinePlan
-4. **Execute agents in order** - follow the plan step by step
-5. **Validate outputs** - use validation scripts after each agent
+3. **If commit_type is missing**, the orchestrator will ask you to specify it with conventional commit options
+4. **Run the orchestrator** - it will return a PipelinePlan
+5. **Execute agents in order** - follow the plan step by step
+6. **Validate outputs** - use validation scripts after each agent
+
+### Commit Type (Required)
+
+**The orchestrator REQUIRES `commit_type` to be specified.** If not provided, it will stop and ask you to choose from conventional commit types:
+
+- `feat` - A new feature
+- `fix` - A bug fix
+- `refactor` - Code refactoring (no behavior change)
+- `perf` - Performance improvement
+- `style` - Code style changes (formatting, whitespace)
+- `test` - Adding or updating tests
+- `docs` - Documentation changes
+- `chore` - Maintenance tasks (dependencies, build config)
+- `ci` - CI/CD changes
+- `build` - Build system changes
+
+**Fast-Track Mode:**
+- Automatically enabled for: `fix`, `refactor`, `style`, `test`, `docs`
+- Full pipeline for: `feat`, `perf`, `chore`, `ci`, `build`
+- Manual override: Set `fast_track=true` or `fast_track=false` to override
 
 ### Common Workflows
 
@@ -35,15 +56,32 @@ Orchestrator → Ticket Reader → Product Analyst → Rails Architect → QA �
 Orchestrator → Ticket Reader → Product Analyst → Rails Architect → QA → Test Writer → Test Coverage Validator → Implementer → Code Writer → Test Coverage Validator → Spec Compliance → Code Reviewer
 ```
 
-**Bug Fix (Laravel):**
+**Bug Fix (Laravel) - Fast-Track:**
 ```
-Orchestrator → Ticket Reader → Laravel Architect → QA → Implementer → Code Writer → Test Coverage → Code Reviewer
+Orchestrator → Ticket Reader → Laravel Architect (light) → QA → Implementer → Code Writer → Code Reviewer
+```
+
+**Small Refactor - Fast-Track:**
+```
+Orchestrator → Ticket Reader → Architect (light) → QA (regression focus) → Implementer → Code Writer → Code Reviewer
 ```
 
 **Integration:**
 ```
 Orchestrator → Ticket Reader → Integration Planner → Architect → QA → Test Writer → Test Coverage → Implementer → Code Writer → Test Coverage → Code Reviewer
 ```
+
+**Bug Fix - Fast-Track (commit_type=fix):**
+```
+Orchestrator → Ticket Reader → Architect (light) → QA (regression focus) → Implementer → Code Writer → Code Reviewer
+```
+
+**Small Refactor - Fast-Track (commit_type=refactor):**
+```
+Orchestrator → Ticket Reader → Architect (light) → QA (regression focus) → Implementer → Code Writer → Code Reviewer
+```
+
+**Note:** Fast-track mode is automatically enabled for `fix`, `refactor`, `style`, `test`, `docs` commit types. Use `fast_track=false` to force full pipeline if needed.
 
 ### Validation Checklist
 
@@ -101,39 +139,98 @@ Return **ONE JSON**: `{ ticket_context, backlog?, spec|specs, test_suite, notes 
 
 ---
 
+## Input Validation (MANDATORY - Execute First)
+
+**Before processing any ticket, you MUST:**
+
+1. **Check for `commit_type` (REQUIRED):**
+   - **If `commit_type` is NOT provided:**
+     - **STOP execution immediately**
+     - **DO NOT proceed with any agent selection or pipeline planning**
+     - Present the user with this message:
+     ```
+     ⚠️ commit_type is required. Please specify one of the following conventional commit types:
+     
+     - feat: A new feature
+     - fix: A bug fix
+     - refactor: Code refactoring (no behavior change)
+     - perf: Performance improvement
+     - style: Code style changes (formatting, whitespace)
+     - test: Adding or updating tests
+     - docs: Documentation changes
+     - chore: Maintenance tasks (dependencies, build config)
+     - ci: CI/CD changes
+     - build: Build system changes
+     
+     Example: commit_type=fix
+     
+     Please add commit_type to your input and try again.
+     ```
+   - **Wait for user response** - do not proceed until commit_type is provided
+   - **Validate the provided `commit_type`** matches one of the options above
+   - **If invalid commit_type provided**, ask again with the same options
+
+2. **Determine Fast-Track Mode (after commit_type is confirmed):**
+   - **Check if `fast_track` is manually set:**
+     - If `fast_track=true` → Force fast-track mode (regardless of commit_type)
+     - If `fast_track=false` → Force full pipeline (regardless of commit_type)
+   - **If not manually set, use `commit_type` for automatic detection:**
+     - `fix`, `refactor`, `style`, `test`, `docs` → Fast-track mode
+     - `feat`, `perf`, `chore`, `ci`, `build` → Full pipeline
+   - **Manual flag takes precedence** over automatic detection
+
 ## Decision policy (practical)
+
 0) **Optional: Codebase Analysis** - If codebase context is needed or stack is unknown:
    - Run **Agent 00A (Codebase Analyzer)** to understand architecture, tech stack, and patterns
    - Use output to inform subsequent agents (especially Architect)
+
 1) Always start with **Agent 01 (Ticket Reader)**.
-2) If scope is unclear or >1 story: run **Agent 02 (Product Analyst)**.
+
+2) **Fast-Track Mode:** If fast-track is enabled (by commit_type or manual flag):
+   - **SKIP:** Agent 02 (Product Analyst), Agent 02A (Integration Planner), Agent 02B (Migration Strategist)
+   - **SKIP:** Agent 08A (Spec Compliance Validator), Agent 08C (Test Coverage Validator)
+   - **USE:** Lightweight Architect mode (simplified spec)
+   - **KEEP:** Ticket Reader (01), Architect (03A/03B - light), QA (04), Implementer (07A/07B), Code Writer (07W), Reviewer (08)
+   - Go directly to step 3 (Architect)
+
+2) **Full Pipeline Mode:** If scope is unclear or >1 story: run **Agent 02 (Product Analyst)**.
 2A) If ticket mentions integrations (another service, webhook, queue, SSO, external API) or 'create a new service': run **Agent 02A (Integration & Platform Planner)** and incorporate it into backlog/spec.
 2B) If ticket mentions migration/extraction ("migrate", "extract service", "move data", "backfill", "dual write", "cutover"): run **Agent 02B (Data Migration Strategist)** and incorporate it into backlog/spec.
 
 3) For each story: (another service, webhook, queue, SSO, external API) or 'create a new service': run **Agent 02A (Integration & Platform Planner)** and incorporate it into backlog/spec.
+
 3) For each story:
    - **Rails** → Agent `03a_architect_rails`
    - **Laravel** → Agent `03b_architect_laravel`
    - Otherwise → `03_technical_architect_generic`
+   - **Fast-Track Mode:** Pass `lightweight=true` flag to architect agents for simplified specs
 4) If UI is impacted → include FE:
    - Agent `03c_architect_frontend` (FE Spec)
    - Agent `07c_implementer_frontend` (optional)
 5) If ticket touches auth, PII, payments, webhooks, multi-tenant, file uploads → add **Agent 05 (Security)**.
 6) If performance-sensitive or read-heavy (lists/search/reports/hot paths) → add **Agent 06 (Perf/Obs)**.
 7) Always add **Agent 04 (QA)**.
+   - **Fast-Track Mode:** QA focuses on regression testing and critical paths only
+
 8) If implementing now:
-   - **TDD Mode (recommended):**
-     - Test writer: `07t_test_writer` (writes tests first)
-     - Test coverage validator: `08c_test_coverage_validator` (ensures all specs have tests)
+   - **Fast-Track Mode:**
      - BE implementer: `07a` (Rails) or `07b` (Laravel)
      - then `07w_code_writer`
-   - **Standard Mode:**
-     - BE implementer: `07a` (Rails) or `07b` (Laravel)
-     - then `07w_code_writer`
-   - Then:
-     - `08a_spec_compliance_validator` (recommended for spec-driven development)
-     - `08c_test_coverage_validator` (ensures test coverage matches spec)
-     - `08_code_reviewer`
+     - then `08_code_reviewer` (skip spec compliance and test coverage validators)
+   - **Full Pipeline Mode:**
+     - **TDD Mode (recommended):**
+       - Test writer: `07t_test_writer` (writes tests first)
+       - Test coverage validator: `08c_test_coverage_validator` (ensures all specs have tests)
+       - BE implementer: `07a` (Rails) or `07b` (Laravel)
+       - then `07w_code_writer`
+     - **Standard Mode:**
+       - BE implementer: `07a` (Rails) or `07b` (Laravel)
+       - then `07w_code_writer`
+     - Then:
+       - `08a_spec_compliance_validator` (recommended for spec-driven development)
+       - `08c_test_coverage_validator` (ensures test coverage matches spec)
+       - `08_code_reviewer`
 9) If release risk medium/high → add `09_release_ops`.
 
 ---
@@ -674,6 +771,61 @@ When a spec is updated or changed, the orchestrator MUST:
 - Add compliance status to `notes` array
 - Flag any blockers or non-compliance issues
 
+### Fast-Track Mode for Small Tickets
+
+The orchestrator automatically optimizes the pipeline for bug fixes and small refactors by using fast-track mode.
+
+**Automatic Fast-Track Detection:**
+- **Enabled for:** `commit_type` = `fix`, `refactor`, `style`, `test`, `docs`
+- **Full pipeline for:** `commit_type` = `feat`, `perf`, `chore`, `ci`, `build`
+
+**Manual Override:**
+- Set `fast_track=true` to force fast-track mode (regardless of commit_type)
+- Set `fast_track=false` to force full pipeline (regardless of commit_type)
+- Manual flag takes precedence over automatic detection
+
+**Fast-Track Workflow:**
+```
+Orchestrator → Ticket Reader → Architect (lightweight) → QA (regression focus) → 
+Implementer → Code Writer → Code Reviewer
+```
+
+**Agents Skipped in Fast-Track:**
+- Agent 02 (Product Analyst) - not needed for simple fixes
+- Agent 02A (Integration Planner) - not needed for isolated changes
+- Agent 02B (Migration Strategist) - not needed for small refactors
+- Agent 08A (Spec Compliance Validator) - simplified for fast-track
+- Agent 08C (Test Coverage Validator) - simplified for fast-track
+
+**Agents Still Required (Quality Maintained):**
+- Agent 01 (Ticket Reader) - understand the issue
+- Agent 03A/03B (Architect) - lightweight spec for the fix
+- Agent 04 (QA Designer) - regression testing focus
+- Agent 07A/07B (Implementer) - implement the fix
+- Agent 07W (Code Writer) - apply changes
+- Agent 08 (Code Reviewer) - ensure quality
+
+**Lightweight Architect Mode:**
+- When fast-track is enabled, architect agents receive `lightweight=true` flag
+- Creates simplified specs with:
+  - Minimal domain model (only what's changing)
+  - Focused API contracts (only affected endpoints)
+  - Simplified flows (just the fix/change)
+  - Skip extensive edge cases and non-functionals (unless critical)
+  - Sets `lightweight: true` in spec JSON
+
+**When to use Fast-Track:**
+- Bug fixes (`commit_type=fix`)
+- Small refactors (`commit_type=refactor`)
+- Style changes (`commit_type=style`)
+- Test updates (`commit_type=test`)
+- Documentation (`commit_type=docs`)
+
+**When NOT to use Fast-Track:**
+- Complex features (`commit_type=feat`) - use full pipeline
+- Performance work (`commit_type=perf`) - may need full analysis
+- If unsure, use full pipeline for safety
+
 ### Test-Driven Development (TDD) Support
 
 The orchestrator supports TDD workflow through Agent 07T (Test Writer) and Agent 08C (Test Coverage Validator).
@@ -697,6 +849,8 @@ The orchestrator supports TDD workflow through Agent 07T (Test Writer) and Agent
 - After Agent 04 → Run Agent 07T (write tests first)
 - After Agent 07T → Run Agent 08C (validate test coverage)
 - After Agent 07W → Run Agent 08C again (validate final coverage)
+
+**Note:** TDD mode is typically used with full pipeline, not fast-track mode.
 
 ### Spec Enforcement Rules
 

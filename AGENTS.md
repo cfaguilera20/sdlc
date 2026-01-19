@@ -18,13 +18,23 @@ Complete reference guide for all agents in the SDLC pipeline. Each agent is a sp
 ### Agent 00 — Orchestrator
 **File:** `agents/00_orchestrator.md`  
 **Role:** Central controller that decides which agents to run and in what order based on ticket content.  
-**Input:** Ticket text, stack (rails/laravel), commit_type (feat/fix/etc), mode (interactive/one_message)  
+**Input:** Ticket text, stack (rails/laravel), commit_type (feat/fix/etc - **required**), mode (interactive/one_message), fast_track (optional override)  
 **Output:** `PipelinePlan` JSON or combined JSON bundle  
 **When to use:** Always start here. First agent in every workflow.
+
+**Required Input:**
+- `commit_type` is **mandatory** - if missing, orchestrator will ask with conventional commit options:
+  - `feat`, `fix`, `refactor`, `perf`, `style`, `test`, `docs`, `chore`, `ci`, `build`
 
 **Modes:**
 - **Interactive (default):** Returns PipelinePlan, you run agents step-by-step
 - **One-message:** Returns complete JSON bundle with all artifacts
+
+**Fast-Track Mode:**
+- **Automatic:** Enabled for `commit_type` = `fix`, `refactor`, `style`, `test`, `docs`
+- **Manual:** Set `fast_track=true` or `fast_track=false` to override
+- **Skips:** Product Analyst, Integration Planner, Migration Strategist, Spec Compliance Validator, Test Coverage Validator
+- **Uses:** Lightweight Architect mode for simplified specs
 
 ---
 
@@ -165,11 +175,19 @@ Complete reference guide for all agents in the SDLC pipeline. Each agent is a sp
 ### Agent 03A — Rails Architect
 **File:** `agents/03a_architect_rails.md`  
 **Role:** Creates Rails-specific technical specifications.  
-**Input:** `Backlog` JSON, optional `CodebaseArchitecture` JSON  
+**Input:** `Backlog` JSON, optional `CodebaseArchitecture` JSON, optional `lightweight=true` flag  
 **Output:** `DeveloperReadySpec` JSON (`schemas/spec.schema.json`)  
 **When to use:** For Rails projects
 
-**Spec includes:**
+**Lightweight Mode (fast-track):**
+- When `lightweight=true` (set automatically for bug fixes/small refactors):
+  - Minimal domain model (only what's changing)
+  - Focused API contracts (only affected endpoints)
+  - Simplified flows (just the fix/change)
+  - Skip extensive edge cases and non-functionals (unless critical)
+  - Sets `lightweight: true` flag in spec JSON
+
+**Full Spec Mode (default):**
 - Domain model (ActiveRecord models, associations, validations)
 - API contracts (routes, controllers, request/response formats)
 - Data contracts (JSON schemas, serializers)
@@ -183,11 +201,19 @@ Complete reference guide for all agents in the SDLC pipeline. Each agent is a sp
 ### Agent 03B — Laravel Architect
 **File:** `agents/03b_architect_laravel.md`  
 **Role:** Creates Laravel-specific technical specifications.  
-**Input:** `Backlog` JSON, optional `CodebaseArchitecture` JSON  
+**Input:** `Backlog` JSON, optional `CodebaseArchitecture` JSON, optional `lightweight=true` flag  
 **Output:** `DeveloperReadySpec` JSON (`schemas/spec.schema.json`)  
 **When to use:** For Laravel projects
 
-**Spec includes:**
+**Lightweight Mode (fast-track):**
+- When `lightweight=true` (set automatically for bug fixes/small refactors):
+  - Minimal domain model (only what's changing)
+  - Focused API contracts (only affected endpoints)
+  - Simplified flows (just the fix/change)
+  - Skip extensive edge cases and non-functionals (unless critical)
+  - Sets `lightweight: true` flag in spec JSON
+
+**Full Spec Mode (default):**
 - Domain model (Eloquent models, relationships, migrations)
 - API contracts (routes, controllers, FormRequests, Resources)
 - Data contracts (JSON schemas, API Resources)
@@ -459,6 +485,14 @@ Complete reference guide for all agents in the SDLC pipeline. Each agent is a sp
 Orchestrator → Ticket Reader → Product Analyst → Rails Architect → QA → 
 Implementer → Code Writer → Spec Compliance → Test Coverage → Code Reviewer
 ```
+
+### Bug Fix / Small Refactor - Fast-Track Workflow
+```
+Orchestrator → Ticket Reader → Architect (light) → QA (regression focus) → 
+Implementer → Code Writer → Code Reviewer
+```
+
+**Fast-track automatically enabled for:** `commit_type` = `fix`, `refactor`, `style`, `test`, `docs`
 
 ### TDD Workflow (Rails)
 ```

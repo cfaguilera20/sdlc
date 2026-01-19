@@ -59,4 +59,15 @@ These rules are intended to make agent outputs **copy/paste safe**, **schema-val
   - Use `codebase_architecture.json` to inform spec creation
   - Save `codebase_architecture.json` in run folder
 
+11) **Commit type is required**
+- Orchestrator MUST always ask for `commit_type` if not provided
+- Present conventional commit options: feat, fix, refactor, perf, style, test, docs, chore, ci, build
+- Validate commit_type matches one of the options before proceeding
+
+12) **Fast-track mode for small tickets**
+- Automatically enabled for: `fix`, `refactor`, `style`, `test`, `docs` commit types
+- Can be manually overridden with `fast_track=true` or `fast_track=false`
+- Fast-track skips optional agents but maintains quality (QA + Review still required)
+- Uses lightweight architect mode for simplified specs
+
 

@@ -195,8 +195,8 @@ Use the included example ticket:
 
 ### Suggested Pipeline Workflows
 
-**Standard Feature (Rails/Laravel):**
-1) 00_orchestrator (start here)  
+**Standard Feature (Rails/Laravel) - Full Pipeline:**
+1) 00_orchestrator (start here, commit_type=feat)  
 2) 01_ticket_reader  
 3) 02_product_analyst (if scope > 1 story)  
 4) 00a_codebase_analyzer (if new codebase)  
@@ -210,6 +210,17 @@ Use the included example ticket:
 12) 08c_test_coverage_validator  
 13) 08_code_reviewer  
 14) 09_release_ops (if risky)
+
+**Bug Fix / Small Refactor - Fast-Track:**
+1) 00_orchestrator (commit_type=fix or refactor)  
+2) 01_ticket_reader  
+3) 03A (Rails) or 03B (Laravel) - lightweight mode  
+4) 04_qa_designer (regression focus)  
+5) 07A/07B implementer  
+6) 07w_code_writer  
+7) 08_code_reviewer
+
+**Note:** Fast-track mode is automatically enabled for `fix`, `refactor`, `style`, `test`, `docs` commit types. Use `fast_track=false` to force full pipeline if needed.
 
 **TDD Workflow (recommended):**
 1) 00_orchestrator  
@@ -238,6 +249,16 @@ Use the included example ticket:
 10) 07w_code_writer  
 11) 08c_test_coverage_validator  
 12) 08_code_reviewer
+
+### Fast-Track Mode
+
+For bug fixes and small refactors, the orchestrator automatically uses fast-track mode which:
+- **Skips:** Product Analyst, Integration Planner, Migration Strategist, Spec Compliance Validator, Test Coverage Validator
+- **Uses:** Lightweight Architect mode (simplified specs)
+- **Keeps:** Ticket Reader, Architect (light), QA (regression focus), Implementer, Code Writer, Reviewer
+
+**Automatic fast-track:** Enabled for `commit_type` = `fix`, `refactor`, `style`, `test`, `docs`  
+**Manual override:** Set `fast_track=true` or `fast_track=false` to override
 
 See [AGENTS.md](AGENTS.md) for complete workflow details.
 
