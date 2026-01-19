@@ -1,0 +1,65 @@
+{
+  "domain": "LMS Progress Tracking",
+  "glossary": [
+    {"term": "progress event", "definition": "Event representing a change in learning progress (started, in_progress, completed, paused)"},
+    {"term": "completion threshold", "definition": "Minimum percentage or requirements needed to mark a lesson/module/course as completed"},
+    {"term": "resume position", "definition": "Last watched position in a video lesson, used to resume playback"},
+    {"term": "time tracking", "definition": "Tracking of time spent on lessons, modules, and courses"}
+  ],
+  "business_rules": [
+    "Progress is tracked at lesson level, aggregated to module level, then course level",
+    "A lesson is completed when user watches 90% of video or marks as complete",
+    "A module is completed when all lessons in the module are completed",
+    "A course is completed when all modules are completed and final assessment passed (if required)",
+    "Progress events are sent every 10-30 seconds during video playback",
+    "Resume position is saved every 5 seconds during video playback",
+    "Time spent is accumulated across all sessions",
+    "Progress is persisted immediately on completion events"
+  ],
+  "calculations_or_formulas": [
+    "Module progress = (completed lessons / total lessons) * 100",
+    "Course progress = (completed modules / total modules) * 100",
+    "Time spent = sum of all session durations for a lesson"
+  ],
+  "invariants": [
+    "Progress percentage cannot exceed 100%",
+    "Progress cannot decrease (only increase or stay same)",
+    "Completion status can only change from not_started → in_progress → completed",
+    "Every progress event must be associated with an enrollment"
+  ],
+  "edge_cases": [
+    "User watches same lesson multiple times",
+    "Lesson content is updated after user started",
+    "User completes lesson but doesn't trigger completion event",
+    "Network failure during progress event submission",
+    "Multiple devices accessing same course simultaneously",
+    "Video duration changes after progress tracking started"
+  ],
+  "compliance_requirements": [],
+  "data_requirements": {
+    "inputs": ["Progress event type", "Lesson ID", "Enrollment ID", "Time spent", "Resume position"],
+    "outputs": ["Updated progress record", "Aggregated module progress", "Aggregated course progress", "Completion status"]
+  },
+  "user_journeys": [
+    "User starts lesson → progress event 'started' → watches video → progress events 'in_progress' every 10s → completes lesson → progress event 'completed' → module progress updated → course progress updated",
+    "User resumes lesson → loads last position → continues watching → progress events continue"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Progress events are sent and persisted correctly",
+    "Progress is aggregated correctly at module and course levels",
+    "Completion status is updated when thresholds are met",
+    "Resume position is saved and restored correctly",
+    "Time spent is tracked accurately across sessions"
+  ],
+  "open_questions": [
+    "What is the exact completion threshold for lessons? (90%? 100%?)",
+    "How often should progress events be sent? (10s? 30s?)",
+    "Should progress be real-time or eventually consistent?"
+  ],
+  "assumptions": [
+    "Progress events are sent from frontend during video playback",
+    "Backend aggregates progress on-demand or via background jobs",
+    "Completion requires passing assessment if course has one"
+  ]
+}
+

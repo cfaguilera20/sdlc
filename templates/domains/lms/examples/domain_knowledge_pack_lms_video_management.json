@@ -1,0 +1,103 @@
+{
+  "domain": "LMS Video Management",
+  "glossary": [
+    {"term": "Cloudflare Stream", "definition": "Video streaming service used for video upload, processing, and delivery"},
+    {"term": "video upload wizard", "definition": "Multi-step interface for uploading videos with validation and progress tracking"},
+    {"term": "signed URL", "definition": "Time-limited URL with authentication token for secure video access"},
+    {"term": "playback token", "definition": "JWT token used to authenticate video playback requests"},
+    {"term": "video asset", "definition": "Stored video file with metadata (duration, format, size, Cloudflare Stream ID)"}
+  ],
+  "business_rules": [
+    "Videos must be uploaded through Cloudflare Stream API, not directly to LMS storage",
+    "Video upload wizard must validate file format, size, and duration before upload",
+    "Video processing status must be tracked (uploading, processing, ready, failed)",
+    "Video player must use signed URLs or playback tokens for secure access",
+    "Videos must be associated with lessons before they can be played",
+    "Video upload progress must be displayed to user in real-time",
+    "Failed uploads must allow retry without losing progress",
+    "Video metadata (duration, thumbnail) must be extracted after processing",
+    "Video access must be restricted to enrolled users only",
+    "Playback tokens must expire after session ends or time limit",
+    "Video uploads must support resume capability for large files",
+    "Video processing must generate thumbnails automatically"
+  ],
+  "calculations_or_formulas": [
+    "Upload progress = (bytes uploaded / total bytes) * 100",
+    "Video duration = extracted from Cloudflare Stream metadata",
+    "Token expiration = current time + session duration (default 1 hour)"
+  ],
+  "invariants": [
+    "Every video must have a Cloudflare Stream video ID",
+    "Every video must be associated with a lesson",
+    "Video upload status can only progress: pending → uploading → processing → ready (or failed)",
+    "Video cannot be played until status is 'ready'",
+    "Playback token must be valid and not expired",
+    "Video access requires valid enrollment"
+  ],
+  "edge_cases": [
+    "Network failure during video upload",
+    "Cloudflare Stream processing failure",
+    "Video file corrupted or invalid format",
+    "Upload interrupted by user (browser close, network change)",
+    "Multiple simultaneous uploads",
+    "Video exceeds size limit during upload",
+    "Playback token expires during video playback",
+    "User tries to access video without enrollment",
+    "Video deleted from Cloudflare Stream but still referenced in LMS",
+    "Video processing takes longer than expected",
+    "User uploads same video multiple times",
+    "Video format not supported by Cloudflare Stream"
+  ],
+  "compliance_requirements": [],
+  "data_requirements": {
+    "inputs": [
+      "Video file (MP4, MOV, AVI, etc.)",
+      "Lesson ID",
+      "Video title and description",
+      "Upload progress events"
+    ],
+    "outputs": [
+      "Cloudflare Stream video ID",
+      "Video asset record",
+      "Processing status",
+      "Playback token",
+      "Signed URL for playback",
+      "Video metadata (duration, thumbnail, size)"
+    ]
+  },
+  "user_journeys": [
+    "Instructor selects lesson → clicks upload video → selects file → wizard validates → uploads to Cloudflare Stream → tracks progress → processing completes → video ready for playback",
+    "Learner opens lesson → requests playback token → receives signed URL → video player loads → plays video → progress tracked → playback token refreshed if needed"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Video upload wizard validates file format and size before upload",
+    "Upload progress is displayed in real-time",
+    "Video processing status is tracked and displayed",
+    "Video player uses secure signed URLs or playback tokens",
+    "Video access is restricted to enrolled users",
+    "Failed uploads can be retried",
+    "Video metadata is extracted and stored after processing",
+    "Playback tokens expire appropriately",
+    "Video upload supports resume for interrupted uploads"
+  ],
+  "open_questions": [
+    "What is the maximum video file size? (e.g., 2GB, 5GB?)",
+    "What video formats are supported? (MP4, MOV, AVI, etc.)",
+    "How long should playback tokens be valid? (1 hour? Session duration?)",
+    "Should videos be automatically transcoded to multiple qualities?",
+    "What happens to videos when lesson is deleted?",
+    "Should there be a video library/repository for reuse?",
+    "What is the maximum video duration? (e.g., 2 hours?)",
+    "Should video uploads be queued for processing or immediate?"
+  ],
+  "assumptions": [
+    "Cloudflare Stream API is available and configured",
+    "Video uploads go directly to Cloudflare Stream, not LMS storage",
+    "Video processing is handled by Cloudflare Stream",
+    "Playback tokens are JWT tokens with expiration",
+    "Video access requires enrollment verification",
+    "Upload progress is tracked via Cloudflare Stream API callbacks"
+  ],
+  "confidence": "high"
+}
+

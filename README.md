@@ -5,46 +5,187 @@ This repo is a **copy‑paste friendly** multi-agent workflow:
 - Every agent uses a **standard input/output contract** (JSON schemas).
 - Works for **Jira** or **Linear** tickets by pasting the ticket text.
 
-> You can use these as **Cursor custom agents** (paste prompt content) or as templates to keep consistent workflows across teams.
+> You can use these by **pasting the prompt content directly into Cursor chat** or as templates to keep consistent workflows across teams.
 
 ## Folder layout
 - `agents/` — the agent prompts (Markdown)
 - `schemas/` — JSON schemas for standardized outputs
 - `templates/` — pipeline plan template
 - `examples/` — sample ticket + sample structured outputs
-- `.cursor/rules/` — optional Cursor rules file (team-wide behavior)
+- `docs/` — additional documentation
+- `.cursor/rules/` — Cursor rules (team-wide behavior)
 
-## Quick start (manual run inside Cursor)
-1. Create agents in Cursor:
-   - Orchestrator: `agents/00_orchestrator.md`
-   - Ticket Reader: `agents/01_ticket_reader.md`
-   - Product Analyst: `agents/02_product_analyst.md`
-   - Architect (Rails): `agents/03a_architect_rails.md`
-   - Architect (Laravel): `agents/03b_architect_laravel.md`
-   - QA Designer: `agents/04_qa_designer.md`
-   - Optional: Security, Perf/Obs, Implementer, Reviewer, Release/Ops
+## Documentation
 
-2. Paste a ticket into **Orchestrator** and tell it your stack:
-   - `stack=rails` or `stack=laravel`
-   - Provide any repo conventions (auth, tenancy, test framework)
+**Quick Start:**
+- [`docs/HOW_TO_USE_IN_CURSOR.md`](docs/HOW_TO_USE_IN_CURSOR.md) - How to use in Cursor IDE
 
-3. Run each phase:
-   - Agent 01 → produce `TicketContext`
-   - Agent 02 → produce `Backlog` (if needed)
-   - Agent 03A/03B → produce `DeveloperReadySpec`
-   - Agent 04 → produce `TestSuite`
+**Agent Reference:**
+- [`AGENTS.md`](AGENTS.md) - Complete reference for all agents, roles, inputs, outputs, and workflows
 
-4. (Optional) Implement:
-   - Agent 07A/07B creates a precise edit plan (file-by-file)
-   - You apply the edits in Cursor
-   - Agent 08 reviews the diff and creates a punch list
+**Workflow Guides:**
+- [`docs/COMMAND_WORKFLOW.md`](docs/COMMAND_WORKFLOW.md) - Command workflow (prime/plan/execute/commit)
+- [`docs/SDLC_SEQUENCE_DIAGRAM.md`](docs/SDLC_SEQUENCE_DIAGRAM.md) - Sequence diagrams showing orchestrator flow
+
+**Team Rules:**
+- [`.cursor/rules/sdlc_pipeline.md`](.cursor/rules/sdlc_pipeline.md) - Team-wide rules and conventions
+
+## 🚀 Quick Start: How to Use in Cursor
+
+**👉 Start here:** [`docs/HOW_TO_USE_IN_CURSOR.md`](docs/HOW_TO_USE_IN_CURSOR.md)
+
+This guide shows you **exactly** how to:
+- **Option 1:** Just paste the orchestrator content (works immediately, no setup) - **Recommended**
+- **Option 2:** Use Custom Commands if available (optional)
+- **Option 3:** Use the sync script for team standardization
+
+**TL;DR:** Open `agents/00_orchestrator.md`, copy all content, paste into a Cursor chat, add your ticket, and go!
+
+## Team workflow (recommended)
+
+### 1) Create a run folder first (prevents data loss)
+
+```bash
+python3 scripts/new_run.py --ticket PROJ-123 --title "short title"
+```
+
+Put your raw ticket text in `runs/.../ticket.txt`.
+
+Tip: you can also use the Makefile shortcuts:
+
+```bash
+make run-init TICKET=PROJ-123 TITLE="short title"
+make validate-run RUN=runs/PROJ-123_short-title_YYYYMMDD_HHMMSS
+make help
+```
+
+### 2) Run agents in Cursor (JSON-only)
+
+Run `00_orchestrator` first, then follow the phases. Each agent must return **ONLY JSON** that validates against the schema it references.
+
+### 3) Validate outputs (required)
+
+Validate single files:
+
+```bash
+python3 scripts/validate_json_schema.py schemas/ticket_context.schema.json runs/.../ticket_context.json
+python3 scripts/validate_json_schema.py schemas/spec.schema.json runs/.../spec.json
+```
+
+Validate a whole run folder:
+
+```bash
+python3 scripts/validate_run.py runs/PROJ-123_short-title_20260115_120000
+```
+
+### 4) One-message mode: split into files (recommended)
+
+If you run `mode=one_message`, save the returned JSON bundle to `runs/.../bundle.json`, then split it:
+
+```bash
+python3 scripts/split_one_message_bundle.py runs/.../bundle.json runs/PROJ-123_short-title_20260115_120000
+```
+
+### 5) Domain scaffolding: materialize files (mandatory)
+
+When `01x_domain_agent_scout` returns `materialize.files[]`, create those files in the repo:
+
+```bash
+python3 scripts/apply_materialize.py runs/.../01x_domain_scaffold.json
+```
+
+## Cursor rules
+
+This repo includes team-wide rules under:
+- `.cursor/rules/sdlc_pipeline.md`
+
+They enforce JSON-only outputs, schema validation, run-folder persistence, and domain materialization.
+
+## Command workflow (prime/plan/execute/commit)
+
+For a simple, memorable workflow that maps directly to the orchestrator + agents (inspired by the “command set” approach in [`masta-g3/rules`](https://github.com/masta-g3/rules)):
+
+- See: `docs/COMMAND_WORKFLOW.md`
+
+## Multi-session velocity: `features.json`
+
+For larger epics (multiple devs, multiple sessions), track work in a lightweight `features.json`:
+
+1) Initialize:
+
+```bash
+python3 scripts/features.py init --project-id PROJ-123 --title "short title" --out features.json
+```
+
+2) After you generate `backlog.json`, import stories:
+
+```bash
+python3 scripts/features.py import-backlog runs/.../backlog.json --features features.json --run-dir runs/PROJ-123_short-title_YYYYMMDD_HHMMSS
+```
+
+3) Pick next ready:
+
+```bash
+python3 scripts/features.py next --features features.json
+```
+
+Schema:
+- `schemas/features.schema.json`
+
+## Sharing prompts/rules with developers (sync)
+
+To give every developer the exact same prompts + rules in a local folder:
+
+```bash
+./scripts/sync_cursor_assets.sh --dest "$HOME/.cursor/sdlc" --force
+```
+
+This creates:
+- `$HOME/.cursor/sdlc/agents/` (prompts)
+- `$HOME/.cursor/sdlc/rules/` (rules)
+- `$HOME/.cursor/sdlc/schemas/` (schemas)
+
+## Agent Reference
+
+**👉 Complete agent documentation:** [`AGENTS.md`](AGENTS.md)
+
+Quick reference:
+- **00** - Orchestrator (start here)
+- **01** - Ticket Reader
+- **02** - Product Analyst
+- **03/03A/03B/03C** - Architects (Generic/Rails/Laravel/Frontend)
+- **04** - QA Designer
+- **05** - Security Reviewer
+- **06** - Performance & Observability
+- **07A/07B/07C** - Implementers (Rails/Laravel/Frontend)
+- **07T** - Test Writer (TDD)
+- **07W** - Code Writer
+- **08** - Code Reviewer
+- **08A** - Spec Compliance Validator
+- **08B** - Spec Diff Analyzer
+- **08C** - Test Coverage Validator
+- **09** - Release & Ops
+
+See [AGENTS.md](AGENTS.md) for complete details, roles, inputs, outputs, and workflows.
 
 ## Standard contracts
-All JSON outputs should validate against:
-- `schemas/ticket_context.schema.json`
-- `schemas/backlog.schema.json`
-- `schemas/spec.schema.json`
-- `schemas/test_suite.schema.json`
+All JSON outputs should validate against schemas in `/schemas/`:
+- `ticket_context.schema.json` - Agent 01
+- `backlog.schema.json` - Agent 02
+- `codebase_architecture.schema.json` - Agent 00A
+- `integration_plan.schema.json` - Agent 02A
+- `data_migration_plan.schema.json` - Agent 02B
+- `spec.schema.json` - Agents 03, 03A, 03B, 03C
+- `test_suite.schema.json` - Agent 04
+- `test_code_set.schema.json` - Agent 07T
+- `code_change_set.schema.json` - Agent 07W
+- `spec_compliance_report.schema.json` - Agent 08A
+- `spec_diff_report.schema.json` - Agent 08B
+- `test_coverage_report.schema.json` - Agent 08C
+- `pipeline_plan.schema.json` - Agent 00
+- `domain_scaffold.schema.json` - Agent 01X
+- `domain_knowledge_pack.schema.json` - Domain experts
+- `features.schema.json` - Multi-session tracking
 
 ## Example run
 Use the included example ticket:
@@ -52,22 +193,60 @@ Use the included example ticket:
 - Raw ticket: `examples/jira_linear/ticket_raw.txt`
 - Example TicketContext: `examples/jira_linear/ticket_context.json`
 
-Suggested pipeline for a typical backend change:
-1) 01_ticket_reader  
-2) 02_product_analyst (only if scope > 1 small story)  
-3) 03A (Rails) or 03B (Laravel)  
-4) 05_security_privacy (if auth/PII/tenancy)  
-5) 06_perf_observability (if performance‑sensitive)  
+### Suggested Pipeline Workflows
+
+**Standard Feature (Rails/Laravel):**
+1) 00_orchestrator (start here)  
+2) 01_ticket_reader  
+3) 02_product_analyst (if scope > 1 story)  
+4) 00a_codebase_analyzer (if new codebase)  
+5) 03A (Rails) or 03B (Laravel)  
+6) 05_security_privacy (if auth/PII/tenancy)  
+7) 06_perf_observability (if performance-sensitive)  
+8) 04_qa_designer  
+9) 07A/07B implementer (optional)  
+10) 07w_code_writer  
+11) 08a_spec_compliance_validator  
+12) 08c_test_coverage_validator  
+13) 08_code_reviewer  
+14) 09_release_ops (if risky)
+
+**TDD Workflow (recommended):**
+1) 00_orchestrator  
+2) 01_ticket_reader  
+3) 02_product_analyst  
+4) 03A/03B architect  
+5) 04_qa_designer  
+6) **07t_test_writer** (write tests first)  
+7) **08c_test_coverage_validator** (validate coverage)  
+8) 07A/07B implementer (make tests pass)  
+9) 07w_code_writer  
+10) 08c_test_coverage_validator (final check)  
+11) 08a_spec_compliance_validator  
+12) 08_code_reviewer
+
+**Integration Workflow:**
+1) 00_orchestrator  
+2) 01_ticket_reader  
+3) 02a_integration_planner  
+4) 02_product_analyst  
+5) 03A/03B architect  
 6) 04_qa_designer  
-7) 07 implementer (optional)  
-8) 08 reviewer  
-9) 09 release_ops (optional)
+7) 07t_test_writer  
+8) 08c_test_coverage_validator  
+9) 07A/07B implementer  
+10) 07w_code_writer  
+11) 08c_test_coverage_validator  
+12) 08_code_reviewer
+
+See [AGENTS.md](AGENTS.md) for complete workflow details.
 
 ## Adding a new agent
 Create a new prompt in `agents/` and ensure:
 - It consumes one of the existing JSON outputs (or raw ticket text).
 - It outputs JSON matching an existing schema (or add a new schema).
 - It lists concrete `files_touched` when proposing code changes.
+- Update [AGENTS.md](AGENTS.md) with the new agent documentation.
 
 ## Notes for Jira/Linear
 If you can paste the ticket as text, Agent 01 is enough.
@@ -93,16 +272,14 @@ A `PipelinePlan` is just a **runbook**: it tells you which agent to run next and
 
 ### How to use this in Cursor (step-by-step)
 
-1) **Create the agents**
-- In Cursor → Agents (Custom Agents) → Create:
-  - Name: `SDLC Orchestrator`
-  - Prompt: paste the full content of `agents/00_orchestrator.md`
-- Repeat for the other agents you want (Ticket Reader, Architect, QA, etc) using the files in `agents/`.
+1) **Copy the orchestrator prompt**
+- Open `agents/00_orchestrator.md` in Cursor
+- Copy the entire content (`Cmd+A`, `Cmd+C` / `Ctrl+A`, `Ctrl+C`)
 
 2) **Run the Orchestrator**
 - Open the Jira/Linear ticket.
 - Copy **title + description + key comments**.
-- In Cursor chat, select agent **SDLC Orchestrator** and send:
+- In Cursor chat, paste the orchestrator prompt, then add:
 
 Example (Rails + feat):
 ```
@@ -352,8 +529,99 @@ Generated: 2025-12-26
 
 ## How it works (high-level)
 
+**📊 [View detailed sequence diagram →](docs/SDLC_SEQUENCE_DIAGRAM.md)** (shows orchestrator flow, domain creation, human-in-the-loop)
+
 You run this inside **Cursor** using the **Orchestrator** plus specialized agents.  
 The Orchestrator decides which agents to run based on the ticket and your `stack` + `commit_type`.
+
+### Complete Pipeline Flow (Interactive vs One-Message Mode)
+
+```mermaid
+sequenceDiagram
+    participant Human as 👤 Human Developer
+    participant Cursor as 💻 Cursor IDE
+    participant Orch as 🤖 Orchestrator<br/>(Agent 00)
+    participant RunFolder as 📁 Run Folder
+    participant DomainScout as 🔍 Domain Scout<br/>(Agent 01X)
+    participant TicketReader as 📋 Ticket Reader<br/>(Agent 01)
+    participant ProductAnalyst as 📊 Product Analyst<br/>(Agent 02)
+    participant Architect as 🏗️ Architect<br/>(Agent 03)
+    participant CodeWriter as 💻 Code Writer<br/>(Agent 07W)
+    participant DomainFiles as 📂 Domain Templates
+
+    Note over Human, DomainFiles: SDLC Pipeline Flow
+
+    Human->>Cursor: Paste ticket + config<br/>(stack, commit_type, mode)
+    Cursor->>Orch: Execute Orchestrator
+    
+    Orch->>RunFolder: Create run folder<br/>runs/TICKET_slug_timestamp/
+    
+    alt Interactive Mode
+        Orch->>Orch: Analyze ticket<br/>Determine agent sequence
+        Orch->>RunFolder: Save pipeline_plan.json
+        Orch->>Human: Return PipelinePlan<br/>(JSON with agent steps)
+        Human->>Human: Review plan
+        Human->>Cursor: Execute Agent 01 (Ticket Reader)
+        Cursor->>TicketReader: Run with ticket
+        TicketReader->>RunFolder: Save ticket_context.json
+        TicketReader->>Human: Return TicketContext
+        
+        Human->>Cursor: Execute Agent 01X (if needed)
+        Cursor->>DomainScout: Run Domain Scout
+        DomainScout->>Orch: Return DomainScaffold<br/>(with materialize.files[])
+        Orch->>DomainFiles: Create domain templates<br/>README.md, prompt.md, examples/
+        Orch->>RunFolder: Save domain scaffold JSON
+        Note over Orch, DomainFiles: MANDATORY<br/>Auto-materialization
+        
+        Human->>Cursor: Execute Agent 02 (Product Analyst)
+        Cursor->>ProductAnalyst: Run with TicketContext<br/>+ DomainKnowledgePack (if exists)
+        ProductAnalyst->>RunFolder: Save backlog.json
+        ProductAnalyst->>Human: Return Backlog
+        
+        Human->>Cursor: Execute Agent 03 (Architect)
+        Cursor->>Architect: Run with Backlog
+        Architect->>RunFolder: Save spec.json
+        Architect->>Human: Return DeveloperReadySpec
+        
+        Human->>Cursor: Execute Agent 07W (Code Writer)
+        Cursor->>CodeWriter: Run with Spec
+        CodeWriter->>RunFolder: Write code files
+        CodeWriter->>Human: Return implementation
+        
+    else One-Message Mode
+        Orch->>Orch: Analyze ticket<br/>Determine agent sequence
+        Orch->>RunFolder: Save pipeline_plan.json
+        
+        Orch->>TicketReader: Execute Agent 01
+        TicketReader->>RunFolder: Save ticket_context.json<br/>(incremental save)
+        TicketReader->>Orch: Return TicketContext
+        
+        alt New Domain Detected
+            Orch->>DomainScout: Execute Agent 01X
+            DomainScout->>Orch: Return DomainScaffold<br/>(with materialize.files[])
+            Orch->>DomainFiles: Create domain templates<br/>README.md, prompt.md, examples/
+            Orch->>RunFolder: Save domain scaffold JSON
+            Note over Orch, DomainFiles: MANDATORY<br/>Auto-materialization
+        end
+        
+        Orch->>ProductAnalyst: Execute Agent 02
+        ProductAnalyst->>RunFolder: Save backlog.json<br/>(incremental save)
+        ProductAnalyst->>Orch: Return Backlog
+        
+        Orch->>Architect: Execute Agent 03
+        Architect->>RunFolder: Save spec.json<br/>(incremental save)
+        Architect->>Orch: Return DeveloperReadySpec
+        
+        Orch->>CodeWriter: Execute Agent 07W
+        CodeWriter->>RunFolder: Write code files
+        CodeWriter->>Orch: Return implementation
+        
+        Orch->>RunFolder: Save complete bundle.json
+        Orch->>Human: Return complete JSON bundle<br/>(all artifacts)
+    end
+    
+    Note over Human, DomainFiles: All artifacts saved in run folder<br/>Ready for validation & commit
+```
 
 ### Modes
 - **interactive (default):** Orchestrator returns a `PipelinePlan`; you run agents step-by-step.
@@ -553,9 +821,9 @@ Generated:
 
 ---
 
-## 01X “materialize” (crear nuevos agentes de dominio automáticamente)
+## 01X "materialize" (crear nuevos agentes de dominio automáticamente)
 
-El Domain Agent Scout (01X) ahora puede **proponer y materializar** nuevos agentes de dominio, entregando:
+El Domain Agent Scout (01X) **DEBE materializar** nuevos agentes de dominio automáticamente, entregando:
 - el **template .md** del agente (prompt listo para copiar)
 - un **example DomainKnowledgePack .json** (forma esperada del output)
 
@@ -563,16 +831,11 @@ Estructura:
 - `sdlc/templates/domains/<domain>/*.md`
 - `sdlc/templates/domains/<domain>/examples/*.json`
 
-### Aplicar el materialize con script (opcional)
+### Materialización automática (MANDATORIA)
 
-1) Guarda el output JSON de 01X en un archivo (ej. `runs/<ticket>/suggested_domain_agents.json`)
-2) Ejecuta:
+El orchestrator **DEBE** crear automáticamente todos los archivos listados en `materialize.files[]` cuando 01X retorna su output. Esto no es opcional - los archivos se crean como parte del pipeline.
 
-```bash
-python3 scripts/apply_materialize.py runs/<ticket>/suggested_domain_agents.json
-```
-
-Esto crea/escribe los archivos listados en `materialize.files[]`.
+El script `scripts/apply_materialize.py` está disponible para uso manual si es necesario, pero el orchestrator debe crear los archivos automáticamente.
 
 Generated: 2025-12-28
 

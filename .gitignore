@@ -2,3 +2,7 @@
 runs/*
 !runs/.gitkeep
 
+# Ignore everything in projects/ except .keep
+projects/*
+!projects/.keep
+

@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TestCodeSet",
+  "type": "object",
+  "required": [
+    "story_id",
+    "test_files",
+    "traceability"
+  ],
+  "properties": {
+    "story_id": {
+      "type": "string"
+    },
+    "stack": {
+      "type": "string",
+      "enum": ["rails", "laravel", "generic"]
+    },
+    "test_framework": {
+      "type": "string",
+      "description": "RSpec, PHPUnit, Pest, etc."
+    },
+    "test_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file_path", "test_code"],
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "description": "Full path to test file (e.g., spec/requests/api/v1/certificates_spec.rb)"
+          },
+          "test_code": {
+            "type": "string",
+            "description": "Complete test code for this file"
+          },
+          "test_type": {
+            "type": "string",
+            "enum": ["unit", "integration", "e2e", "request", "feature", "model", "service"]
+          },
+          "test_case_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IDs from TestSuite that are covered in this file"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Required factories, fixtures, or helpers"
+          }
+        }
+      }
+    },
+    "traceability": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["test_case_id", "test_file_path", "spec_element"],
+        "properties": {
+          "test_case_id": {
+            "type": "string",
+            "description": "ID from TestSuite"
+          },
+          "test_file_path": {
+            "type": "string"
+          },
+          "spec_element": {
+            "type": "string",
+            "description": "Link to spec element (e.g., api_contracts[0], flows[1])"
+          },
+          "acceptance_criteria": {
+            "type": "string",
+            "description": "AC from spec that this test covers"
+          }
+        }
+      }
+    },
+    "expected_failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "test_file": {
+            "type": "string"
+          },
+          "test_name": {
+            "type": "string"
+          },
+          "expected_failure_reason": {
+            "type": "string",
+            "description": "Why this test will fail initially (TDD)"
+          }
+        }
+      },
+      "description": "Tests that should fail until implementation is complete"
+    },
+    "setup_required": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["factory", "fixture", "helper", "shared_example"]
+          },
+          "name": {
+            "type": "string"
+          },
+          "file_path": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string",
+            "description": "Code to create the setup if needed"
+          }
+        }
+      },
+      "description": "Test setup code that needs to be created"
+    },
+    "commands_to_run": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Commands to run tests (e.g., 'bundle exec rspec spec/requests/api/v1/certificates_spec.rb')"
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
+

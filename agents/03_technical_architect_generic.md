@@ -18,9 +18,18 @@ Input:
 - Story (one item) from Agent 02 backlog JSON
 - TicketContext from Agent 01
 - Stack hint: rails | laravel | generic
-Optional: repo conventions, existing endpoints/models, ADRs.
+Optional: 
+- `CodebaseArchitecture` JSON from Agent 00A (highly recommended - ensures alignment with existing patterns)
+- repo conventions, existing endpoints/models, ADRs
 
 ## Output requirements
+Return ONLY JSON that validates against `/schemas/spec.schema.json`:
+
+**Validation:** After generating output, validate:
+```bash
+python3 scripts/validate_json_schema.py schemas/spec.schema.json <output.json>
+```
+
 Output JSON spec including:
 - domain_model (entities, relationships, invariants)
 - api_contracts (routes, verbs, auth, request/response, error codes)
@@ -41,3 +50,31 @@ Output JSON spec including:
 - Avoid overengineering; prefer incremental, backwards compatible changes.
 - If it requires breaking changes, propose a migration/rollout path.
 - Be explicit about authN/authZ and tenant scoping.
+
+## Error Handling
+
+- **Missing story or TicketContext:** Return error message explaining required inputs
+- **Incomplete story:** Use available information, document missing parts in `assumptions` and `risks`
+- **Conflicting requirements:** Document conflicts in `risks`, propose resolution in `assumptions`
+- **Unknown stack:** If stack is unknown, use generic patterns and note in `assumptions`
+
+## File Path Examples
+
+When specifying `files_touched` in `implementation_plan`, use these formats:
+
+**Generic/Unknown:**
+- `src/models/User.js`
+- `src/controllers/UsersController.js`
+- `src/routes/api.js`
+
+**Rails:**
+- `app/models/user.rb`
+- `app/controllers/api/v1/users_controller.rb`
+- `db/migrate/20250116_create_users.rb`
+- `spec/models/user_spec.rb`
+
+**Laravel:**
+- `app/Models/User.php`
+- `app/Http/Controllers/Api/V1/UserController.php`
+- `database/migrations/2025_01_16_create_users_table.php`
+- `tests/Feature/UserTest.php`

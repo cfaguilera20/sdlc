@@ -12,6 +12,7 @@
 ## Inputs
 Provide:
 - `TicketContext` JSON from Agent 01 (required)
+- Optional: `CodebaseArchitecture` JSON from Agent 00A (highly recommended - provides existing integration points and patterns)
 - Optional: current architecture notes (list of services, owners, message bus, API gateway)
 - Optional: constraints (no new service allowed, or must use existing bus, etc.)
 
@@ -50,6 +51,21 @@ Otherwise prefer:
 4) Produce a minimal plan that is backwards compatible.
 
 ## Guardrails
-- Don’t invent unknown services; list as assumptions.
+- Don't invent unknown services; list as assumptions.
 - Prefer backward compatible contracts and staged rollout.
 - Never allow cross-tenant access; require tenant scoping in every integration.
+
+## Creating new projects/services
+If the integration plan requires creating a new Rails or Laravel project/service, **ALWAYS create it in the `projects/` folder**:
+
+**If tools are available locally:**
+- **Rails**: `cd projects && rails new <project_name> && cd ..`
+- **Laravel**: `cd projects && composer create-project laravel/laravel <project_name> && cd ..`
+
+**If tools are not available locally, use Docker:**
+- **Rails**: `docker run --rm -v $(pwd)/projects:/app -w /app ruby:latest rails new <project_name>`
+- **Laravel**: `docker run --rm -v $(pwd)/projects:/app -w /app composer:latest create-project laravel/laravel <project_name>`
+
+**Important:** All new projects must be created in `projects/<project_name>/` directory, not in the root or other locations.
+
+Always use the latest official Docker images to ensure compatibility and best practices.

@@ -1,0 +1,108 @@
+{
+  "domain": "LMS Certificate Generation",
+  "glossary": [
+    {"term": "certificate template", "definition": "Design template for certificate layout, fields, and branding"},
+    {"term": "certificate number", "definition": "Unique identifier for each certificate (for verification)"},
+    {"term": "verification URL", "definition": "Public URL that allows verification of certificate authenticity"},
+    {"term": "certificate token", "definition": "Unique token used in verification URL for certificate verification"}
+  ],
+  "business_rules": [
+    "Certificate is generated automatically upon course completion",
+    "Certificate can also be generated manually by admin",
+    "Certificate generation requires course completion (all modules, assessments passed)",
+    "Certificate template must be selected or default template used",
+    "Certificate must include: course name, learner name, completion date, certificate number",
+    "Certificate can include: QR code, issuer name, expiration date, custom fields",
+    "Certificate is generated as PDF",
+    "Certificate must be stored (PDF file and metadata)",
+    "Certificate verification must be publicly accessible (no authentication required)",
+    "Certificate sharing must generate shareable link",
+    "Certificate can be revoked (mark as invalid)",
+    "Certificate metadata must be stored (issue date, expiration, issuer, etc.)",
+    "Batch certificate generation must be supported for multiple learners",
+    "Certificate template must be customizable (layout, fields, branding)"
+  ],
+  "calculations_or_formulas": [
+    "Certificate number = unique identifier (UUID or sequential number)",
+    "Verification token = hash(certificate_id + secret_key)",
+    "Certificate expiration = issue_date + validity_period (if applicable)"
+  ],
+  "invariants": [
+    "Certificate can only be generated for completed courses",
+    "Certificate number must be unique",
+    "Certificate verification token must be unique and secure",
+    "Certificate PDF must be generated before certificate record is created",
+    "Certificate must be associated with enrollment",
+    "Certificate status can only be: active, revoked",
+    "Revoked certificates must show as invalid in verification"
+  ],
+  "edge_cases": [
+    "Course completion criteria changes after certificate issued",
+    "Certificate generation fails (PDF generation error)",
+    "Certificate template is deleted but certificates reference it",
+    "User requests certificate for completed course (regeneration)",
+    "Certificate verification with invalid token",
+    "Certificate sharing link is accessed after certificate revoked",
+    "Batch certificate generation for large number of learners",
+    "Certificate PDF file is corrupted or missing",
+    "Certificate metadata is inconsistent with PDF",
+    "Multiple certificates for same course completion (regeneration)",
+    "Certificate expiration date in the past",
+    "Certificate verification URL is shared publicly"
+  ],
+  "compliance_requirements": [],
+  "data_requirements": {
+    "inputs": [
+      "Enrollment ID",
+      "Course completion status",
+      "Certificate template ID",
+      "Learner information (name, etc.)",
+      "Course information (name, etc.)"
+    ],
+    "outputs": [
+      "Certificate PDF file",
+      "Certificate record (metadata)",
+      "Certificate number",
+      "Verification URL/token",
+      "Shareable link"
+    ]
+  },
+  "user_journeys": [
+    "Learner completes course → certificate generation triggered → PDF generated → certificate record created → certificate available for download → learner downloads certificate → shares certificate → verification URL works",
+    "Admin views completed enrollments → selects multiple → generates certificates → batch processing → certificates generated → learners notified → certificates available"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Certificate is generated automatically on course completion",
+    "Certificate PDF includes all required fields",
+    "Certificate template is applied correctly",
+    "Certificate verification works publicly",
+    "Certificate sharing generates valid link",
+    "Certificate revocation marks certificate as invalid",
+    "Certificate metadata is stored correctly",
+    "Batch certificate generation works for multiple learners",
+    "Certificate can be downloaded",
+    "Certificate verification shows correct information"
+  ],
+  "open_questions": [
+    "What certificate template format? (HTML? PDF template? Image template?)",
+    "Should certificates have expiration dates?",
+    "What PDF generation library? (DomPDF? TCPDF? wkhtmltopdf?)",
+    "Should certificates include QR codes?",
+    "What certificate number format? (UUID? Sequential? Custom?)",
+    "Should certificates be customizable per organization?",
+    "What happens to certificates when course is deleted?",
+    "Should certificates support digital signatures?",
+    "What is the maximum certificate file size?",
+    "Should certificates be stored in S3 or local storage?"
+  ],
+  "assumptions": [
+    "Certificate generation uses PDF format",
+    "Certificate template is HTML-based (rendered to PDF)",
+    "Certificate verification is public (no authentication)",
+    "Certificate PDF is stored in file storage (S3 or local)",
+    "Certificate generation is triggered automatically on completion",
+    "Certificate number is unique identifier"
+  ],
+  "confidence": "high"
+}
+

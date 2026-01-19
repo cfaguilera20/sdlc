@@ -1,0 +1,95 @@
+{
+  "domain": "SCORM Interoperability (LMS)",
+  "glossary": [
+    {
+      "term": "SCORM Package",
+      "definition": "A ZIP archive containing e-learning assets and an imsmanifest.xml that describes launchable content (SCOs) and metadata."
+    },
+    {
+      "term": "SCO",
+      "definition": "Sharable Content Object; a launchable learning unit inside a SCORM package."
+    },
+    {
+      "term": "imsmanifest.xml",
+      "definition": "Manifest file that defines organizations, resources, and launch entry points for a SCORM package."
+    },
+    {
+      "term": "Runtime API",
+      "definition": "JavaScript API exposed to SCO content (SCORM 1.2: API; SCORM 2004: API_1484_11) used to read/write cmi.* state."
+    },
+    {
+      "term": "suspend_data",
+      "definition": "SCORM runtime field used by content to store resume state (often large; size limits differ between versions)."
+    },
+    {
+      "term": "lesson_location",
+      "definition": "SCORM runtime field used for bookmarking/resume position within the SCO."
+    }
+  ],
+  "business_rules": [
+    "SCORM packages must be tenant-scoped for storage, visibility, and access control.",
+    "Launching a SCO must require an active enrollment/entitlement and must be logged for audit.",
+    "Runtime state (cmi.*) must be persisted per learner per enrollment per attempt (and per SCO if multi-SCO).",
+    "Completion and success semantics must be mapped into LMS progress and certificate eligibility via explicit mapping rules.",
+    "Course versioning must be supported: changing a SCORM package should not corrupt in-progress learners' stored runtime state.",
+    "SCORM content must be sandboxed to reduce XSS and data exfiltration risk."
+  ],
+  "calculations_or_formulas": [
+    "LMS completion mapping: enrollment.status = completed when SCORM completion criteria met (e.g., completion_status=completed OR lesson_status=completed) AND optional pass criteria met if required.",
+    "Score mapping: store raw/normalized scores if provided; convert to LMS 0-100 scale if needed with explicit conversion rules.",
+    "Time-on-task: sum of session_time (SCORM 1.2) or total_time (SCORM 2004) across attempts/SCOs with normalization."
+  ],
+  "invariants": [
+    "A SCORM launch must always be associated with a specific tenant, course, enrollment, and learner identity reference.",
+    "Runtime writes must be idempotent and last-write-wins must not corrupt state (handle concurrent saves).",
+    "Stored runtime state must be readable for resume for the same learner and enrollment.",
+    "A learner cannot write runtime data for a course they are not entitled/enrolled in."
+  ],
+  "edge_cases": [
+    "Malformed manifests or missing resources; ingestion must fail with actionable error messages.",
+    "Cross-origin restrictions when content is served from a different domain; CORS/CSP must be designed intentionally.",
+    "Suspend data size limits (SCORM 1.2 commonly 4KB; SCORM 2004 larger but still limited) — handle truncation/validation.",
+    "Learner closes browser mid-session; ensure periodic commits and robust resume.",
+    "Multiple SCOs in one package: sequencing may be required (SCORM 2004). Decide support explicitly.",
+    "Content attempts to call runtime API without initialization; handle gracefully and log."
+  ],
+  "compliance_requirements": [
+    "Learning records retention: store completion date, attempts, and relevant scoring for audit.",
+    "Tenant isolation: no cross-tenant visibility of packages, launches, or runtime state."
+  ],
+  "data_requirements": {
+    "inputs": [
+      "SCORM package ZIP",
+      "Tenant/org context",
+      "Course/enrollment references",
+      "Learner identity reference (person_ref)"
+    ],
+    "outputs": [
+      "Launch URL / player URL",
+      "Persisted runtime state (bookmarking, suspend_data, scores)",
+      "Derived LMS progress and completion outcomes",
+      "Attempt history and audit logs"
+    ]
+  },
+  "user_journeys": [
+    "Admin uploads SCORM package → system validates & ingests → adds as lesson content → assigns course → learner launches SCO → system tracks progress → completion triggers certificate."
+  ],
+  "acceptance_criteria_suggestions": [
+    "SCORM package ingestion supports validation, storage, and versioning.",
+    "Learners can launch SCO content and resume where they left off.",
+    "Runtime state is persisted reliably and mapped to LMS progress accurately.",
+    "Tenant isolation and secure content delivery are enforced."
+  ],
+  "open_questions": [
+    "Do we support SCORM 1.2 only, SCORM 2004 only, or both?",
+    "Do we support SCORM 2004 sequencing/navigation, or only single-SCO packages?",
+    "What is our mapping policy: completion vs success required for certificates?",
+    "Do we need xAPI/TinCan in addition to SCORM?"
+  ],
+  "assumptions": [
+    "SCORM support is required for interoperability with third-party course vendors.",
+    "We will enforce tenant scoping at all layers (DB, storage, access)."
+  ]
+}
+
+

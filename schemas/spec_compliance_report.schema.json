@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecComplianceReport",
+  "type": "object",
+  "required": [
+    "story_id",
+    "compliance_summary",
+    "api_contracts",
+    "data_contracts",
+    "flows",
+    "edge_cases",
+    "non_functionals",
+    "traceability_map",
+    "blockers",
+    "recommendations"
+  ],
+  "properties": {
+    "story_id": {
+      "type": "string"
+    },
+    "compliance_summary": {
+      "type": "object",
+      "required": ["overall_status", "compliance_percentage"],
+      "properties": {
+        "overall_status": {
+          "type": "string",
+          "enum": ["compliant", "partial", "non_compliant"]
+        },
+        "compliance_percentage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "compliant_elements": {
+          "type": "integer"
+        },
+        "non_compliant_elements": {
+          "type": "integer"
+        },
+        "missing_elements": {
+          "type": "integer"
+        }
+      }
+    },
+    "api_contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["contract_id", "status"],
+        "properties": {
+          "contract_id": {
+            "type": "string"
+          },
+          "endpoint": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["implemented", "missing", "deviates"]
+          },
+          "file_path": {
+            "type": "string"
+          },
+          "line_numbers": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "deviations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "data_contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["contract_id", "status"],
+        "properties": {
+          "contract_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["implemented", "missing", "deviates"]
+          },
+          "file_path": {
+            "type": "string"
+          },
+          "line_numbers": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "deviations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "flows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["flow_id", "status"],
+        "properties": {
+          "flow_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["implemented", "missing", "incomplete"]
+          },
+          "file_paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "missing_steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "edge_cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["edge_case", "status"],
+        "properties": {
+          "edge_case": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["handled", "missing", "partially_handled"]
+          },
+          "file_path": {
+            "type": "string"
+          },
+          "line_numbers": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "evidence": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "non_functionals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["requirement", "status"],
+        "properties": {
+          "requirement": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["met", "missing", "unclear"]
+          },
+          "file_path": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "traceability_map": {
+      "type": "object",
+      "properties": {
+        "spec_elements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["spec_element", "status"],
+            "properties": {
+              "spec_element": {
+                "type": "string"
+              },
+              "code_location": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["implemented", "missing", "deviates"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "spec_element", "issue"],
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": ["blocker", "major", "minor"]
+          },
+          "spec_element": {
+            "type": "string"
+          },
+          "issue": {
+            "type": "string"
+          },
+          "fix": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
+

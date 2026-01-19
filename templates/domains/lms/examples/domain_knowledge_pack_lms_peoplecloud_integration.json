@@ -1,0 +1,61 @@
+{
+  "domain": "LMS-PeopleCloud Integration",
+  "glossary": [
+    {"term": "person_ref", "definition": "External reference to a person in PeopleCloud, used as primary identifier in LMS"},
+    {"term": "organization_id", "definition": "External reference to an organization in PeopleCloud, used for multi-tenant scoping"},
+    {"term": "SSO", "definition": "Single Sign-On authentication allowing users to authenticate once and access multiple services"},
+    {"term": "JWT", "definition": "JSON Web Token used for service-to-service authentication and user session management"}
+  ],
+  "business_rules": [
+    "Users authenticate via PeopleCloud SSO, not directly in LMS",
+    "JWT tokens must include organization_id and person_id claims",
+    "User profiles are synced from PeopleCloud, not created in LMS",
+    "Organizations are synced from PeopleCloud, not created in LMS",
+    "All LMS data must be scoped to organization_id for multi-tenant isolation",
+    "person_ref is the primary identifier for users in LMS, not internal user ID"
+  ],
+  "calculations_or_formulas": [],
+  "invariants": [
+    "Every enrollment must have a valid person_ref",
+    "Every enrollment must be scoped to an organization_id",
+    "JWT tokens must be verified before processing any request",
+    "User data must match PeopleCloud data (eventual consistency allowed)"
+  ],
+  "edge_cases": [
+    "User deleted in PeopleCloud but has active enrollments in LMS",
+    "Organization deleted in PeopleCloud but has active courses in LMS",
+    "JWT token expired during long-running operation",
+    "User role changed in PeopleCloud while actively using LMS",
+    "Network failure during SSO redirect",
+    "Token refresh required during active session"
+  ],
+  "compliance_requirements": [],
+  "data_requirements": {
+    "inputs": ["JWT token with organization_id and person_id", "User profile from PeopleCloud", "Organization data from PeopleCloud"],
+    "outputs": ["Authenticated session", "Synced user profile", "Synced organization data"]
+  },
+  "user_journeys": [
+    "User logs into PeopleCloud → redirected to LMS with JWT token → LMS verifies token → creates/updates user session → user accesses LMS",
+    "Service-to-service: PeopleCloud calls LMS API with JWT token → LMS verifies token → processes request → returns response"
+  ],
+  "acceptance_criteria_suggestions": [
+    "User can authenticate via PeopleCloud SSO and access LMS",
+    "JWT tokens are verified and claims extracted correctly",
+    "User profiles are synced from PeopleCloud on first login",
+    "Organization data is synced from PeopleCloud",
+    "All LMS operations are scoped to organization_id",
+    "Token expiration is handled gracefully with refresh or re-authentication"
+  ],
+  "open_questions": [
+    "How often should user profiles be synced from PeopleCloud?",
+    "What happens to active sessions when user is deleted in PeopleCloud?",
+    "Should LMS cache user/organization data or always fetch from PeopleCloud?"
+  ],
+  "assumptions": [
+    "PeopleCloud provides JWT tokens with standard claims (organization_id, person_id)",
+    "PeopleCloud has API endpoints for user and organization data",
+    "SSO redirect flow is supported by PeopleCloud",
+    "JWT token format is standardized between services"
+  ]
+}
+

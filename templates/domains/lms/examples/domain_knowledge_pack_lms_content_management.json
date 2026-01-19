@@ -1,0 +1,106 @@
+{
+  "domain": "LMS Content Management",
+  "glossary": [
+    {"term": "content item", "definition": "Individual piece of content (video, PDF, HTML, resource file)"},
+    {"term": "content organization", "definition": "Structure of content within course (modules → lessons → content items)"},
+    {"term": "content preview", "definition": "Ability to view content before finalizing (for editing)"},
+    {"term": "content versioning", "definition": "Tracking of content changes over time with version history"}
+  ],
+  "business_rules": [
+    "Content must be organized hierarchically: Course → Module → Lesson → Content Item",
+    "Content types supported: video, PDF, HTML, image, document, resource file, link",
+    "Content upload must validate file type, size, and format",
+    "Content must be associated with a lesson",
+    "Content can have multiple resources (attachments, downloads)",
+    "Content preview must be available for editing",
+    "Content editing must allow metadata changes and content replacement",
+    "Content deletion must be soft-delete (can be restored)",
+    "Content versioning must track changes (optional feature)",
+    "Content access must be restricted to enrolled users",
+    "Content delivery must use signed URLs for secure access",
+    "Content storage must be organized (S3 buckets, folders)",
+    "Content metadata must be stored (title, description, type, size, duration, format)",
+    "Content must support ordering within lesson",
+    "Content must support prerequisites (content A must be viewed before content B)"
+  ],
+  "calculations_or_formulas": [
+    "Content size = file size in bytes",
+    "Content duration = video/audio duration in seconds",
+    "Content order = sequential number within lesson"
+  ],
+  "invariants": [
+    "Content must belong to a lesson",
+    "Content type must be valid (video, PDF, HTML, etc.)",
+    "Content file must exist in storage",
+    "Content access requires enrollment",
+    "Content order must be unique within lesson",
+    "Content deletion is soft-delete (not permanent)"
+  ],
+  "edge_cases": [
+    "Content file is deleted from storage but still referenced",
+    "Content type is changed after upload",
+    "Content is replaced while user is viewing it",
+    "Content upload fails (network, storage, validation)",
+    "Content file is corrupted or invalid",
+    "Content access token expires during viewing",
+    "Content prerequisites create circular dependencies",
+    "Content versioning conflicts (multiple edits)",
+    "Content storage quota exceeded",
+    "Content file format not supported",
+    "Content preview fails to load",
+    "Content deletion while referenced in active course"
+  ],
+  "compliance_requirements": [],
+  "data_requirements": {
+    "inputs": [
+      "Content file (video, PDF, HTML, image, document, etc.)",
+      "Lesson ID",
+      "Content metadata (title, description, type, order)",
+      "Content resources (attachments, downloads)"
+    ],
+    "outputs": [
+      "Content record",
+      "Content file in storage",
+      "Content metadata",
+      "Signed URL for access",
+      "Content preview URL"
+    ]
+  },
+  "user_journeys": [
+    "Instructor creates lesson → uploads content → selects file → validates → uploads to storage → content record created → content available in lesson → instructor previews → edits metadata → saves",
+    "Learner opens lesson → content list loads → clicks content → signed URL generated → content loads → learner views content → progress tracked"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Content upload validates file type and size",
+    "Content is stored correctly in storage",
+    "Content metadata is stored accurately",
+    "Content preview works for all content types",
+    "Content editing allows metadata and file replacement",
+    "Content deletion is soft-delete",
+    "Content access uses signed URLs",
+    "Content organization follows hierarchy",
+    "Content ordering works correctly",
+    "Content prerequisites are enforced"
+  ],
+  "open_questions": [
+    "What are the file size limits per content type?",
+    "What content types are supported? (video, PDF, HTML, image, document, link?)",
+    "Should content support versioning?",
+    "What storage should be used? (S3? Local? MinIO?)",
+    "Should content support live editing? (WYSIWYG for HTML?)",
+    "What happens to content when lesson is deleted?",
+    "Should content support external links?",
+    "What is the maximum number of content items per lesson?",
+    "Should content support embedded content? (YouTube, Vimeo?)",
+    "How should content cleanup work? (orphaned files?)"
+  ],
+  "assumptions": [
+    "Content is stored in cloud storage (S3 or MinIO)",
+    "Content access uses signed URLs with expiration",
+    "Content types include: video, PDF, HTML, image, document, resource file, link",
+    "Content deletion is soft-delete (can be restored)",
+    "Content is organized by course/module/lesson structure"
+  ],
+  "confidence": "high"
+}
+

@@ -18,6 +18,13 @@ Input must be the JSON output of **Agent 01** (`TicketContext`).
 Optional: product constraints (timeline, dependencies, rollout strategy, stakeholders).
 
 ## Output requirements
+Return ONLY JSON that validates against `/schemas/backlog.schema.json`:
+
+**Validation:** After generating output, validate:
+```bash
+python3 scripts/validate_json_schema.py schemas/backlog.schema.json <output.json>
+```
+
 Output a backlog JSON:
 - epic info
 - stories array with: story_id, title, user_story, acceptance_criteria, priority, dependencies, out_of_scope
@@ -79,3 +86,40 @@ When DomainKnowledgePack(s) are present:
   - compliance validation
   - calculation correctness (unit/property tests)
   - auditability and traceability (why a value was produced)
+
+## Error Handling
+
+- **Missing TicketContext:** If required TicketContext is missing, return error message in JSON format explaining what's needed
+- **Invalid TicketContext:** If TicketContext doesn't match schema, use best-effort parsing and document issues in `assumptions`
+- **Empty or vague ticket:** Create minimal backlog with one story, add questions to `assumptions`
+- **Missing domain knowledge:** If DomainKnowledgePack is recommended but not provided, create backlog with explicit `assumptions` about missing domain rules
+
+## Example
+
+**Input:** TicketContext JSON from Agent 01
+
+**Output:**
+```json
+{
+  "epic": {
+    "id": "EPIC-001",
+    "title": "User Authentication System",
+    "goal": "Enable users to register and authenticate"
+  },
+  "stories": [
+    {
+      "story_id": "STORY-001",
+      "title": "User Registration",
+      "user_story": "As a new user, I want to register with email and password so that I can access the system",
+      "acceptance_criteria": [
+        "AC1: Registration form accepts email and password",
+        "AC2: Email is validated and unique",
+        "AC3: Password meets security requirements"
+      ],
+      "priority": "P1",
+      "dependencies": [],
+      "out_of_scope": ["Social login", "Email verification"]
+    }
+  ]
+}
+```

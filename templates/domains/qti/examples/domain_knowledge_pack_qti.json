@@ -1,0 +1,97 @@
+{
+  "domain": "IMS QTI (Question & Test Interoperability) — Questions & Tests",
+  "glossary": [
+    {
+      "term": "QTI",
+      "definition": "IMS Question & Test Interoperability: a standard XML-based model for assessment items (questions) and tests, enabling import/export across systems."
+    },
+    {
+      "term": "assessmentItem",
+      "definition": "A single QTI item (question) definition containing item body, interaction(s), response declaration(s), outcomes, and response processing."
+    },
+    {
+      "term": "assessmentTest",
+      "definition": "A QTI test definition that references items and organizes them into sections, with selection/order and test-level rules."
+    },
+    {
+      "term": "responseDeclaration",
+      "definition": "Defines expected response type/cardinality and (optionally) correct response(s) and mappings for scoring."
+    },
+    {
+      "term": "outcomeDeclaration",
+      "definition": "Defines outcome variables (e.g., SCORE) produced by response processing."
+    },
+    {
+      "term": "responseProcessing",
+      "definition": "Rules/templates that transform learner responses into outcomes (e.g., SCORE), including partial credit and custom logic."
+    },
+    {
+      "term": "IMS Content Packaging",
+      "definition": "A ZIP packaging format using imsmanifest.xml to describe resources and allow bundling of items/tests plus assets (images, media)."
+    }
+  ],
+  "business_rules": [
+    "QTI import must validate structure sufficiently to prevent unsafe/invalid content (XML shape, expected namespaces/versions, required identifiers), but must also handle real-world packages that are only partially compliant by producing actionable validation errors.",
+    "All imported items/tests must be tenant-scoped for storage, visibility, and access control; identifiers from the package must not enable cross-tenant collisions.",
+    "Internal question templates intended for QTI round-trip must be constrained to a supported subset of QTI interactions and scoring semantics, with explicit fallbacks when content cannot be represented losslessly.",
+    "Asset references in QTI packages (images/audio/video) must be resolved relative to the package and re-linked to tenant-scoped storage on import; export must re-materialize a valid package with correct relative paths and manifest entries.",
+    "Scoring must be explicit and deterministic: mapping of QTI outcomes (e.g., SCORE, MAXSCORE) into internal scoring/grade models must be defined and consistent across import/export.",
+    "Unsupported interactions or vendor extensions must be handled by a clear policy: reject, approximate (with warnings), or preserve as opaque content without editable semantics."
+  ],
+  "calculations_or_formulas": [
+    "Score normalization: if QTI provides SCORE in [0..MAXSCORE], map to internal percentage score as (SCORE / MAXSCORE) * 100 when the internal model requires 0-100.",
+    "Partial credit: when using response mapping, total SCORE can be computed as sum(mapping points per matched response) capped to MAXSCORE."
+  ],
+  "invariants": [
+    "Every imported QTI artifact (item/test) is associated with a tenant, an internal content owner/reference, and a stable internal identifier independent of the external identifier.",
+    "Exported packages must be self-contained: all referenced assets and item/test XML must be included and correctly referenced via relative paths and a manifest.",
+    "If an item is declared as single-response (cardinality=single), the internal template must enforce single selection/input accordingly."
+  ],
+  "edge_cases": [
+    "Packages contain mixed QTI versions/namespaces or vendor-specific extensions; define compatibility strategy and warnings.",
+    "Items rely on interactions not supported by the product (e.g., complex hotspots, custom widgets); decide reject vs approximate vs preserve.",
+    "Items embed unsafe HTML or external resource links; sanitize and block risky constructs while preserving intended rendering where possible.",
+    "Numeric answers require tolerances (e.g., ±0.01) but internal templates only support exact match; model tolerance or flag as unsupported.",
+    "Choice shuffling/randomization can change answer keys if identifiers are not handled correctly; ensure stable identifiers and deterministic shuffles per attempt when required.",
+    "Localized content/feedback may be missing language tags; decide how to infer defaults and represent multiple locales."
+  ],
+  "compliance_requirements": [
+    "Audit logs for imports/exports (who, when, what package) and validation outcomes.",
+    "Tenant isolation for all stored artifacts and assets."
+  ],
+  "data_requirements": {
+    "inputs": [
+      "QTI package ZIP (items and/or tests) or raw QTI XML",
+      "Tenant/org context and content ownership metadata",
+      "Import policy configuration (supported interactions, validation strictness, extension handling)",
+      "Asset storage configuration (bucket, signing/CDN constraints)"
+    ],
+    "outputs": [
+      "Internal question templates and/or tests/sections aligned to QTI semantics",
+      "Validation report (errors/warnings) suitable for end-user troubleshooting",
+      "Exportable QTI package ZIP with manifest and assets",
+      "Audit logs and operational metrics"
+    ]
+  },
+  "user_journeys": [
+    "Admin imports a QTI package → system validates and reports warnings → items are converted into internal question templates → instructor assembles a quiz → system exports the quiz back to QTI for migration to another platform."
+  ],
+  "acceptance_criteria_suggestions": [
+    "Imports QTI items and assets and produces a clear validation report with actionable errors/warnings.",
+    "Exports supported internal question templates to a standards-compliant QTI package with correct manifests and relative asset paths.",
+    "Defines and documents the supported QTI subset (interaction types, scoring features) and the behavior for unsupported constructs."
+  ],
+  "open_questions": [
+    "Which QTI version(s) must be supported (2.1, 2.2, 3.0), and do we need to support multiple simultaneously?",
+    "Do we need item-only support or full assessmentTest/sections/banks, including item selection and ordering rules?",
+    "What is the policy for vendor extensions: reject, preserve, or approximate?",
+    "Which interaction types and scoring features are in scope for round-trip (lossless) template support?"
+  ],
+  "assumptions": [
+    "Primary need is interoperability for assessments/quizzes (not general employee surveys).",
+    "The product will define a supported subset of QTI features to ensure predictable authoring and round-trip export."
+  ]
+}
+
+
+

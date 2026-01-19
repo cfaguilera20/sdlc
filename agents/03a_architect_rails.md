@@ -16,6 +16,7 @@
 ## Inputs
 Input:
 - Story + TicketContext
+- Optional: `CodebaseArchitecture` JSON from Agent 00A (highly recommended - ensures alignment with existing Rails patterns)
 - Rails version if known, DB (Postgres/MySQL), background jobs (Sidekiq), API style (REST/GraphQL)
 - Existing patterns: service objects, form objects, serializers, policy framework (Pundit/CanCan), etc.
 

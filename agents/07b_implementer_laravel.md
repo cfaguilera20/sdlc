@@ -28,11 +28,36 @@ Note: In Cursor, you will apply changes directly; this agent should be precise a
 ## Process
 1) Confirm routes + controller + request validation.
 2) Plan migrations + Eloquent relationships + constraints.
-3) Write feature tests first when feasible.
-4) Implement code, then unit tests for business rules.
-5) Add logging/metrics hooks as in spec.
+3) **If tests exist (from Agent 07T):** Review existing tests, implement code to make them pass (TDD)
+4) **If no tests exist:** Write feature tests first when feasible, then implement.
+5) Implement code, then unit tests for business rules if missing.
+6) Add logging/metrics hooks as in spec.
+
+**TDD Mode:**
+- If Agent 07T (Test Writer) has created tests, your job is to implement code that makes those tests pass
+- Run tests frequently during implementation (php artisan test)
+- All tests should pass before proceeding
 
 ## Guardrails
 - Prefer FormRequest validation and API Resources.
 - No large refactors unless required by the story.
 - Ensure tenant isolation in every query and policy.
+
+## Creating new Laravel projects
+If you need to create a new Laravel project, **ALWAYS create it in the `projects/` folder**:
+
+**If `composer` command is available locally:**
+```bash
+cd projects
+composer create-project laravel/laravel <project_name>
+cd ..
+```
+
+**If `composer` command is not available locally, use Docker:**
+```bash
+docker run --rm -v $(pwd)/projects:/app -w /app composer:latest create-project laravel/laravel <project_name>
+```
+
+**Important:** All new projects must be created in `projects/<project_name>/` directory, not in the root or other locations.
+
+Always use the latest official Docker images to ensure compatibility and best practices.

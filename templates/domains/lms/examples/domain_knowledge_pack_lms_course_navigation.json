@@ -1,0 +1,101 @@
+{
+  "domain": "LMS Course Navigation",
+  "glossary": [
+    {"term": "navigation sidebar", "definition": "UI component showing course structure (modules, lessons) with progress indicators"},
+    {"term": "lesson sequencing", "definition": "Order and rules for accessing lessons (linear, prerequisites, unlock conditions)"},
+    {"term": "resume position", "definition": "Last watched position in a video lesson, used to resume playback"},
+    {"term": "completion indicator", "definition": "Visual marker showing lesson/module completion status (checkmark, progress bar)"}
+  ],
+  "business_rules": [
+    "Navigation sidebar must show all modules and lessons in course structure",
+    "Current lesson must be highlighted in sidebar",
+    "Completed lessons must show checkmark or completion indicator",
+    "In-progress lessons must show progress percentage",
+    "Locked lessons must be visually distinct and show unlock requirements",
+    "Navigation must allow jumping to any unlocked lesson",
+    "Navigation must show module-level progress (e.g., 3/5 lessons completed)",
+    "Navigation must show course-level progress (e.g., 45% complete)",
+    "Resume functionality must load last watched position for video lessons",
+    "Next/Previous buttons must navigate to adjacent lessons",
+    "Breadcrumb navigation must show: Course → Module → Lesson",
+    "Navigation sidebar must be collapsible/expandable",
+    "Mobile navigation must be responsive and touch-friendly",
+    "Navigation must update progress in real-time as user completes lessons"
+  ],
+  "calculations_or_formulas": [
+    "Module progress = (completed lessons in module / total lessons in module) * 100",
+    "Course progress = (completed modules / total modules) * 100",
+    "Time remaining = estimated total time - time spent"
+  ],
+  "invariants": [
+    "Navigation structure must match course structure (modules → lessons → content)",
+    "Current lesson must be in enrolled course",
+    "Lesson access requires enrollment (except preview)",
+    "Progress indicators must be accurate and up-to-date",
+    "Resume position must be within video duration",
+    "Navigation state must persist across page reloads"
+  ],
+  "edge_cases": [
+    "User navigates to lesson while video is still loading",
+    "Lesson content is updated while user is viewing it",
+    "User completes lesson but progress doesn't update",
+    "Navigation sidebar state lost on page refresh",
+    "User tries to access locked lesson",
+    "Course structure changes while user is navigating",
+    "Multiple tabs open with same course",
+    "User navigates away and returns to course",
+    "Resume position is invalid (video changed)",
+    "Progress calculation mismatch between frontend and backend"
+  ],
+  "compliance_requirements": [],
+  "data_requirements": {
+    "inputs": [
+      "Course structure (modules, lessons, content items)",
+      "Enrollment status",
+      "Progress data (lesson completion, time spent, resume position)",
+      "Current lesson ID"
+    ],
+    "outputs": [
+      "Navigation sidebar structure",
+      "Progress indicators",
+      "Current lesson highlight",
+      "Locked/unlocked lesson status",
+      "Resume position",
+      "Next/Previous lesson IDs"
+    ]
+  },
+  "user_journeys": [
+    "Learner opens course → navigation sidebar loads → shows all modules/lessons → highlights current lesson → shows progress → learner clicks lesson → lesson loads → progress updates → learner completes lesson → checkmark appears → next lesson unlocks",
+    "Learner returns to course → navigation sidebar loads → shows last position → learner clicks resume → video resumes from last position → continues learning"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Navigation sidebar displays course structure correctly",
+    "Progress indicators are accurate and update in real-time",
+    "Current lesson is highlighted in sidebar",
+    "Completed lessons show checkmarks",
+    "Locked lessons are visually distinct",
+    "Resume functionality works correctly",
+    "Next/Previous navigation works",
+    "Breadcrumb navigation is accurate",
+    "Mobile navigation is responsive",
+    "Navigation state persists across sessions"
+  ],
+  "open_questions": [
+    "Should lessons be locked until previous lesson is completed?",
+    "Can users jump to any unlocked lesson or must follow sequence?",
+    "What visual indicators should be used for progress? (checkmarks, progress bars, percentages?)",
+    "Should navigation sidebar be always visible or collapsible?",
+    "How should module-level progress be displayed?",
+    "Should there be a course overview/summary in navigation?",
+    "What happens when course structure changes after enrollment?"
+  ],
+  "assumptions": [
+    "Navigation sidebar is part of course learning page",
+    "Progress data is fetched from backend API",
+    "Resume position is stored per enrollment",
+    "Lesson sequencing is linear by default (can be customized)",
+    "Navigation updates via real-time progress events or polling"
+  ],
+  "confidence": "high"
+}
+

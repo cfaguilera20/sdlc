@@ -16,6 +16,7 @@
 ## Inputs
 Input:
 - Story + TicketContext
+- Optional: `CodebaseArchitecture` JSON from Agent 00A (highly recommended - ensures alignment with existing Laravel patterns)
 - Laravel version, DB, queue driver, auth (Sanctum/Passport), tenancy strategy
 - Existing patterns: Services, Actions, DTOs, Resources, Events/Listeners
 

@@ -96,7 +96,7 @@ To scaffold remaining domains:
    - Create example JSONs
    - Generate domain scaffold JSON
 
-3. Use the Domain Scaffolder agent (`agents/domain.md`) to generate complete scaffolds for each domain
+3. Use Agent 01X (Domain Agent Scout) via the orchestrator, or manually run `agents/01x_domain_agent_scout.md` to generate complete scaffolds for each domain
 
 ## Usage
 
@@ -104,6 +104,6 @@ When working on tickets for any domain:
 
 1. Check if domain scaffold exists in `templates/domains/<domain_name>/`
 2. If exists, use the domain expert templates to generate DomainKnowledgePack
-3. If not exists, run Domain Scaffolder agent to create the scaffold first
+3. If not exists, the orchestrator will automatically run Agent 01X (Domain Agent Scout) to create the scaffold, or you can run it manually
 4. Use DomainKnowledgePack as input to Agent 02 (Product Analyst)
 

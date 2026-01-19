@@ -1,6 +1,6 @@
 # Training Domain
 
-This domain covers all aspects of employee training, development programs, and learning management.
+This domain covers all aspects of employee training, development programs, and learning management, specifically focused on legacy PeopleCloud Training module analysis.
 
 ## Domain Overview
 
@@ -22,6 +22,17 @@ The Training domain manages the complete training lifecycle, including:
    - Focus: Training plan applications, participant enrollment, progress tracking, completion
    - Template: `domain_expert_training_applications_participants.md`
 
+3. **Domain Expert — Training (PeopleCloud Legacy: Phases, Applications, Schedules)**
+   - Focus: **Legacy PeopleCloud Training module** - phases, plan applications, schedules, schedule details, participant slot allocation, invitation workflow
+   - Template: `domain_expert_training_peoplecloud_legacy_phases_schedules.md`
+   - **Use when:** Migrating or extracting the PeopleCloud Training module to understand existing business rules, workflows, and edge cases
+   - **Analyzes:** training_plan → training_phase → training_program relationships, training_plan_application creation, training_schedule + training_schedule_detail recurrence, participant capacity management, PC_Action invitations
+
+## Related Domains
+
+- **LMS** (`../lms/`) - Modern LMS domain knowledge (course catalogs, content delivery, progress, assessments, certificates)
+- **Learning & Development** (`../learning_development/`) - Annual planning and governance (Plan Anual de Capacitación y Desarrollo)
+
 ## Usage
 
 When working on training-related tickets:
@@ -30,4 +41,3 @@ When working on training-related tickets:
 2. Run the appropriate Domain Expert agent(s) using the template files
 3. Collect the `DomainKnowledgePack` JSON output(s)
 4. Use the pack(s) as input to Agent 02 (Product Analyst) for backlog generation
-
