@@ -35,4 +35,3 @@ When working on survey-related tickets:
 
 - **QTI** (`../qti/`) - If the work is about interoperable question templates (import/export). Note: QTI is assessment-focused; surveys may require a different feature subset/policy.
 - **LMS** (`../lms/`) - If survey-like assessments are embedded into learning experiences and need shared authoring/scoring concepts.
-

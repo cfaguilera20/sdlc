@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BeFeGapReport",
+  "type": "object",
+  "required": [
+    "scope",
+    "summary",
+    "gaps",
+    "open_questions"
+  ],
+  "properties": {
+    "scope": {"type": "string"},
+    "summary": {"type": "string"},
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "severity",
+          "frontend_location",
+          "backend_location",
+          "description",
+          "evidence",
+          "suggested_fix"
+        ],
+        "properties": {
+          "id": {"type": "string"},
+          "type": {"type": "string"},
+          "severity": {"type": "string"},
+          "frontend_location": {"type": "string"},
+          "backend_location": {"type": "string"},
+          "description": {"type": "string"},
+          "evidence": {"type": "string"},
+          "suggested_fix": {"type": "string"}
+        }
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}

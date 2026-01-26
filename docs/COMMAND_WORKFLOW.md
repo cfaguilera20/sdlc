@@ -4,6 +4,13 @@ This doc provides a simple “command vocabulary” (inspired by [`masta-g3/rule
 
 Goal: every dev follows the same flow and produces the same structured outputs.
 
+## Artifact-only prompting (Ralph loop friendly)
+
+In Cursor, keep each agent run focused on **artifacts**, not chat history:
+- Reference `runs/.../*.json` files (use `@` file references when possible).
+- Add only a short instruction for the current step.
+- Avoid pasting long conversations; they create drift and bloated context.
+
 ## The 4 commands
 
 ### 1) **prime** (understand + create run folder)
@@ -96,5 +103,4 @@ python3 scripts/validate_json_schema.py schemas/features.schema.json features.js
   2. Run 01/02 → produce `ticket_context.json` + `backlog.json`
   3. Import backlog into `features.json`
   4. Each dev claims a feature and executes the corresponding spec/implementation work
-
 

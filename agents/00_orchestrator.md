@@ -521,6 +521,13 @@ Yes — the “XML tags” style is useful here because it reduces mixing **inst
 - You can wrap *any* agent invocation with tags like `<instructions>`, `<context>`, `<schema>`.
 
 **Rule:** If the user provides examples, keep them inside `<examples>` so they don’t get treated as instructions.
+
+## Context minimization (Ralph loop aligned)
+
+To keep outputs reliable, **use artifacts, not chat history**:
+- For each agent, pass only the relevant `runs/.../*.json` artifacts (or `@` file references) plus minimal instructions.
+- Avoid pasting long human conversations; they dilute context and introduce drift.
+- If extra notes are needed, keep them short and wrap in `<context>` or `<notes>`.
 ---
 
 ## Code writing vs planning (critical)

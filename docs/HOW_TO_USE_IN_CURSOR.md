@@ -118,15 +118,16 @@ runs/PROJ-123_add-user-authentication_20260115_120000/ticket.txt
 
 ### 3. Run Orchestrator in Cursor
 
-**In Cursor chat (paste the orchestrator prompt + your ticket):**
+**In Cursor chat (paste the orchestrator prompt + reference the ticket file):**
 
 ```
 stack=rails
 commit_type=feat
 mode=interactive
 
-TICKET:
-[Paste ticket from runs/.../ticket.txt]
+<context>
+@runs/PROJ-123_add-user-authentication_20260115_120000/ticket.txt
+</context>
 ```
 
 **Save the output:**
@@ -137,25 +138,25 @@ TICKET:
 
 **Agent 01 (Ticket Reader):**
 - Copy content from `agents/01_ticket_reader.md`
-- Paste into new chat + paste ticket text
+- Paste into new chat + reference the ticket file (avoid pasting chat history)
 - Get `TicketContext` JSON
 - Save to `runs/.../ticket_context.json`
 
 **Agent 02 (Product Analyst) - if needed:**
 - Copy content from `agents/02_product_analyst.md`
-- Paste into new chat + paste `TicketContext` JSON
+- Paste into new chat + reference `runs/.../ticket_context.json`
 - Get `Backlog` JSON
 - Save to `runs/.../backlog.json`
 
 **Agent 03a (Architect Rails):**
 - Copy content from `agents/03a_architect_rails.md`
-- Paste into new chat + paste `TicketContext` + selected story
+- Paste into new chat + reference `runs/.../ticket_context.json` (and selected story from `runs/.../backlog.json` if present)
 - Get `DeveloperReadySpec` JSON
 - Save to `runs/.../spec.json`
 
 **Agent 04 (QA Designer):**
 - Copy content from `agents/04_qa_designer.md`
-- Paste into new chat + paste `DeveloperReadySpec` JSON
+- Paste into new chat + reference `runs/.../spec.json`
 - Get `TestSuite` JSON
 - Save to `runs/.../test_suite.json`
 
@@ -248,4 +249,3 @@ make split-bundle-new-run BUNDLE=runs/.../bundle.json TICKET=PROJ-123 TITLE="Add
 - See `docs/COMMAND_WORKFLOW.md` for the command-style workflow (`/prime`, `/plan`, `/execute`, `/commit`)
 - See `README.md` for full pipeline documentation
 - See `schemas/features.schema.json` for multi-session backlog tracking
-
