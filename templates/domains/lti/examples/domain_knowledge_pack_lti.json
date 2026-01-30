@@ -1,0 +1,75 @@
+{
+  "domain": "LTI 1.3 Interoperability (LMS Platform)",
+  "glossary": [
+    { "term": "LTI Platform", "definition": "The LMS acting as the tool consumer; initiates launches and uses LTI services." },
+    { "term": "LTI Tool", "definition": "External learning application integrated into the LMS." },
+    { "term": "OIDC Login", "definition": "OAuth/OIDC-based login initiation step before LTI launch; uses state/nonce for security." },
+    { "term": "LTI Launch", "definition": "JWT-based request from platform to tool containing user, context, and resource link claims." },
+    { "term": "Deployment ID", "definition": "Identifier for a tool deployment within a platform; used to validate launches." },
+    { "term": "Deep Linking", "definition": "Flow where a tool returns content selections (resource links) to be stored in the LMS." },
+    { "term": "NRPS", "definition": "Names & Roles Provisioning Service; allows tools to request course rosters and roles." },
+    { "term": "AGS", "definition": "Assignment and Grade Services; allows tools to create line items and pass grades back to the LMS." }
+  ],
+  "business_rules": [
+    "Tool configuration must be tenant-scoped and auditable (issuer, client_id, deployment_id, endpoints, scopes).",
+    "Launches must validate JWT signature, issuer, audience, exp/iat, nonce, and deployment_id with strict checks.",
+    "Role mapping must be explicit and consistent (learner/instructor/admin) and minimize over-privileging tools.",
+    "Deep link selections must map into LMS content structure (lesson/content item) with versioning support.",
+    "Grade passback must be idempotent and retry-safe; LMS must reconcile duplicate submissions deterministically.",
+    "NRPS access should be least-privilege and respect privacy constraints; roster data minimization is required."
+  ],
+  "calculations_or_formulas": [
+    "Grade normalization: map tool score to LMS scale (e.g., 0-100) using configured max score and grading model.",
+    "Completion mapping: mark lesson/course complete when required line item(s) meet pass thresholds (configurable)."
+  ],
+  "invariants": [
+    "Every launch is tied to a tenant, tool registration, and a specific LMS context (course/lesson).",
+    "A tool cannot access roster/grades outside the associated context and allowed scopes.",
+    "All security tokens must be short-lived and validated with replay prevention."
+  ],
+  "edge_cases": [
+    "Clock skew causes exp/iat failures; define allowable skew and monitoring.",
+    "Tool downtime during launch or grade passback; define retry/backoff and user-facing errors.",
+    "Multiple deployments for same tool; configuration must support multiple deployment_id values.",
+    "Deep link returns invalid or unsupported content types; handle gracefully with validation errors.",
+    "Grade passback duplicates; ensure idempotency and consistent final grade policy."
+  ],
+  "compliance_requirements": [
+    "Audit logs for launches, grade writes, and roster requests.",
+    "Tenant isolation on tool configs, launch records, and grades."
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Tool registration (issuer, client_id, deployment_id, JWKS, auth/token URLs, scopes)",
+      "User identity reference and role mapping",
+      "Course/lesson context mapping",
+      "Deep link selections and/or grade submissions"
+    ],
+    "outputs": [
+      "Launch URLs and resource link bindings",
+      "Stored deep link content items",
+      "Grade records and completion outcomes",
+      "Audit logs and operational metrics"
+    ]
+  },
+  "user_journeys": [
+    "Admin registers LTI tool → instructor deep-links tool content into a course → learner launches tool from lesson → tool posts grade back → LMS updates progress/completion."
+  ],
+  "acceptance_criteria_suggestions": [
+    "Supports LTI 1.3 launch with strict JWT validation and replay protection.",
+    "Supports Deep Linking to embed tool-selected resources into LMS lessons.",
+    "Supports AGS grade passback with idempotent writes and consistent mapping into LMS outcomes.",
+    "Supports tenant-scoped tool configuration and audit logs."
+  ],
+  "open_questions": [
+    "Do we need to act only as LTI Platform, or also as LTI Tool (provider) for external platforms?",
+    "Which services are required day-1: Launch only, Deep Linking, NRPS, AGS?",
+    "How should grades map into our existing LMS assessment/progress model?"
+  ],
+  "assumptions": [
+    "Primary need is LTI 1.3 (OIDC + JWT).",
+    "Tool configs are tenant-scoped and managed by tenant admins or SaaS owner depending on policy."
+  ]
+}
+
+

@@ -1,0 +1,104 @@
+{
+  "domain": "LMS Course Creation Wizard",
+  "glossary": [
+    {"term": "wizard phase", "definition": "A step in the multi-step course creation process"},
+    {"term": "draft", "definition": "Unpublished course state that can be edited"},
+    {"term": "publishing validation", "definition": "Checklist of requirements that must be met before course can be published"},
+    {"term": "auto-save", "definition": "Automatic saving of wizard state to prevent data loss"},
+    {"term": "curriculum", "definition": "Course structure: modules, lessons, and content items"}
+  ],
+  "business_rules": [
+    "Course creation wizard has multiple phases: Planning, Curriculum, Content, Pricing, Instructor Profile, Landing Page, Publishing",
+    "Course must be saved as draft after each phase",
+    "Auto-save must occur every 30 seconds or on field blur",
+    "Wizard state must persist across browser sessions",
+    "Course cannot be published until all required fields are completed",
+    "Publishing validation checklist must be passed before publish",
+    "Curriculum must have at least one module with one lesson",
+    "Course must have instructor profile before publishing",
+    "Course must have landing page content before publishing",
+    "Draft courses can be edited at any time",
+    "Published courses can be unpublished to return to draft",
+    "Wizard must validate fields before allowing phase progression",
+    "Wizard must show progress indicator (e.g., 3/7 phases complete)",
+    "Wizard must allow navigation between completed phases",
+    "Wizard must prevent skipping required phases"
+  ],
+  "calculations_or_formulas": [
+    "Wizard progress = (completed phases / total phases) * 100",
+    "Content statistics = sum of lessons, videos, resources per module"
+  ],
+  "invariants": [
+    "Course must be in 'draft' status during wizard",
+    "Course status can only change: draft → published (or draft → unpublished)",
+    "Wizard phases must be completed in order (cannot skip)",
+    "Course must have at least one module before publishing",
+    "Course must have instructor profile before publishing",
+    "Auto-save must not overwrite unsaved user changes"
+  ],
+  "edge_cases": [
+    "User closes browser during wizard (state must be recoverable)",
+    "Multiple users editing same course draft simultaneously",
+    "Network failure during auto-save",
+    "User navigates away from wizard mid-phase",
+    "Validation fails on phase progression",
+    "Course deleted while wizard is open",
+    "Instructor profile deleted while course is being created",
+    "User tries to publish course with incomplete curriculum",
+    "Auto-save conflicts with manual save",
+    "Wizard state corrupted or invalid"
+  ],
+  "compliance_requirements": [],
+  "data_requirements": {
+    "inputs": [
+      "Course metadata (title, description, category, level, language, tags)",
+      "Curriculum structure (modules, lessons, content items)",
+      "Content files (videos, PDFs, HTML, resources)",
+      "Pricing information",
+      "Instructor profile data",
+      "Landing page content",
+      "Publishing preferences"
+    ],
+    "outputs": [
+      "Course draft record",
+      "Wizard state (current phase, progress)",
+      "Validation status",
+      "Publishing checklist status",
+      "Published course (when published)"
+    ]
+  },
+  "user_journeys": [
+    "Instructor clicks 'Create Course' → enters course metadata → saves → moves to curriculum phase → adds modules and lessons → saves → moves to content phase → uploads videos/content → saves → moves to pricing → sets price → saves → moves to instructor profile → completes profile → saves → moves to landing page → creates landing page → saves → moves to publishing → validates → publishes course",
+    "Instructor opens draft course → wizard resumes at last phase → edits content → auto-saves → continues editing → publishes"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Wizard has all required phases and allows navigation",
+    "Auto-save works correctly and doesn't lose data",
+    "Wizard state persists across browser sessions",
+    "Validation prevents progression with incomplete data",
+    "Publishing validation checklist is comprehensive",
+    "Draft courses can be edited and republished",
+    "Wizard shows progress indicator",
+    "Wizard allows preview of course before publishing",
+    "Wizard handles errors gracefully"
+  ],
+  "open_questions": [
+    "What are the exact wizard phases? (Planning, Curriculum, Content, Pricing, Instructor, Landing Page, Publishing?)",
+    "How often should auto-save occur? (30 seconds? On field blur?)",
+    "What fields are required in each phase?",
+    "Can users skip optional phases?",
+    "What happens to draft courses that are never published?",
+    "Should there be a course template system?",
+    "Can multiple instructors collaborate on course creation?",
+    "What is the maximum course size? (modules, lessons, content)"
+  ],
+  "assumptions": [
+    "Wizard is a single-page application with phase navigation",
+    "Auto-save uses debouncing to avoid excessive API calls",
+    "Wizard state is stored in backend, not just frontend",
+    "Publishing validation is comprehensive and includes all requirements",
+    "Draft courses are visible only to creator until published"
+  ],
+  "confidence": "high"
+}
+

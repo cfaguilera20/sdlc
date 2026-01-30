@@ -1,0 +1,150 @@
+{
+  "domain": "Training - PeopleCloud Legacy (Phases, Applications, Schedules, Participants)",
+  "glossary": [
+    {
+      "term": "Training Plan",
+      "definition": "A structured learning path containing multiple phases. Maps to training_plan table."
+    },
+    {
+      "term": "Training Phase",
+      "definition": "A step within a training plan, linked to a training program (course). Has order (orden), cost, deadline, and optional administrator. Maps to training_phase table."
+    },
+    {
+      "term": "Training Plan Application",
+      "definition": "An instance of applying a training plan to a group of employees (via pc_selection). Has max_participants capacity. Creates schedules for each phase. Maps to training_plan_application table."
+    },
+    {
+      "term": "Training Schedule",
+      "definition": "A scheduled session for a specific phase within an application. Has start_date, end_date, enroll_deadline, instructor, and optional evaluation. Maps to training_schedule table."
+    },
+    {
+      "term": "Schedule Detail",
+      "definition": "Recurring day/time pattern for a schedule. Stores day index (1-7 for Mon-Sun), start_time, end_time. In legacy system, uses stored procedure to expand dates; in Laravel LMS, date expansion will be handled by application logic (Carbon/DateTime). Maps to training_schedule_detail table."
+    },
+    {
+      "term": "Participant Slot",
+      "definition": "A seat assignment linking a person to a schedule. Has status (pending/accepted/completed), type, and score. Capacity is enforced at application level (max_participants). Maps to training_participant table."
+    },
+    {
+      "term": "PC_Action Invitation",
+      "definition": "Notification record for training invitation. Type = TRAINING_INVITATION, id_new = application_id, id_old = person_id, status (0=pending, 1=authorized/accepted)."
+    }
+  ],
+  "business_rules": [
+    "A training plan contains one or more phases, ordered by 'orden' field",
+    "A phase can link to a training_program (course) via id_program, but id_program is nullable (phases can exist without programs)",
+    "When a training_plan_application is created, it must create training_schedule records for each phase in the plan",
+    "Each schedule links to one phase (id_phase) and one application (id_application)",
+    "A schedule can have multiple schedule_details defining recurring days/times (e.g., Monday/Wednesday/Friday 9am-11am)",
+    "Schedule dates are expanded by generating all dates between start_date and end_date, then filtering by schedule_detail.day to get actual session dates. Legacy uses stored procedure sp_dates_btt_dates(); Laravel LMS will use Carbon/DateTime application logic (no stored procedures for scalability).",
+    "Participant capacity is enforced at application level via max_participants field, not at schedule level",
+    "Participant slots are created per schedule, not per application (a person can be in multiple schedules of the same application)",
+    "Invitations are created as PC_Action records with type TRAINING_INVITATION, linking person (id_old) to application (id_new)",
+    "Invitation acceptance (status = 1) does NOT automatically create participant slot; participant must be explicitly added to a schedule",
+    "Participant status (id_status) tracks enrollment state independently from invitation status",
+    "Schedules are sorted by start_date, then end_date (see Training_Schedule::compare_start_date and compare_end_date methods)",
+    "Schedule details use day index (1=Monday, 7=Sunday) and time stored as integers (likely seconds or minutes from midnight)",
+    "A schedule can optionally link to a survey evaluation (id_evaluation) for post-training feedback",
+    "Participants can have scores (training_score table) linked via id_participant",
+    "All entities use is_active soft-delete pattern"
+  ],
+  "calculations_or_formulas": [
+    "Session date calculation: schedule.start_date + (schedule_detail.day - 1) days, then filter dates within schedule.start_date to schedule.end_date range",
+    "Participant count per application: COUNT(DISTINCT training_participant.id_person) WHERE id_schedule IN (SELECT id FROM training_schedule WHERE id_application = X)",
+    "Total hours calculation: program.time_length * participants_count (seen in transformer method)",
+    "Confirmed hours: program.time_length * authorized_invitations_count",
+    "Date expansion (Laravel): Generate date range using Carbon::parse(start_date)->toPeriod(end_date), filter by day-of-week (schedule_detail.day), return array of DateTime objects. No stored procedures - pure application logic for scalability."
+  ],
+  "invariants": [
+    "A training_plan_application must have id_plan and id_company (via plan relationship)",
+    "A training_schedule must have id_application and id_phase",
+    "A training_participant must have id_schedule and id_person",
+    "max_participants on application is the capacity limit across all schedules in that application",
+    "Schedule start_date must be <= end_date",
+    "Schedule_detail.day must be between 1 and 7 (Monday to Sunday)",
+    "A phase's orden determines its sequence within a plan",
+    "All active records must have is_active = 1"
+  ],
+  "edge_cases": [
+    "Phase without program: id_program can be NULL, meaning phase exists but has no course content",
+    "Participant added manually vs via invitation: custom_participant_all_plans shows UNION of invitation-based and manually-added participants",
+    "Schedule changes: If schedule dates change, existing participants remain linked but session dates may shift",
+    "Capacity exceeded: max_participants is checked at application level, but participants are added per schedule - need to verify if this allows exceeding capacity",
+    "Multiple schedules per phase: An application can theoretically have multiple schedules for the same phase (different times/instructors)",
+    "Schedule detail day expansion: If schedule spans multiple weeks, same day-of-week repeats (e.g., every Monday for 4 weeks)",
+    "Participant without invitation: custom_participant_all_plans shows participants can exist without PC_Action invitation (manually added)",
+    "Instructor assignment: A schedule can have id_instructor, but instructor is optional (nullable)",
+    "Evaluation linking: A schedule can link to a survey evaluation (id_evaluation), but it's optional",
+    "Participant status vs invitation status: These are independent - a participant can have status=accepted but invitation still pending if added manually"
+  ],
+  "compliance_requirements": [
+    "Training records must be retained (is_active soft-delete, not hard delete)",
+    "STPS compliance: Some programs have is_stps flag indicating regulatory training requirements",
+    "DC3/DC4 document generation exists for STPS compliance (seen in routes but not analyzed in detail)"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Training plan with phases (ordered)",
+      "PC_Selection (target employee group)",
+      "max_participants capacity",
+      "Schedule dates (start_date, end_date, enroll_deadline)",
+      "Schedule details (recurring days/times)",
+      "Instructor assignment (optional)",
+      "Evaluation survey link (optional)"
+    ],
+    "outputs": [
+      "training_plan_application record",
+      "training_schedule records (one per phase)",
+      "training_schedule_detail records (recurring patterns)",
+      "PC_Action invitation records",
+      "training_participant slot records",
+      "training_attendance records (per session)",
+      "training_score records (per participant)"
+    ]
+  },
+  "user_journeys": [
+    "Admin creates training plan with phases → Each phase links to a program (course) → Plan is saved",
+    "Admin creates application: Selects plan, selects employee group (pc_selection), sets max_participants → System creates schedules for each phase → System creates PC_Action invitations for all employees in selection",
+    "Employee receives invitation (PC_Action) → Employee accepts → System updates invitation status to authorized (1) → Admin manually adds participant to specific schedule(s)",
+    "Participant attends sessions → Instructor marks attendance → System records training_attendance",
+    "Participant completes training → Instructor assigns score → System records training_score",
+    "If program requires survey: Schedule links to evaluation → After training, evaluation is created/assigned"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Given a training plan with 3 phases, when application is created, then 3 schedules are created (one per phase)",
+    "Given an application with max_participants=10, when 10 participants are added across schedules, then capacity is enforced",
+    "Given a schedule with details (Mon/Wed/Fri 9am-11am) and date range (Jan 1-31), when dates are expanded, then all matching Mondays/Wednesdays/Fridays in range are returned",
+    "Given an invitation is accepted, when participant is added to schedule, then participant record is created with is_active=1",
+    "Given a schedule has an evaluation link, when training completes, then evaluation is available for participants"
+  ],
+  "open_questions": [
+    "How exactly is max_participants enforced? Is it per application total, or per schedule? Code suggests per application but participants are per schedule.",
+    "What are the exact values for participant id_status and id_type? Need to check enums/constants.",
+    "How are schedule_detail times stored? As seconds from midnight? Minutes? Need to verify format.",
+    "What happens if a schedule's dates are changed after participants are enrolled? Are they automatically updated?",
+    "Can a phase have multiple schedules in the same application? Code allows it but business rule unclear.",
+    "What is the workflow for participant withdrawal? Is there a status for cancelled/withdrawn?",
+    "How are schedule conflicts handled? Can a person be in overlapping schedules?",
+    "What triggers evaluation creation? Is it automatic when schedule has id_evaluation, or manual?",
+    "How are participant slots allocated when capacity is reached? First-come-first-served? Priority-based?",
+    "What is the relationship between training_attendance and schedule_detail? Is attendance per expanded session date?"
+  ],
+  "assumptions": [
+    "Schedule details use day index 1-7 (Monday=1, Sunday=7) based on common convention",
+    "Time values in schedule_detail are stored as integers (seconds or minutes from midnight)",
+    "max_participants is enforced at application level, meaning total participants across all schedules cannot exceed this limit",
+    "Participant slots are created manually by admin after invitation acceptance, not automatically",
+    "Date expansion in Laravel: Use Carbon date range generation and filter by day-of-week. No stored procedures - application logic only for better scalability and maintainability",
+    "A person can be a participant in multiple schedules, even within the same application",
+    "Soft-delete (is_active=0) is used for all training entities to maintain audit trail"
+  ],
+  "sources": [
+    "/Users/carlosaguilera/Workspace/pcloud-microservices/source/peoplecloud/app/model/Training_Plan.php",
+    "/Users/carlosaguilera/Workspace/pcloud-microservices/source/peoplecloud/app/model/Training_Phase.php",
+    "/Users/carlosaguilera/Workspace/pcloud-microservices/source/peoplecloud/app/model/Training_Plan_Application.php",
+    "/Users/carlosaguilera/Workspace/pcloud-microservices/source/peoplecloud/app/model/Training_Schedule.php",
+    "/Users/carlosaguilera/Workspace/pcloud-microservices/source/peoplecloud/app/model/Training_Schedule_Detail.php",
+    "/Users/carlosaguilera/Workspace/pcloud-microservices/source/peoplecloud/app/model/Training_Participant.php"
+  ],
+  "confidence": "high"
+}

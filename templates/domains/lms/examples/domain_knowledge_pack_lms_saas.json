@@ -1,0 +1,174 @@
+{
+  "domain": "LMS (Learning Management System) - Enterprise SaaS",
+  "glossary": [
+    {
+      "term": "Course Catalog",
+      "definition": "Repository of available courses, either marketplace (global, purchasable) or tenant-private (scoped to organization)"
+    },
+    {
+      "term": "Marketplace Course",
+      "definition": "Course published by SaaS owner, available for purchase by tenants or employees"
+    },
+    {
+      "term": "Tenant-Private Course",
+      "definition": "Course created by a tenant, visible only within that tenant's organization"
+    },
+    {
+      "term": "Learning Path",
+      "definition": "Structured sequence of courses or phases that guide learner progression"
+    },
+    {
+      "term": "Course Module",
+      "definition": "Section within a course that groups related lessons"
+    },
+    {
+      "term": "Lesson",
+      "definition": "Individual learning unit within a module, containing content items"
+    },
+    {
+      "term": "Content Item",
+      "definition": "Specific learning resource: video, PDF, HTML, or external link"
+    },
+    {
+      "term": "Enrollment",
+      "definition": "Learner's registration in a course or cohort, tracking their participation"
+    },
+    {
+      "term": "Progress",
+      "definition": "Learner's advancement through course content: status (not_started/in_progress/completed), position, time-on-task"
+    },
+    {
+      "term": "Assessment",
+      "definition": "Quiz or survey within a course used to evaluate learning, with scoring and pass/fail criteria"
+    },
+    {
+      "term": "Certificate",
+      "definition": "Digital credential issued upon course completion, with public verification URL"
+    },
+    {
+      "term": "Entitlement",
+      "definition": "Right to access/enroll in a course, granted via purchase, assignment, or plan"
+    },
+    {
+      "term": "Cohort",
+      "definition": "Instructor-led training group with scheduled sessions, attendance, and scoring"
+    },
+    {
+      "term": "Self-Paced Learning",
+      "definition": "Learning mode where learners progress through content at their own speed"
+    }
+  ],
+  "business_rules": [
+    "Course catalog must differentiate marketplace (global) from tenant-private courses",
+    "Marketplace courses are visible to all tenants but require purchase/entitlement to access",
+    "Tenant-private courses are only visible within the creating organization",
+    "Content access requires valid enrollment and entitlement",
+    "Video content must be delivered via streaming (HLS/DASH) with signed URLs, not direct downloads",
+    "Progress tracking must record position, completion status, and time-on-task for resume capability",
+    "Assessments can be placed after lessons/chapters or at course end",
+    "Certificates are generated upon course completion and have public verification URLs",
+    "Multi-tenant isolation: all queries must be scoped by organization_id",
+    "Enrollment status transitions: enrolled → in_progress → completed (or cancelled)",
+    "Instructor-led cohorts require session scheduling, attendance tracking, and scoring",
+    "Self-paced courses allow learners to progress at their own speed with progress persistence",
+    "Content versioning: updates to courses should not break in-progress learners' experience",
+    "Marketplace purchases create entitlements that enable enrollment",
+    "Certificates must be verifiable via public URL without authentication"
+  ],
+  "calculations_or_formulas": [
+    "Course completion = all required lessons completed AND all required assessments passed",
+    "Progress percentage = (completed_lessons / total_lessons) * 100",
+    "Assessment score = (correct_answers / total_questions) * 100",
+    "Time-on-task = sum of all session durations for a lesson",
+    "Certificate eligibility = course_completed AND assessment_passed (if required)"
+  ],
+  "invariants": [
+    "Course must have at least one module",
+    "Module must have at least one lesson",
+    "Lesson must have at least one content item",
+    "Enrollment requires valid entitlement or assignment",
+    "Content access requires active enrollment",
+    "Progress can only be recorded for enrolled learners",
+    "Certificate can only be issued for completed courses",
+    "Marketplace course cannot be accessed without purchase/entitlement",
+    "Tenant-private course cannot be accessed by other tenants",
+    "Assessment attempt must be associated with an enrollment"
+  ],
+  "edge_cases": [
+    "Course content updated while learners are in-progress: version course, maintain progress in original version",
+    "Video streaming URL expires during playback: regenerate signed URL transparently",
+    "Learner progresses faster than expected (skips ahead): validate against course structure, prevent impossible jumps",
+    "Assessment retake policy: allow multiple attempts with best score or require passing score",
+    "Certificate revoked: mark as invalid, update verification URL response",
+    "Entitlement expires: revoke access, preserve historical progress and certificates",
+    "Learner changes organization: typically do not migrate learning history (tenant isolation)",
+    "Course deleted: handle enrolled learners (soft delete, archive, or migration)",
+    "Concurrent enrollment attempts: use database locks to prevent race conditions",
+    "Progress heartbeat spoofing: validate server-side, rate limit, detect impossible position jumps"
+  ],
+  "compliance_requirements": [
+    "Learning records must be retained for audit and compliance purposes",
+    "Certificate verification must be tamper-proof and auditable",
+    "Content access must be logged for security and compliance",
+    "Progress data must be accurate and verifiable",
+    "Multi-tenant data isolation must be enforced at all levels"
+  ],
+  "data_requirements": {
+    "inputs": [
+      "Course definitions and structure (modules, lessons, content)",
+      "Content files (videos, PDFs, HTML)",
+      "Assessment definitions (questions, answers, scoring rules)",
+      "Enrollment requests (learner, course, assignment source)",
+      "Progress events (playback position, completion status, time-on-task)",
+      "Assessment attempts (answers, timestamps)"
+    ],
+    "outputs": [
+      "Course catalog (filtered by tenant and visibility)",
+      "Content delivery URLs (signed, time-limited)",
+      "Progress reports (learner, manager, admin views)",
+      "Assessment results and scores",
+      "Certificates (generated, verifiable)",
+      "Learning history and transcripts"
+    ]
+  },
+  "user_journeys": [
+    "Learner browses catalog → enrolls in course → consumes content → completes assessments → receives certificate",
+    "HR admin creates tenant-private course → uploads content → assigns to employees → tracks progress",
+    "SaaS owner publishes marketplace course → sets pricing → tenants/employees purchase → access granted",
+    "Instructor creates cohort → schedules sessions → invites participants → tracks attendance → records scores",
+    "Manager views team learning progress → identifies gaps → assigns additional courses"
+  ],
+  "acceptance_criteria_suggestions": [
+    "System supports marketplace and tenant-private course catalogs with proper visibility scoping",
+    "System delivers video content via streaming with signed URLs and progress tracking",
+    "System tracks learner progress (position, completion, time-on-task) and allows resume",
+    "System supports in-course assessments with multiple question types and scoring",
+    "System generates certificates with public verification URLs upon course completion",
+    "System enforces multi-tenant isolation on all operations and data access",
+    "System supports both instructor-led cohorts and self-paced learning modes",
+    "System provides APIs for PeopleCloud to query learner training summaries and history"
+  ],
+  "open_questions": [
+    "What video streaming provider will be used (Mux, Cloudflare Stream, self-hosted)?",
+    "What level of DRM/protection is required for video content (MVP: deterrence only)?",
+    "How should assessment retakes be handled (unlimited, limited, best score)?",
+    "What certificate verification requirements exist (public URL, metadata, revocation)?",
+    "How should course versioning work when content is updated mid-course?",
+    "What roles and permissions are required (owner, tenant admin, instructor, learner, manager)?",
+    "How should marketplace refunds affect entitlements and learning history?",
+    "What compliance/audit requirements exist for learning records retention?"
+  ],
+  "assumptions": [
+    "LMS is system of record for training execution data (enrollments, progress, certificates)",
+    "Identity/HRIS system remains system of record for identity (persons, organizations, structure)",
+    "Multi-tenancy is organization-scoped with global marketplace courses",
+    "Video streaming uses HLS/DASH protocols with signed URLs (deterrence, not DRM in MVP)",
+    "Assessments are LMS-owned but with clean module boundaries for future extraction",
+    "Certificates have public verification URLs that can be shared externally (LinkedIn compatible)"
+  ],
+  "sources": [
+    "Enterprise LMS best practices (multi-tenant SaaS, Udemy/LinkedIn Learning patterns)",
+    "Domain knowledge extracted from ticket/product context"
+  ],
+  "confidence": "high"
+}

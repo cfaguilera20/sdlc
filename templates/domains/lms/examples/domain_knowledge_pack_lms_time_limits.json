@@ -1,0 +1,112 @@
+{
+  "domain": "LMS Time Limits & Deadlines",
+  "glossary": [
+    {"term": "completion deadline", "definition": "Date and time by which course must be completed"},
+    {"term": "time limit", "definition": "Duration from enrollment/assignment to deadline"},
+    {"term": "grace period", "definition": "Additional time allowed after deadline before access is restricted"},
+    {"term": "extension request", "definition": "User request for additional time to complete course"}
+  ],
+  "business_rules": [
+    "Time limits apply only to assignment-based enrollments (not self-enrollment)",
+    "Deadline is calculated as: assignment date + time limit duration",
+    "Deadline must account for timezone (use user's or organization's timezone)",
+    "Time limit warnings must be sent at thresholds (7 days, 3 days, 1 day before deadline)",
+    "Deadline expiration must restrict course access (or mark as incomplete)",
+    "Grace period allows completion after deadline (configurable duration)",
+    "Extension requests must be submitted and approved by admin/manager",
+    "Time remaining must be displayed in UI (countdown, days remaining)",
+    "Deadline notifications must be sent (upcoming, passed, extension granted)",
+    "Multiple deadlines can exist (course deadline, module deadlines, assessment deadlines)",
+    "Deadline calculation must use business days or calendar days (configurable)",
+    "Time limit enforcement must check deadline on every access attempt",
+    "Completed courses before deadline are not affected by deadline expiration"
+  ],
+  "calculations_or_formulas": [
+    "Deadline = assignment_date + time_limit_duration",
+    "Time remaining = deadline - current_time",
+    "Days remaining = (deadline - current_time) / 1 day",
+    "Business days = count of weekdays (Mon-Fri) between dates",
+    "Calendar days = count of all days between dates"
+  ],
+  "invariants": [
+    "Deadline must be in the future (cannot be in the past)",
+    "Time limit must be positive (greater than 0)",
+    "Deadline must be after assignment date",
+    "Time remaining cannot be negative (use 0 if deadline passed)",
+    "Extension must extend deadline (new deadline > old deadline)",
+    "Grace period must be non-negative (0 or positive)"
+  ],
+  "edge_cases": [
+    "Deadline expires while user is actively learning",
+    "User completes course after deadline (within grace period)",
+    "User completes course after deadline (outside grace period)",
+    "Extension request submitted after deadline",
+    "Multiple extension requests for same enrollment",
+    "Timezone changes during time limit period",
+    "Daylight saving time changes during time limit",
+    "Deadline calculation across timezones",
+    "Time limit set to 0 or negative",
+    "Assignment date in the past",
+    "Deadline notification fails to send",
+    "User in different timezone than organization",
+    "Business days calculation across holidays",
+    "Deadline falls on weekend or holiday"
+  ],
+  "compliance_requirements": [],
+  "data_requirements": {
+    "inputs": [
+      "Assignment date",
+      "Time limit duration (days, weeks, months)",
+      "Timezone",
+      "Business days or calendar days preference",
+      "Grace period duration",
+      "Extension request (reason, requested duration)"
+    ],
+    "outputs": [
+      "Calculated deadline",
+      "Time remaining",
+      "Deadline status (upcoming, passed, in grace period)",
+      "Extension approval/rejection",
+      "Deadline notifications"
+    ]
+  },
+  "user_journeys": [
+    "Admin assigns course with 30-day deadline → deadline calculated → enrollment created → deadline notifications scheduled → user receives assignment → sees deadline in UI → receives warnings (7 days, 3 days, 1 day) → completes course before deadline → deadline not enforced",
+    "User receives deadline warning → requests extension → admin approves → deadline extended → user completes course → deadline not enforced",
+    "User doesn't complete course by deadline → deadline expires → access restricted → user requests extension → admin approves → access restored → user completes course"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Deadline is calculated correctly from assignment date and time limit",
+    "Time limit warnings are sent at correct thresholds",
+    "Deadline expiration restricts access appropriately",
+    "Grace period allows completion after deadline",
+    "Extension requests can be submitted and approved",
+    "Time remaining is displayed accurately in UI",
+    "Deadline notifications are sent correctly",
+    "Timezone handling is correct",
+    "Business days calculation works correctly",
+    "Multiple deadlines are handled correctly"
+  ],
+  "open_questions": [
+    "What is the default time limit? (30 days? 60 days?)",
+    "Should time limits be configurable per course or per assignment?",
+    "What happens when deadline expires? (restrict access? mark incomplete? allow read-only?)",
+    "What is the default grace period? (0 days? 7 days?)",
+    "Should extension requests be auto-approved or require manual approval?",
+    "How should business days handle holidays? (organization-specific holidays?)",
+    "Should there be a maximum extension duration?",
+    "Can users request multiple extensions?",
+    "Should deadline warnings be sent via email, in-app, or both?",
+    "What happens to certificate eligibility if deadline is missed?"
+  ],
+  "assumptions": [
+    "Time limits apply only to assigned courses, not self-enrolled",
+    "Deadline calculation uses assignment date as start",
+    "Timezone is organization or user-specific",
+    "Business days exclude weekends (Sat-Sun)",
+    "Extension requests require admin/manager approval",
+    "Deadline notifications are sent via email"
+  ],
+  "confidence": "high"
+}
+

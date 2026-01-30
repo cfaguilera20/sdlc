@@ -6,3 +6,7 @@ tmp/*
 !tmp/.gitkeep
 
 .history/     
+
+projects/*
+!projects/.keep
+

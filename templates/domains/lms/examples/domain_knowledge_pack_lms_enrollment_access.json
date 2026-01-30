@@ -1,0 +1,103 @@
+{
+  "domain": "LMS Enrollment & Access Control",
+  "glossary": [
+    {"term": "self-enrollment", "definition": "User enrolls themselves in a public course"},
+    {"term": "assignment-based enrollment", "definition": "Admin or manager assigns course to user(s) or team(s)"},
+    {"term": "bulk enrollment", "definition": "Enrolling multiple users at once (CSV import, team assignment, role-based)"},
+    {"term": "enrollment status", "definition": "Current state of enrollment (pending, active, completed, cancelled, expired)"}
+  ],
+  "business_rules": [
+    "Self-enrollment is available for public courses only",
+    "Assignment-based enrollment requires admin or manager role",
+    "Bulk enrollment can be done via CSV import or team/role selection",
+    "Enrollment creates enrollment record with status 'active'",
+    "Enrollment grants immediate access to course content",
+    "Enrollment status can be: pending, active, completed, cancelled, expired",
+    "Enrollment cancellation can be done by user or admin",
+    "Enrolled users can access course content immediately",
+    "Enrollment notifications must be sent (confirmation, assignment, completion)",
+    "Enrollment must respect course capacity limits (if set)",
+    "Waitlist enrollment is created when course is full",
+    "Enrollment must be scoped to organization (multi-tenant)",
+    "Enrollment permissions are role-based (learner can self-enroll, admin can assign)"
+  ],
+  "calculations_or_formulas": [
+    "Enrollment capacity remaining = max capacity - current enrollments",
+    "Enrollment completion rate = (completed enrollments / total enrollments) * 100"
+  ],
+  "invariants": [
+    "Every enrollment must have a valid person_ref",
+    "Every enrollment must be scoped to organization_id",
+    "Enrollment status can only progress: pending → active → completed (or cancelled/expired)",
+    "User cannot enroll twice in same course (unless cancelled and re-enrolled)",
+    "Enrollment requires valid course (course must exist and be published)",
+    "Enrollment access is checked on every content request"
+  ],
+  "edge_cases": [
+    "User tries to enroll in full course",
+    "User tries to enroll in private course (not assigned)",
+    "User tries to enroll twice in same course",
+    "Course is unpublished after enrollment",
+    "User is deleted but has active enrollment",
+    "Enrollment assignment fails (invalid user, course, etc.)",
+    "Bulk enrollment includes invalid users",
+    "Enrollment notification fails to send",
+    "User cancels enrollment but wants to re-enroll",
+    "Enrollment expires while user is actively learning",
+    "Multiple simultaneous enrollment requests",
+    "Enrollment capacity changes after enrollment"
+  ],
+  "compliance_requirements": [],
+  "data_requirements": {
+    "inputs": [
+      "Course ID",
+      "Person reference (person_ref)",
+      "Enrollment type (self, assignment, bulk)",
+      "Assignment details (assigner, due date, notification preferences)"
+    ],
+    "outputs": [
+      "Enrollment record",
+      "Enrollment status",
+      "Access granted confirmation",
+      "Enrollment notification"
+    ]
+  },
+  "user_journeys": [
+    "Learner browses catalog → finds public course → clicks 'Enroll' → enrollment created → access granted → notification sent → learner can access course",
+    "Admin selects course → selects users/team → assigns course → enrollments created → notifications sent → users can access course",
+    "Manager assigns course to team → bulk enrollments created → team members notified → team can access course"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Self-enrollment works for public courses",
+    "Assignment-based enrollment works for admins/managers",
+    "Bulk enrollment supports CSV import and team/role selection",
+    "Enrollment grants immediate access",
+    "Enrollment notifications are sent correctly",
+    "Enrollment status is tracked accurately",
+    "Enrollment cancellation works correctly",
+    "Enrollment respects capacity limits",
+    "Waitlist enrollment works when course is full",
+    "Enrollment is scoped to organization"
+  ],
+  "open_questions": [
+    "Should there be enrollment approval workflow?",
+    "What is the maximum course capacity? (unlimited? specific number?)",
+    "Can users unenroll themselves?",
+    "What happens to progress when enrollment is cancelled?",
+    "Should there be enrollment expiration? (time-based access?)",
+    "Can users be enrolled in same course multiple times?",
+    "Should enrollment support prerequisites? (must complete Course A before Course B?)",
+    "How should bulk enrollment handle errors? (partial success?)",
+    "Should enrollment support groups/teams as entities?",
+    "What notification channels? (email, in-app, both?)"
+  ],
+  "assumptions": [
+    "Self-enrollment is available for public courses",
+    "Assignment requires admin or manager role",
+    "Enrollment creates immediate access",
+    "Enrollment notifications are sent via email",
+    "Enrollment is scoped to organization for multi-tenant isolation"
+  ],
+  "confidence": "high"
+}
+

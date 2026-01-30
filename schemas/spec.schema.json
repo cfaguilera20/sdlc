@@ -26,6 +26,10 @@
         "generic"
       ]
     },
+    "lightweight": {
+      "type": "boolean",
+      "description": "Set to true for fast-track mode (bug fixes, small refactors). Indicates simplified spec with minimal domain model, focused API contracts, and simplified flows."
+    },
     "domain_model": {
       "type": "object"
     },
@@ -85,6 +89,136 @@
             "type": "array",
             "items": {
               "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "code_references": {
+      "type": "object",
+      "description": "Links from spec elements to actual code locations",
+      "properties": {
+        "api_contracts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "contract_id": {
+                "type": "string"
+              },
+              "file_path": {
+                "type": "string"
+              },
+              "line_numbers": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "data_contracts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "contract_id": {
+                "type": "string"
+              },
+              "file_path": {
+                "type": "string"
+              },
+              "line_numbers": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "flows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "flow_id": {
+                "type": "string"
+              },
+              "file_paths": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "implementation_status": {
+      "type": "object",
+      "description": "Track which spec elements are implemented",
+      "properties": {
+        "api_contracts_implemented": {
+          "type": "integer"
+        },
+        "api_contracts_total": {
+          "type": "integer"
+        },
+        "data_contracts_implemented": {
+          "type": "integer"
+        },
+        "data_contracts_total": {
+          "type": "integer"
+        },
+        "flows_implemented": {
+          "type": "integer"
+        },
+        "flows_total": {
+          "type": "integer"
+        },
+        "edge_cases_handled": {
+          "type": "integer"
+        },
+        "edge_cases_total": {
+          "type": "integer"
+        },
+        "coverage_percentage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "coverage_map": {
+      "type": "object",
+      "description": "Map acceptance criteria to tests to code",
+      "properties": {
+        "acceptance_criteria": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ac_id": {
+                "type": "string"
+              },
+              "ac_text": {
+                "type": "string"
+              },
+              "tests": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "code_locations": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
             }
           }
         }

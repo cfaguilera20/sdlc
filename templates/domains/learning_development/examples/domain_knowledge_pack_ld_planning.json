@@ -1,0 +1,76 @@
+{
+  "domain": "Learning & Development (L&D) - Annual Planning (Plan Anual) - Naming & Scope",
+  "glossary": [
+    {
+      "term": "Plan Anual de Capacitación y Desarrollo",
+      "definition": "Documento y proceso anual que define brechas, objetivos, iniciativas, calendario, recursos y evaluación/impacto del desarrollo de habilidades."
+    },
+    {
+      "term": "Brecha de habilidades (Skill Gap)",
+      "definition": "Diferencia entre competencias requeridas por el rol/objetivos y el nivel observado en evaluaciones (desempeño, 360, psicometría)."
+    },
+    {
+      "term": "Iniciativa de Desarrollo",
+      "definition": "Acción planificada para cerrar brechas (curso, taller, mentoring, coaching, rotación, proyecto)."
+    },
+    {
+      "term": "Asignación (Assignment)",
+      "definition": "Obligación o recomendación formal de una iniciativa/capacitación para una persona o grupo, con fechas objetivo."
+    },
+    {
+      "term": "Ejecución (Delivery/Execution)",
+      "definition": "Participación real del colaborador: inscripción, asistencia/progreso, evaluación, certificación."
+    }
+  ],
+  "business_rules": [
+    "El Plan Anual pertenece al dominio de gobernanza L&D: objetivos, presupuesto, aprobaciones, y priorización; no debe depender de detalles internos del LMS.",
+    "La ejecución (inscripciones, progreso, asistencia, calificaciones, certificados) pertenece al dominio LMS; el Plan no debe ser SoR de progreso.",
+    "Una Asignación del Plan debe referenciar (por IDs externos) el objeto de ejecución en LMS (p.ej., learning_path_id, course_id, cohort_id) pero no duplicar su estado interno.",
+    "El Plan Anual debe soportar iniciativas que NO son LMS (mentorías, talleres externos, coaching), por lo que el dominio no puede ser nombrado solo 'LMS'.",
+    "La medición debe separar: (a) cumplimiento (completion), (b) aprendizaje (score), (c) aplicación (follow-up), (d) impacto (KPIs).",
+    "El Plan debe permitir calendarización a nivel iniciativa (ventanas) y delegar la calendarización operativa de sesiones al LMS cuando aplique.",
+    "Multi-tenant: el plan es por organización (tenant), con posibilidad de plantillas globales (SaaS owner) reutilizables.",
+    "Los roles HR/L&D requieren flujos de aprobación y trazabilidad (quién definió, aprobó, cambió), con auditoría."
+  ],
+  "invariants": [
+    "Una iniciativa siempre pertenece a un Plan (año/periodo) y a una organización.",
+    "Una Asignación siempre referencia un objetivo o brecha (explícita o implícita).",
+    "El estado de progreso/certificación se obtiene del LMS (no del Plan)."
+  ],
+  "edge_cases": [
+    "Una iniciativa cambia de proveedor/modalidad a mitad de año: se mantiene trazabilidad y se re-mapea la referencia de ejecución.",
+    "Una persona cambia de rol/departamento: recalcular brechas y re-evaluar asignaciones sin perder historial.",
+    "Iniciativas combinadas: parte e-learning (LMS) + parte mentoring (no LMS) con un solo objetivo de desarrollo.",
+    "Presupuesto agotado: asignaciones quedan en espera o se degradan a 'recomendadas' sin inscripción obligatoria.",
+    "Objetivos organizacionales cambian: se versiona el plan y se documentan decisiones de re-priorización."
+  ],
+  "acceptance_criteria_suggestions": [
+    "El sistema permite crear Plan Anual por organización con objetivos, brechas e iniciativas.",
+    "El sistema permite asignar iniciativas a personas/grupos y definir fechas objetivo.",
+    "El sistema integra con LMS para crear/consultar inscripciones y progreso para iniciativas tipo curso/cohorte.",
+    "El sistema soporta iniciativas no-LMS y su seguimiento mínimo (asistencia manual o evidencias).",
+    "El sistema genera reportes por organización: cumplimiento, avance, y señal de impacto (KPIs)."
+  ],
+  "open_questions": [
+    "¿El Plan Anual debe permitir múltiples periodos (trimestral/semestral) además de anual?",
+    "¿Qué modelo de competencias usará el Plan (catálogo propio vs PeopleCloud competencias/behavior IDs)?",
+    "¿Quién aprueba el plan (solo HR, managers, comité) y cuáles son los estados de aprobación?",
+    "¿Se necesita presupuesto por iniciativa y por persona (costo unitario) o solo presupuesto agregado?",
+    "¿Qué evidencia se requiere para iniciativas no-LMS (mentorías/coaching) y cómo se valida?",
+    "¿Qué tan formal es la trazabilidad de impacto (KPI) en el MVP?"
+  ],
+  "assumptions": [
+    "El Plan Anual pertenece al dominio de gobernanza L&D: objetivos, presupuesto, aprobaciones, y priorización.",
+    "La ejecución (inscripciones, progreso, asistencia, calificaciones, certificados) pertenece al dominio LMS; el Plan no debe ser SoR de progreso.",
+    "Una Asignación del Plan debe referenciar (por IDs externos) el objeto de ejecución en LMS (p.ej., learning_path_id, course_id, cohort_id) pero no duplicar su estado interno.",
+    "El Plan Anual debe soportar iniciativas que NO son LMS (mentorías, talleres externos, coaching), por lo que el dominio no puede ser nombrado solo 'LMS'.",
+    "Sistema de identidad/HRIS sigue siendo SoR de identidad (personas, estructura organizacional); L&D consume IDs externos."
+  ],
+  "sources": [
+    "Best practices L&D: Annual training plans, governance, evaluation (Kirkpatrick).",
+    "Domain knowledge extracted from ticket/product context"
+  ],
+  "confidence": "high"
+}
+
+

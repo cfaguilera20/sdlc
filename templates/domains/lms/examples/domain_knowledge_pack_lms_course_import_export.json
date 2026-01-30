@@ -1,0 +1,104 @@
+{
+  "domain": "LMS Course Import/Export",
+  "glossary": [
+    {"term": "Moodle backup", "definition": "Moodle course backup file (.mbz format) containing course structure, content, and metadata"},
+    {"term": "SCORM package", "definition": "Sharable Content Object Reference Model package (.zip) with imsmanifest.xml and content"},
+    {"term": "course package", "definition": "Standardized format for course import/export (ZIP file with manifest and content)"},
+    {"term": "content migration", "definition": "Process of transferring course content from source LMS to target LMS"}
+  ],
+  "business_rules": [
+    "Course import must support Moodle backup format (.mbz)",
+    "Course import must support SCORM 1.2 and 2004 packages",
+    "Course export must generate standard package format (ZIP with manifest)",
+    "Import must validate package format before processing",
+    "Import must map source course structure to LMS structure (modules, lessons, content)",
+    "Import must handle media files (videos, images, documents)",
+    "Import must preserve course metadata (title, description, category, etc.)",
+    "Import must create course as draft (not published)",
+    "Import must allow preview before finalizing",
+    "Import must handle partial failures gracefully (some content imports, some fails)",
+    "Export must include all course content (modules, lessons, videos, PDFs, resources)",
+    "Export must include course metadata and settings",
+    "Export must generate downloadable ZIP file",
+    "Import must support resume for interrupted imports",
+    "Import must show progress during processing"
+  ],
+  "calculations_or_formulas": [
+    "Import progress = (processed items / total items) * 100",
+    "Package size = sum of all file sizes in package"
+  ],
+  "invariants": [
+    "Import package must be valid format (Moodle .mbz or SCORM .zip)",
+    "Imported course must be in draft status",
+    "Import must not overwrite existing courses",
+    "Export must include all course content",
+    "Package structure must follow standard format",
+    "Import must preserve content relationships (modules → lessons → content)"
+  ],
+  "edge_cases": [
+    "Invalid or corrupted package file",
+    "Package contains unsupported content types",
+    "Package size exceeds limits",
+    "Import interrupted (network failure, timeout)",
+    "Media files missing from package",
+    "Package contains references to external resources",
+    "Import creates duplicate content",
+    "Package version incompatible (old Moodle version, new SCORM version)",
+    "Export includes very large files (videos)",
+    "Import fails partway through (partial import)",
+    "Package contains assessments that need migration",
+    "Package contains user data that should be excluded"
+  ],
+  "compliance_requirements": [],
+  "data_requirements": {
+    "inputs": [
+      "Import package file (Moodle .mbz or SCORM .zip)",
+      "Source LMS type (Moodle, SCORM, etc.)",
+      "Import options (overwrite, create new, etc.)"
+    ],
+    "outputs": [
+      "Imported course (draft status)",
+      "Import report (success/failure for each item)",
+      "Export package (ZIP file)",
+      "Export manifest (course structure and metadata)"
+    ]
+  },
+  "user_journeys": [
+    "Admin selects 'Import Course' → uploads Moodle backup → system validates → extracts package → maps structure → imports content → creates draft course → shows import report → admin reviews → publishes course",
+    "Instructor selects 'Export Course' → system generates package → includes all content → creates ZIP file → downloads package → can share or backup"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Import supports Moodle backup format",
+    "Import supports SCORM packages",
+    "Import validates package format before processing",
+    "Import maps course structure correctly",
+    "Import handles media files correctly",
+    "Import creates draft course",
+    "Import shows progress and report",
+    "Export generates complete package",
+    "Export includes all course content",
+    "Export package can be imported successfully"
+  ],
+  "open_questions": [
+    "Which Moodle versions are supported? (3.x, 4.x?)",
+    "Which SCORM versions are supported? (1.2, 2004?)",
+    "What is the maximum package size? (500MB? 1GB?)",
+    "Should import support other formats? (Canvas, Blackboard, etc.)",
+    "Should export support multiple formats? (Moodle, SCORM, IMS CC?)",
+    "How should assessments be migrated? (questions, answers, attempts?)",
+    "Should user data be included in export?",
+    "What happens to videos in import? (upload to Cloudflare Stream?)",
+    "Should import support incremental updates?",
+    "How should import handle duplicate content?"
+  ],
+  "assumptions": [
+    "Moodle backup format is .mbz (Moodle backup ZIP)",
+    "SCORM packages follow standard structure with imsmanifest.xml",
+    "Import creates new course, doesn't update existing",
+    "Export generates standard ZIP format",
+    "Media files are included in package or referenced",
+    "Import processing is asynchronous (background job)"
+  ],
+  "confidence": "medium"
+}
+

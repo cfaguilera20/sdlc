@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CodeChangeSet",
+  "type": "object",
+  "required": [
+    "summary",
+    "files_created",
+    "files_modified",
+    "files_deleted"
+  ],
+  "properties": {
+    "summary": {
+      "type": "string",
+      "description": "Brief summary of what changed"
+    },
+    "files_created": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of file paths that were created"
+    },
+    "files_modified": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of file paths that were modified"
+    },
+    "files_deleted": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of file paths that were deleted"
+    },
+    "commands_to_run": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Commands that need to be run (migrations, tests, etc.)"
+    },
+    "tests_to_run": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Specific tests that should be run"
+    },
+    "notes_for_reviewer": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Notes for code reviewer"
+    },
+    "known_gaps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Known gaps or TODOs in the implementation"
+    },
+    "spec_elements_implemented": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["spec_element_type", "spec_element_id", "file_path"],
+        "properties": {
+          "spec_element_type": {
+            "type": "string",
+            "enum": ["api_contract", "data_contract", "flow", "edge_case", "non_functional"]
+          },
+          "spec_element_id": {
+            "type": "string"
+          },
+          "file_path": {
+            "type": "string"
+          },
+          "line_numbers": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        }
+      },
+      "description": "List of spec elements implemented in this change"
+    },
+    "spec_compliance_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Notes about spec compliance"
+    },
+    "traceability_links": {
+      "type": "object",
+      "properties": {
+        "api_contracts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "contract_id": {
+                "type": "string"
+              },
+              "file_path": {
+                "type": "string"
+              },
+              "line_numbers": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "flows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "flow_id": {
+                "type": "string"
+              },
+              "file_paths": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "Links from spec elements to code locations"
+    },
+    "implementation_status": {
+      "type": "object",
+      "properties": {
+        "api_contracts_implemented": {
+          "type": "integer"
+        },
+        "api_contracts_total": {
+          "type": "integer"
+        },
+        "data_contracts_implemented": {
+          "type": "integer"
+        },
+        "data_contracts_total": {
+          "type": "integer"
+        },
+        "flows_implemented": {
+          "type": "integer"
+        },
+        "flows_total": {
+          "type": "integer"
+        },
+        "coverage_percentage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "description": "Implementation status tracking"
+    }
+  }
+}
+

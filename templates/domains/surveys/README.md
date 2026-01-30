@@ -31,3 +31,7 @@ When working on survey-related tickets:
 3. Collect the `DomainKnowledgePack` JSON output(s)
 4. Use the pack(s) as input to Agent 02 (Product Analyst) for backlog generation
 
+## Related Domains
+
+- **QTI** (`../qti/`) - If the work is about interoperable question templates (import/export). Note: QTI is assessment-focused; surveys may require a different feature subset/policy.
+- **LMS** (`../lms/`) - If survey-like assessments are embedded into learning experiences and need shared authoring/scoring concepts.

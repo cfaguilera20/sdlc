@@ -1,0 +1,63 @@
+{
+  "domain": "LMS Role-Based Access Control",
+  "glossary": [
+    {"term": "learner", "definition": "User role with access to browse catalog, enroll in courses, view content, take assessments"},
+    {"term": "instructor", "definition": "User role with access to create courses, manage content, view enrollments for their courses"},
+    {"term": "admin", "definition": "User role with access to all courses, users, reports, and system settings within their organization"},
+    {"term": "manager", "definition": "User role with access to view team progress, assign courses, view team reports"},
+    {"term": "client", "definition": "External client role with limited access to assigned courses and their own progress"}
+  ],
+  "business_rules": [
+    "Learners can only enroll in courses they have access to (public or assigned)",
+    "Instructors can only edit courses they created or are assigned to",
+    "Admins can view and manage all courses within their organization",
+    "Managers can view progress for users in their team only",
+    "Clients can only view courses assigned to them",
+    "Course creation requires instructor or admin role",
+    "Report access requires admin or manager role",
+    "Certificate generation requires course completion"
+  ],
+  "calculations_or_formulas": [],
+  "invariants": [
+    "Every user must have at least one role",
+    "Role permissions are scoped to organization",
+    "Course access is determined by role and enrollment status",
+    "Report access is determined by role and data scope"
+  ],
+  "edge_cases": [
+    "User has multiple roles (e.g., instructor and learner)",
+    "User role changed while actively using system",
+    "Course creator leaves organization",
+    "Manager viewing progress for user who left organization",
+    "Client accessing course after contract expiration"
+  ],
+  "compliance_requirements": [],
+  "data_requirements": {
+    "inputs": ["User role from PeopleCloud", "Organization membership", "Course permissions", "Enrollment status"],
+    "outputs": ["Access granted/denied", "UI features visible/hidden", "Data filtered by permissions"]
+  },
+  "user_journeys": [
+    "Learner browses catalog → enrolls in course → views content → completes course → receives certificate",
+    "Instructor creates course → publishes course → views enrollments → manages content",
+    "Admin views all courses → generates reports → manages users",
+    "Manager views team dashboard → assigns courses → views team progress"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Users can only access features allowed by their role",
+    "UI elements are hidden/shown based on user role",
+    "API endpoints enforce role-based authorization",
+    "Reports are filtered by role and data scope",
+    "Course access is restricted based on role and enrollment"
+  ],
+  "open_questions": [
+    "Can users have multiple roles simultaneously?",
+    "What happens when a user's role changes?",
+    "How are permissions inherited in role hierarchies?"
+  ],
+  "assumptions": [
+    "Roles are defined in PeopleCloud and synced to LMS",
+    "Permission matrix is static (not configurable per organization)",
+    "Role changes take effect immediately (no caching)"
+  ]
+}
+

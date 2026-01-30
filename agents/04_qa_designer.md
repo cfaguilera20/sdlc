@@ -19,6 +19,13 @@ Input:
 Optional: existing test framework, CI notes, environments.
 
 ## Output requirements
+Return ONLY JSON that validates against `/schemas/test_suite.schema.json`:
+
+**Validation:** After generating output, validate:
+```bash
+python3 scripts/validate_json_schema.py schemas/test_suite.schema.json <output.json>
+```
+
 Output includes:
 - traceability: map each acceptance criterion to tests
 - test_cases: unit/integration/e2e/contract/security/performance
@@ -36,3 +43,38 @@ Output includes:
 - Tests must be runnable without manual steps whenever possible.
 - Avoid redundant tests; focus on highest value coverage.
 - If acceptance criteria are missing, warn and infer minimal ones.
+
+## Error Handling
+
+- **Missing spec:** Return error message explaining that spec JSON is required
+- **Invalid spec:** Use best-effort parsing, document issues in `warnings`
+- **Missing acceptance criteria:** Infer minimal test cases, add warning about missing ACs
+- **Unknown test framework:** Use generic test patterns, note framework assumption in `automation_notes`
+
+## Example
+
+**Input:** DeveloperReadySpec JSON from Agent 03
+
+**Output:**
+```json
+{
+  "story_id": "STORY-001",
+  "traceability": [
+    {
+      "ac": "AC1: User can register with email and password",
+      "tests": ["test_user_registration_success", "test_user_registration_validation"]
+    }
+  ],
+  "test_cases": [
+    {
+      "id": "test_user_registration_success",
+      "type": "integration",
+      "title": "User registration with valid data",
+      "steps": ["POST /api/v1/users with valid email and password"],
+      "expected": ["Returns 201", "User is created", "Password is hashed"]
+    }
+  ],
+  "automation_notes": ["Use RSpec for Rails", "Test in test database"],
+  "warnings": []
+}
+```

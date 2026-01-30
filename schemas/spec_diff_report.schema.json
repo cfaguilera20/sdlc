@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecDiffReport",
+  "type": "object",
+  "required": [
+    "diff_summary",
+    "api_contracts",
+    "data_contracts",
+    "flows",
+    "code_impact",
+    "migration_plan"
+  ],
+  "properties": {
+    "diff_summary": {
+      "type": "object",
+      "required": ["total_changes", "breaking_changes", "non_breaking_changes"],
+      "properties": {
+        "total_changes": {
+          "type": "integer"
+        },
+        "breaking_changes": {
+          "type": "integer"
+        },
+        "non_breaking_changes": {
+          "type": "integer"
+        },
+        "added_elements": {
+          "type": "integer"
+        },
+        "removed_elements": {
+          "type": "integer"
+        },
+        "modified_elements": {
+          "type": "integer"
+        }
+      }
+    },
+    "api_contracts": {
+      "type": "object",
+      "properties": {
+        "added": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["contract_id", "impact"],
+            "properties": {
+              "contract_id": {
+                "type": "string"
+              },
+              "endpoint": {
+                "type": "string"
+              },
+              "impact": {
+                "type": "string"
+              },
+              "code_locations": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "removed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["contract_id", "impact"],
+            "properties": {
+              "contract_id": {
+                "type": "string"
+              },
+              "endpoint": {
+                "type": "string"
+              },
+              "impact": {
+                "type": "string"
+              },
+              "code_locations": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "migration": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "modified": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["contract_id", "changes", "impact"],
+            "properties": {
+              "contract_id": {
+                "type": "string"
+              },
+              "endpoint": {
+                "type": "string"
+              },
+              "changes": {
+                "type": "object"
+              },
+              "impact": {
+                "type": "string"
+              },
+              "code_locations": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "migration": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "data_contracts": {
+      "type": "object",
+      "properties": {
+        "added": {
+          "type": "array"
+        },
+        "removed": {
+          "type": "array"
+        },
+        "modified": {
+          "type": "array"
+        }
+      }
+    },
+    "flows": {
+      "type": "object",
+      "properties": {
+        "added": {
+          "type": "array"
+        },
+        "removed": {
+          "type": "array"
+        },
+        "modified": {
+          "type": "array"
+        }
+      }
+    },
+    "edge_cases": {
+      "type": "object",
+      "properties": {
+        "added": {
+          "type": "array"
+        },
+        "removed": {
+          "type": "array"
+        },
+        "modified": {
+          "type": "array"
+        }
+      }
+    },
+    "code_impact": {
+      "type": "object",
+      "required": ["files_to_update"],
+      "properties": {
+        "files_to_update": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["file_path"],
+            "properties": {
+              "file_path": {
+                "type": "string"
+              },
+              "changes_needed": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "priority": {
+                "type": "string"
+              },
+              "estimated_effort": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "files_to_delete": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "files_to_create": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "migration_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step", "description", "priority"],
+        "properties": {
+          "step": {
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "estimated_effort": {
+            "type": "string"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
+    "backward_compatibility": {
+      "type": "object",
+      "properties": {
+        "breaking_changes": {
+          "type": "boolean"
+        },
+        "recommendations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
+

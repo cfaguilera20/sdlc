@@ -28,11 +28,36 @@ Note: In Cursor, you will apply changes directly; this agent should be precise a
 ## Process
 1) Confirm routes/controller/service boundaries.
 2) Plan migrations + model validations.
-3) Write request specs first when feasible.
-4) Implement code, then add unit/service specs.
-5) Add logs/instrumentation as in spec.
+3) **If tests exist (from Agent 07T):** Review existing tests, implement code to make them pass (TDD)
+4) **If no tests exist:** Write request specs first when feasible, then implement.
+5) Implement code, then add unit/service specs if missing.
+6) Add logs/instrumentation as in spec.
+
+**TDD Mode:**
+- If Agent 07T (Test Writer) has created tests, your job is to implement code that makes those tests pass
+- Run tests frequently during implementation
+- All tests should pass before proceeding
 
 ## Guardrails
 - No large refactors unless required by the story.
 - Preserve backward compatibility where possible.
 - Ensure tenant scoping and authorization are enforced in queries.
+
+## Creating new Rails projects
+If you need to create a new Rails project, **ALWAYS create it in the `projects/` folder**:
+
+**If `rails` command is available locally:**
+```bash
+cd projects
+rails new <project_name>
+cd ..
+```
+
+**If `rails` command is not available locally, use Docker:**
+```bash
+docker run --rm -v $(pwd)/projects:/app -w /app ruby:latest rails new <project_name>
+```
+
+**Important:** All new projects must be created in `projects/<project_name>/` directory, not in the root or other locations.
+
+Always use the latest official Docker images to ensure compatibility and best practices.

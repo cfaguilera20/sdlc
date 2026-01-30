@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TestCoverageReport",
+  "type": "object",
+  "required": [
+    "story_id",
+    "coverage_summary",
+    "api_contracts",
+    "flows",
+    "edge_cases",
+    "missing_tests"
+  ],
+  "properties": {
+    "story_id": {
+      "type": "string"
+    },
+    "coverage_summary": {
+      "type": "object",
+      "required": ["overall_status", "coverage_percentage"],
+      "properties": {
+        "overall_status": {
+          "type": "string",
+          "enum": ["complete", "partial", "incomplete"]
+        },
+        "coverage_percentage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "api_contracts_covered": {
+          "type": "integer"
+        },
+        "api_contracts_total": {
+          "type": "integer"
+        },
+        "flows_covered": {
+          "type": "integer"
+        },
+        "flows_total": {
+          "type": "integer"
+        },
+        "edge_cases_covered": {
+          "type": "integer"
+        },
+        "edge_cases_total": {
+          "type": "integer"
+        }
+      }
+    },
+    "api_contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["contract_id", "status"],
+        "properties": {
+          "contract_id": {
+            "type": "string"
+          },
+          "endpoint": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["covered", "partially_covered", "missing"]
+          },
+          "test_files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "file_path": {
+                  "type": "string"
+                },
+                "line_numbers": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                "covers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "missing_tests": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "data_contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["contract_id", "status"],
+        "properties": {
+          "contract_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["covered", "missing"]
+          },
+          "test_files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "flows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["flow_id", "status"],
+        "properties": {
+          "flow_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["covered", "partially_covered", "missing"]
+          },
+          "test_files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "missing_steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "edge_cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["edge_case", "status"],
+        "properties": {
+          "edge_case": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["covered", "missing"]
+          },
+          "test_file": {
+            "type": "string"
+          },
+          "line_numbers": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ac", "status"],
+        "properties": {
+          "ac": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["covered", "missing"]
+          },
+          "test_files": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "missing_tests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["priority", "spec_element"],
+        "properties": {
+          "priority": {
+            "type": "string",
+            "enum": ["blocker", "major", "minor"]
+          },
+          "spec_element": {
+            "type": "string"
+          },
+          "missing": {
+            "type": "string"
+          },
+          "suggested_file": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
+

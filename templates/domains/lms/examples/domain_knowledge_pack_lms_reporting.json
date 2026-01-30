@@ -1,0 +1,63 @@
+{
+  "domain": "LMS Reporting & Analytics",
+  "glossary": [
+    {"term": "completion report", "definition": "Report showing course completion rates, progress, and statistics"},
+    {"term": "enrollment report", "definition": "Report showing enrollment counts, trends, and demographics"},
+    {"term": "progress report", "definition": "Report showing individual or team progress through courses"}
+  ],
+  "business_rules": [
+    "Admin reports show all data within their organization",
+    "Manager reports show only data for their team",
+    "Learner reports show only their own data",
+    "Reports can be filtered by date range, course, user, status",
+    "Reports can be exported as CSV",
+    "Report generation should complete within 30 seconds",
+    "Large reports should be paginated or generated asynchronously",
+    "Report data is scoped to organization for multi-tenant isolation"
+  ],
+  "calculations_or_formulas": [
+    "Completion rate = (completed enrollments / total enrollments) * 100",
+    "Average time to complete = sum(time_to_complete) / count(completed enrollments)",
+    "Enrollment growth = (current_period_enrollments - previous_period_enrollments) / previous_period_enrollments * 100"
+  ],
+  "invariants": [
+    "Report data must be scoped to user's organization",
+    "Report data must respect role-based access (admin sees all, manager sees team, learner sees self)",
+    "Report generation must not block other operations",
+    "Report data must be accurate and consistent"
+  ],
+  "edge_cases": [
+    "Report requested for very large dataset (thousands of enrollments)",
+    "Report requested for date range with no data",
+    "User role changes while report is being generated",
+    "Course deleted while report includes it",
+    "Concurrent report requests for same data"
+  ],
+  "compliance_requirements": [],
+  "data_requirements": {
+    "inputs": ["Date range", "Course filter", "User filter", "Status filter", "Organization scope", "User role"],
+    "outputs": ["Report data (JSON)", "CSV export file", "Summary statistics"]
+  },
+  "user_journeys": [
+    "Admin navigates to reports → selects report type → applies filters → views report → exports CSV",
+    "Manager views team dashboard → filters by team → views progress report → exports for team"
+  ],
+  "acceptance_criteria_suggestions": [
+    "Reports are generated correctly with applied filters",
+    "Report data is scoped correctly by role and organization",
+    "CSV export includes all report data",
+    "Report generation completes within acceptable time",
+    "Report data is accurate and consistent"
+  ],
+  "open_questions": [
+    "What is the maximum report size? Should large reports be paginated?",
+    "Should reports be cached? For how long?",
+    "Should report generation be asynchronous for large datasets?"
+  ],
+  "assumptions": [
+    "Report data is aggregated from enrollment, progress, and course tables",
+    "Report generation is synchronous for small datasets, asynchronous for large",
+    "CSV export includes all columns visible in report"
+  ]
+}
+
