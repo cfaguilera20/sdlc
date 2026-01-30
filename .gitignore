@@ -2,3 +2,7 @@
 runs/*
 !runs/.gitkeep
 
+tmp/*
+!tmp/.gitkeep
+
+.history/     
