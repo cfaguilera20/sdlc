@@ -537,6 +537,7 @@ All agent outputs validate against schemas in `/schemas/`:
 - `domain_scaffold.schema.json` - Agent 01X
 - `domain_knowledge_pack.schema.json` - Domain experts
 - `features.schema.json` - Multi-session tracking
+- `bundle.schema.json` - Bundle outputs for triage/test updates
 
 ---
 
@@ -559,12 +560,11 @@ python3 scripts/validate_run.py runs/<TICKET>_<slug>_<timestamp>
 ## See Also
 
 - [README.md](README.md) - Quick start and usage guide
-- [docs/HOW_TO_USE_IN_CURSOR.md](docs/HOW_TO_USE_IN_CURSOR.md) - Detailed Cursor setup
-- [docs/COMMAND_WORKFLOW.md](docs/COMMAND_WORKFLOW.md) - Command workflow guide
-- [docs/SDLC_SEQUENCE_DIAGRAM.md](docs/SDLC_SEQUENCE_DIAGRAM.md) - Sequence diagrams
+- [docs/how-to-use-in-cursor.md](docs/how-to-use-in-cursor.md) - Detailed Cursor setup
+- [docs/command-workflow.md](docs/command-workflow.md) - Command workflow guide
+- [docs/sdlc-sequence-diagram.md](docs/sdlc-sequence-diagram.md) - Sequence diagrams
 - [.cursor/rules/sdlc_pipeline.md](.cursor/rules/sdlc_pipeline.md) - Team-wide rules
 
 ---
 
 Generated: 2025-01-18
-

@@ -11,6 +11,8 @@ Creates:
     ticket_context.json
     spec.json
     test_suite.json
+    notes.md
+    decision.md
 """
 import argparse, re, json
 from datetime import datetime
@@ -39,6 +41,8 @@ def main():
     (out_dir / "ticket_context.json").write_text("{\n}\n", encoding="utf-8")
     (out_dir / "spec.json").write_text("{\n}\n", encoding="utf-8")
     (out_dir / "test_suite.json").write_text("{\n}\n", encoding="utf-8")
+    (out_dir / "notes.md").write_text("# Notes\n\n- \n", encoding="utf-8")
+    (out_dir / "decision.md").write_text("# Decisions\n\n- \n", encoding="utf-8")
 
     print(str(out_dir))
 

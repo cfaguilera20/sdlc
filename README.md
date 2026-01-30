@@ -18,26 +18,29 @@ This repo is a **copy‑paste friendly** multi-agent workflow:
 ## Documentation
 
 **Quick Start:**
-- [`docs/HOW_TO_USE_IN_CURSOR.md`](docs/HOW_TO_USE_IN_CURSOR.md) - How to use in Cursor IDE
+- [`docs/how-to-use-in-cursor.md`](docs/how-to-use-in-cursor.md) - How to use in Cursor IDE
+- [`docs/command-reference.md`](docs/command-reference.md) - SDLC command index (one-step usage)
 
 **Agent Reference:**
 - [`AGENTS.md`](AGENTS.md) - Complete reference for all agents, roles, inputs, outputs, and workflows
 
 **Workflow Guides:**
-- [`docs/COMMAND_WORKFLOW.md`](docs/COMMAND_WORKFLOW.md) - Command workflow (prime/plan/execute/commit)
-- [`docs/SDLC_SEQUENCE_DIAGRAM.md`](docs/SDLC_SEQUENCE_DIAGRAM.md) - Sequence diagrams showing orchestrator flow
+- [`docs/command-workflow.md`](docs/command-workflow.md) - Command workflow (prime/plan/execute/commit)
+- [`docs/sdlc-sequence-diagram.md`](docs/sdlc-sequence-diagram.md) - Sequence diagrams showing orchestrator flow
+- [`docs/run-checklist.md`](docs/run-checklist.md) - Short run checklist
 
 **Team Rules:**
 - [`.cursor/rules/sdlc_pipeline.md`](.cursor/rules/sdlc_pipeline.md) - Team-wide rules and conventions
 
 ## 🚀 Quick Start: How to Use in Cursor
 
-**👉 Start here:** [`docs/HOW_TO_USE_IN_CURSOR.md`](docs/HOW_TO_USE_IN_CURSOR.md)
+**👉 Start here:** [`docs/how-to-use-in-cursor.md`](docs/how-to-use-in-cursor.md)
 
 This guide shows you **exactly** how to:
 - **Option 1:** Just paste the orchestrator content (works immediately, no setup) - **Recommended**
 - **Option 2:** Use Custom Commands if available (optional)
 - **Option 3:** Use the sync script for team standardization
+- **Option 4:** Use SDLC commands for one-step orchestrator + updates
 
 **TL;DR:** Open `agents/00_orchestrator.md`, copy all content, paste into a Cursor chat, add your ticket, and go!
 
@@ -58,6 +61,21 @@ make run-init TICKET=PROJ-123 TITLE="short title"
 make validate-run RUN=runs/PROJ-123_short-title_YYYYMMDD_HHMMSS
 make help
 ```
+
+### One-step commands (optional)
+If you prefer a single command instead of copy/paste:
+- `/run-orchestrator` — creates/uses a run folder and returns a PipelinePlan JSON
+- `/create-sdlc-config` — generates `sdlc-config.md` from prompts
+- `/update-test-cases` — updates acceptance criteria and test cases for a ticket
+- `/update-from-main` — safe update with backups and conflict guidance
+- `/new-run` — creates a run folder with placeholders
+- `/validate-run` — validates all JSON outputs in a run folder
+- `/split-bundle` — splits one-message bundle into run artifacts
+- `/triage-ticket` — fast scope clarification (Ticket Reader / Domain Scout)
+- `/update-spec` — updates `spec.json` after requirement changes
+- `/release-plan` — generates release/runbook steps for risky changes
+- `/update-mcp` — generates `.cursor/mcp.json` from `.tool-versions`
+- `/feature-implementation-methodology` — full feature planning methodology prompt
 
 ### 2) Run agents in Cursor (JSON-only)
 
@@ -105,7 +123,7 @@ They enforce JSON-only outputs, schema validation, run-folder persistence, and d
 
 For a simple, memorable workflow that maps directly to the orchestrator + agents (inspired by the “command set” approach in [`masta-g3/rules`](https://github.com/masta-g3/rules)):
 
-- See: `docs/COMMAND_WORKFLOW.md`
+- See: `docs/command-workflow.md`
 
 ## Multi-session velocity: `features.json`
 
@@ -186,6 +204,7 @@ All JSON outputs should validate against schemas in `/schemas/`:
 - `domain_scaffold.schema.json` - Agent 01X
 - `domain_knowledge_pack.schema.json` - Domain experts
 - `features.schema.json` - Multi-session tracking
+- `bundle.schema.json` - Bundle outputs for triage/test updates
 
 ## Example run
 Use the included example ticket:
@@ -550,7 +569,7 @@ Generated: 2025-12-26
 
 ## How it works (high-level)
 
-**📊 [View detailed sequence diagram →](docs/SDLC_SEQUENCE_DIAGRAM.md)** (shows orchestrator flow, domain creation, human-in-the-loop)
+**📊 [View detailed sequence diagram →](docs/sdlc-sequence-diagram.md)** (shows orchestrator flow, domain creation, human-in-the-loop)
 
 You run this inside **Cursor** using the **Orchestrator** plus specialized agents.  
 The Orchestrator decides which agents to run based on the ticket and your `stack` + `commit_type`.

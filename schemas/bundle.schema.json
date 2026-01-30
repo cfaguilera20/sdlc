@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "ticket_context": {
+      "$ref": "./ticket_context.schema.json"
+    },
+    "domain_scaffold": {
+      "$ref": "./domain_scaffold.schema.json"
+    },
+    "test_suite": {
+      "$ref": "./test_suite.schema.json"
+    }
+  },
+  "anyOf": [
+    { "required": ["ticket_context"] },
+    { "required": ["domain_scaffold"] },
+    { "required": ["test_suite"] }
+  ]
+}

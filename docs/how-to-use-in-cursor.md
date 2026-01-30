@@ -86,6 +86,27 @@ This copies all agents + rules + schemas to `~/.cursor/sdlc/`
 
 ---
 
+## Option 4: SDLC One-Step Commands
+
+If you want a one-step flow instead of manual copy/paste, use the SDLC commands:
+
+- `/run-orchestrator` — start the pipeline and return a PipelinePlan JSON
+- `/create-sdlc-config` — create `sdlc-config.md` from prompts
+- `/update-test-cases` — update acceptance criteria and test cases for a ticket
+- `/update-from-main` — safe repo update with backups and conflict guidance
+- `/new-run` — create a run folder with placeholders
+- `/validate-run` — validate all JSON outputs in a run folder
+- `/split-bundle` — split one-message bundle into artifacts
+- `/triage-ticket` — clarify scope fast (Ticket Reader / Domain Scout)
+- `/update-spec` — update an existing spec after requirement changes
+- `/release-plan` — generate release/runbook steps for risky changes
+- `/update-mcp` — generate `.cursor/mcp.json` from `.tool-versions`
+- `/feature-implementation-methodology` — full feature planning methodology prompt
+
+These commands live in `.cursor/commands/` and can be used directly in Cursor.
+
+---
+
 ## How Cursor Rules Work
 
 The `.cursor/rules/sdlc_pipeline.md` file is **automatically loaded** by Cursor if:
@@ -246,6 +267,6 @@ make split-bundle-new-run BUNDLE=runs/.../bundle.json TICKET=PROJ-123 TITLE="Add
 
 ## Next Steps
 
-- See `docs/COMMAND_WORKFLOW.md` for the command-style workflow (`/prime`, `/plan`, `/execute`, `/commit`)
+- See `docs/command-workflow.md` for the command-style workflow (`/prime`, `/plan`, `/execute`, `/commit`)
 - See `README.md` for full pipeline documentation
 - See `schemas/features.schema.json` for multi-session backlog tracking

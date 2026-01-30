@@ -18,6 +18,7 @@ These rules are intended to make agent outputs **copy/paste safe**, **schema-val
   - `python3 scripts/validate_json_schema.py schemas/<schema>.schema.json <path-to-json>`
 - Fix schema issues immediately; do not push invalid JSON downstream.
 - **All schemas:** `ticket_context`, `backlog`, `spec`, `test_suite`, `test_code_set`, `test_coverage_report`, `spec_compliance_report`, `spec_diff_report`, `code_change_set`, `codebase_architecture`, `integration_plan`, `pipeline_plan`, `domain_knowledge_pack`, `domain_scaffold`, `data_migration_plan`, `features`
+- **Bundle schema:** `bundle` (used by triage/test updates)
 
 4) **Use run folders for persistence**
 - All outputs for a ticket belong under:
@@ -75,3 +76,11 @@ These rules are intended to make agent outputs **copy/paste safe**, **schema-val
 - Fast-track skips optional agents but maintains quality (QA + Review still required)
 - Uses lightweight architect mode for simplified specs
 
+14) **Quality gates (minimum)**
+- Do not proceed to implementation if any required JSON fails schema validation.
+- Do not treat a spec as final without a `TestSuite` (or explicit waiver in notes).
+- For one-message mode, save artifacts incrementally to the run folder.
+
+15) **One-step commands**
+- Prefer `.cursor/commands/*` for quick start and updates.
+- Keep commands aligned to schemas and run-folder conventions.
