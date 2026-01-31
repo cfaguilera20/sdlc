@@ -459,6 +459,20 @@ Complete reference guide for all agents in the SDLC pipeline. Each agent is a sp
 
 ---
 
+### Agent 10 — BE/FE Gap Auditor
+**File:** `agents/10_be_fe_gap_auditor.md`  
+**Role:** Audits integration gaps between backend APIs and frontend usage (routes, payloads, response shapes, auth, error handling).  
+**Input:** `TicketContext` JSON, optional `CodebaseArchitecture` JSON, relevant backend and frontend code  
+**Output:** `BeFeGapReport` JSON (`schemas/be_fe_gap_report.schema.json`)  
+**When to use:** When BE/FE mismatches or integration issues are suspected or during cross-team alignment.
+
+**Output includes:**
+- Gap list with severity and evidence
+- Suggested fixes for alignment
+- Open questions to resolve
+
+---
+
 ## Domain & Specialized Agents
 
 ### Agent 01X — Domain Agent Scout
@@ -534,6 +548,7 @@ All agent outputs validate against schemas in `/schemas/`:
 - `spec_diff_report.schema.json` - Agent 08B
 - `test_coverage_report.schema.json` - Agent 08C
 - `pipeline_plan.schema.json` - Agent 00
+- `be_fe_gap_report.schema.json` - Agent 10
 - `domain_scaffold.schema.json` - Agent 01X
 - `domain_knowledge_pack.schema.json` - Domain experts
 - `features.schema.json` - Multi-session tracking
@@ -567,4 +582,4 @@ python3 scripts/validate_run.py runs/<TICKET>_<slug>_<timestamp>
 
 ---
 
-Generated: 2025-01-18
+Generated: 2026-01-31
